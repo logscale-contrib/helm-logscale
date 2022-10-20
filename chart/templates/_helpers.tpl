@@ -67,7 +67,7 @@ Create the name of the service account to use
 Create the zookeeper service
 */}}
 {{- define "humio-instance.externalService.zookeeper" -}}
-{{- default (printf "%s-%s" .Release.Name "zookeeper-headless:2181") .Values.externalzookeeperHostname }}
+{{- default (printf "%s-%s" .Release.Name "zookeeper-headless:2181") .Values.humio.externalzookeeperHostname }}
 {{- end }}
 
 {{/*
