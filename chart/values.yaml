@@ -1,0 +1,83 @@
+platform: Azure
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+humio:
+  s3mode: default
+  buckets: {}
+
+  replicaCount: 3
+  image:
+    repository: humio/humio-core
+    tag: "1.51.1"
+  config:
+    autoRebalancePartitions: true
+    digestPartitionsCount: 720
+    storagePartitionsCount: 24
+    targetReplicationFactor: 2
+    smtp:
+      enabled: false
+      host: ""
+      username: ""
+      password: ""
+      sender:
+      port: 587
+      startTLS: true
+    jvmARGS:
+      ""
+      # -server -Xss2m
+      # -XX:MaxRAMPercentage=75.0
+      # -XX:+UseParallelGC -XX:+UseNUMA
+      # -XX:+UseTransparentHugePages
+      # -XX:+UnlockDiagnosticVMOptions
+      # -XX:CompileCommand=dontinline,com/humio/util/HotspotUtilsJ.dontInline
+      # -Xlog:gc+jni=debug:stdout
+      # -Xlog:gc*:stdout:time,tags
+      # -Dakka.log-config-on-start=on -Dzookeeper.client.secure=false
+    enableFeatures:
+      - FOWARDING
+      - FDR_POLLING_ON_NODE
+    dataVolumePersistentVolumeClaimSpecTemplate:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1.5Ti
+      storageClassName: openebs-lvmpv
+  nodeCount: 3
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # Annotations to add to the service account
+    annotations: {}
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: ""
+  podAnnotations:
+    sidecar.opentelemetry.io/inject: "true"
+    instrumentation.opentelemetry.io/inject-java: "true"
+    instrumentation.opentelemetry.io/container-names: "humio"
+
+  service:
+    type: ClusterIP
+    port: 80
+
+  ingress:
+    enabled: true
+    className: "ngnix"
+    annotations: {}
+
+    tls: true
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+opentelemetryOperator:
+  enabled: true
+  serviceAccount:
+    create: true

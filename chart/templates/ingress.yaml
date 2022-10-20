@@ -1,0 +1,54 @@
+{{- if .Values.humio.ingress.enabled -}}
+{{- $fullName := include "humio-instance.fullname" . -}}
+{{- $svcPort := 8080 -}}
+{{- if and .Values.humio.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
+  {{- if not (hasKey .Values.humio.ingress.annotations "kubernetes.io/humio.ingress.class") }}
+  {{- $_ := set .Values.humio.ingress.annotations "kubernetes.io/humio.ingress.class" .Values.humio.ingress.className}}
+  {{- end }}
+{{- end }}
+{{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1
+{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  name: {{ $fullName }}
+  labels:
+    {{- include "humio-instance.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/resource-policy": "keep"
+  {{- with .Values.humio.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}    
+  {{- end }}
+spec:
+  {{- if and .Values.humio.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  ingressClassName: {{ .Values.humio.ingress.className }}
+  {{- end }}
+  {{- if .Values.humio.ingress.tls }}
+  tls:
+    - hosts:
+        - {{ .Values.humio.fqdn }}
+      secretName: {{ $fullName }}-tls
+  {{- end }}
+  rules:    
+    - host: {{ .Values.humio.fqdn }}
+      http:
+        paths:
+          - path: /
+            {{- if semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion }}
+            pathType: Prefix
+            {{- end }}
+            backend:
+              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
+              service:
+                name: {{ $fullName }}
+                port:
+                  number: {{ $svcPort }}
+              {{- else }}
+              serviceName: {{ $fullName }}
+              servicePort: {{ $svcPort }}
+              {{- end }}
+{{- end }}

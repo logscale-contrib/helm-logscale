@@ -1,0 +1,229 @@
+{{- if .Values.opentelemetryOperator.enabled -}}
+apiVersion: core.humio.com/v1alpha1
+kind: HumioRepository
+metadata:
+  name: {{ include "humio-instance.fullname" . }}-all-humio-infra-trace
+  annotations:
+
+   
+   
+    
+spec:
+  managedClusterName: {{ include "humio-instance.fullname" . }}
+  name: "all-humio-infra-trace"
+  description: "this repo collects trace for the infrastracture of humio"
+  # Data deletion must be explicitly enabled before the operator will apply/lower retention settings that may cause data to be deleted.
+  allowDataDeletion: false
+  retention:
+    # If retention options are left out they will not be set.
+    ingestSizeInGB: 1000
+    storageSizeInGB: 1000    
+    timeInDays: 1
+---
+apiVersion: core.humio.com/v1alpha1
+kind: HumioRepository
+metadata:
+  name: {{ include "humio-instance.fullname" . }}-all-humio-infra-metrics
+  annotations:
+
+   
+   
+    
+    
+spec:
+  managedClusterName: {{ include "humio-instance.fullname" . }}
+  name: "all-humio-infra-metrics"
+  description: "this repo collects trace for the infrastracture of humio"
+  # Data deletion must be explicitly enabled before the operator will apply/lower retention settings that may cause data to be deleted.
+  allowDataDeletion: false
+  retention:
+    # If retention options are left out they will not be set.
+    ingestSizeInGB: 1000
+    storageSizeInGB: 1000    
+    timeInDays: 30
+---
+apiVersion: core.humio.com/v1alpha1
+kind: HumioRepository
+metadata:
+  name: {{ include "humio-instance.fullname" . }}-all-humio-infra-logs
+  annotations:
+
+   
+   
+    
+    
+spec:
+  managedClusterName: {{ include "humio-instance.fullname" . }}
+  name: "all-humio-infra-logs"
+  description: "this repo collects trace for the infrastracture of humio"
+  # Data deletion must be explicitly enabled before the operator will apply/lower retention settings that may cause data to be deleted.
+  allowDataDeletion: false
+  retention:
+    # If retention options are left out they will not be set.
+    ingestSizeInGB: 1000
+    storageSizeInGB: 1000    
+    timeInDays: 90
+---
+apiVersion: core.humio.com/v1alpha1
+kind: HumioView
+metadata:
+  name: {{ include "humio-instance.fullname" . }}-all-humio-infra
+  annotations:
+
+   
+   
+    
+    
+spec:
+  managedClusterName: {{ include "humio-instance.fullname" . }}
+  name: all-humio-infra
+  connections:
+    - repositoryName: all-humio-infra-trace
+      filter: "*"    
+    - repositoryName: all-humio-infra-metrics
+      filter: "*"    
+    - repositoryName: all-humio-infra-logs
+      filter: "*"    
+---
+apiVersion: core.humio.com/v1alpha1
+kind: HumioParser
+metadata:
+  name: {{ include "humio-instance.fullname" . }}--all-humio-infra-otel-trace
+  annotations:
+    
+spec:
+  managedClusterName: {{ include "humio-instance.fullname" . }}
+  name: "otel-trace"
+  parserScript: "parseJson()"
+  repositoryName: "all-humio-infra-trace"
+  tagFields:
+  testData:
+---
+apiVersion: core.humio.com/v1alpha1
+kind: HumioParser
+metadata:
+  name: {{ include "humio-instance.fullname" . }}--all-humio-infra-otel-metrics
+  annotations:
+
+   
+   
+    
+  
+    
+spec:
+  managedClusterName: {{ include "humio-instance.fullname" . }}
+  name: "otel-metrics"
+  parserScript: ""
+  repositoryName: "all-humio-infra-metrics"
+  tagFields:
+  testData:
+---
+apiVersion: core.humio.com/v1alpha1
+kind: HumioParser
+metadata:
+  name: {{ include "humio-instance.fullname" . }}--all-humio-infra-otel-logs
+  annotations:
+
+   
+   
+    
+  
+    
+spec:
+  managedClusterName: {{ include "humio-instance.fullname" . }}
+  name: "otel-logs"
+  parserScript: ""
+  repositoryName: "all-humio-infra-logs"
+  tagFields:
+  testData:  
+--- 
+apiVersion: core.humio.com/v1alpha1
+kind: HumioParser
+metadata:
+  name: {{ include "humio-instance.fullname" . }}--all-humio-infra-k8s-metrics
+  annotations:
+    
+spec:
+  managedClusterName: {{ include "humio-instance.fullname" . }}
+  name: "k8s-metrics"
+  parserScript: ""
+  repositoryName: "all-humio-infra-metrics"
+  tagFields:
+  testData:
+---
+apiVersion: core.humio.com/v1alpha1
+kind: HumioParser
+metadata:
+  name: {{ include "humio-instance.fullname" . }}--all-humio-infra-k8s-logs
+  annotations:
+
+spec:
+  managedClusterName: {{ include "humio-instance.fullname" . }}
+  name: "k8s-logs"
+  parserScript: ""
+  repositoryName: "all-humio-infra-logs"
+  tagFields:
+  testData:  
+---  
+apiVersion: core.humio.com/v1alpha1
+kind: HumioIngestToken
+metadata:
+  name: {{ include "humio-instance.fullname" . }}-all-humio-infra-k8s-metrics
+  annotations:
+    
+spec:
+  managedClusterName: {{ include "humio-instance.fullname" . }}
+  name: {{ include "humio-instance.fullname" . }}-all-humio-infra-k8s-metrics
+  repositoryName: "all-humio-infra-metrics"
+  parserName: "k8s-metrics"
+  tokenSecretName: {{ include "humio-instance.fullname" . }}-all-humio-infra-k8s-metrics  
+---  
+apiVersion: core.humio.com/v1alpha1
+kind: HumioIngestToken
+metadata:
+  name: {{ include "humio-instance.fullname" . }}-all-humio-infra-k8s-logs
+  annotations:
+spec:
+  managedClusterName: {{ include "humio-instance.fullname" . }}
+  name: {{ include "humio-instance.fullname" . }}-all-humio-infra-k8s-logs
+  repositoryName: "all-humio-infra-logs"
+  parserName: "k8s-logs"
+  tokenSecretName: {{ include "humio-instance.fullname" . }}-all-humio-infra-k8s-logs  
+---  
+apiVersion: core.humio.com/v1alpha1
+kind: HumioIngestToken
+metadata:
+  name: {{ include "humio-instance.fullname" . }}-all-humio-infra-otel-metrics
+  annotations:
+    
+spec:
+  managedClusterName: {{ include "humio-instance.fullname" . }}
+  name: {{ include "humio-instance.fullname" . }}-all-humio-infra-otel-metrics
+  repositoryName: "all-humio-infra-metrics"
+  parserName: "otel-metrics"
+  tokenSecretName: {{ include "humio-instance.fullname" . }}-all-humio-infra-otel-metrics  
+---  
+apiVersion: core.humio.com/v1alpha1
+kind: HumioIngestToken
+metadata:
+  name: {{ include "humio-instance.fullname" . }}-all-humio-infra-otel-logs
+    
+spec:
+  managedClusterName: {{ include "humio-instance.fullname" . }}
+  name: {{ include "humio-instance.fullname" . }}-all-humio-infra-otel-logs
+  repositoryName: "all-humio-infra-logs"
+  parserName: "otel-logs"
+  tokenSecretName: {{ include "humio-instance.fullname" . }}-all-humio-infra-otel-logs  
+---  
+apiVersion: core.humio.com/v1alpha1
+kind: HumioIngestToken
+metadata:
+  name: {{ include "humio-instance.fullname" . }}-all-humio-infra-otel-trace
+  
+spec:
+  managedClusterName: {{ include "humio-instance.fullname" . }}
+  name: {{ include "humio-instance.fullname" . }}-all-humio-infra-otel-trace
+  repositoryName: "all-humio-infra-trace"
+  parserName: "otel-trace"
+  tokenSecretName: {{ include "humio-instance.fullname" . }}-all-humio-infra-otel-trace  
+{{- end }}    

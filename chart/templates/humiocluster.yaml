@@ -1,0 +1,171 @@
+---
+apiVersion: core.humio.com/v1alpha1
+kind: HumioCluster
+metadata:
+  name: {{ include "humio-instance.fullname" . }}
+  labels:
+    {{- include "humio-instance.labels" . | nindent 4 }}
+spec:
+  initServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
+  authServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
+  humioServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
+
+
+  {{- with .Values.humio.podAnnotations }}
+  podAnnotations:
+    sidecar.opentelemetry.io/inject: "true"
+    instrumentation.opentelemetry.io/inject-java: "true"
+    instrumentation.opentelemetry.io/container-names: "humio"
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  resources:
+    {{- toYaml .Values.humio.resources | nindent 4 }}
+  {{- with .Values.humio.affinity }}
+  affinity:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}  
+  nodeCount: {{ .Values.humio.nodeCount }}
+
+  {{- with .Values.humio.tolerations }}
+  tolerations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}  
+
+  
+  dataVolumePersistentVolumeClaimSpecTemplate:
+  {{- with .Values.humio.config.dataVolumePersistentVolumeClaimSpecTemplate }}  
+    {{- toYaml . | nindent 4 }}
+  {{- end }}  
+
+  environmentVariables:
+
+  - name: ZOOKEEPER_URL
+    value: {{ include "humio-instance.externalService.zookeeper" . | quote }}
+  - name: KAFKA_SERVERS
+    value:  {{ include "humio-instance.externalService.kafka" . | quote }}
+
+  #Object Storage config
+  - name: USING_EPHEMERAL_DISKS
+    value: "true"
+  - name: S3_STORAGE_PREFERRED_COPY_SOURCE
+    value: "true"
+
+{{- if eq  .Values.humio.s3mode "aws" }}
+  - name: S3_STORAGE_ENCRYPTION_KEY
+    value: {{ .Values.humio.buckets.storageKey | default "off" | quote }}
+  - name: BUCKET_STORAGE_SSE_COMPATIBLE
+    value: "true"
+  - name: S3_STORAGE_BUCKET
+    value: {{ .Values.humio.buckets.storage }}
+{{- else if eq  .Values.humio.s3mode "s3proxy" }}
+  - name: S3_STORAGE_PATH_STYLE_ACCESS
+    value: "true"
+  - name: S3_STORAGE_IBM_COMPAT
+    value: "true"
+  - name:  BUCKET_STORAGE_IGNORE_ETAG_UPLOAD 
+    value: "true"
+  - name:  BUCKET_STORAGE_IGNORE_ETAG_AFTER_UPLOAD 
+    value: "true"
+  - name: BUCKET_STORAGE_SSE_COMPATIBLE
+    value: "true"
+  - name: S3_STORAGE_ENDPOINT_BASE
+    value: http://{{ .Release.Name }}-s3proxy
+  - name: S3_STORAGE_ENCRYPTION_KEY
+    value: "off"
+  - name: S3_STORAGE_ACCESSKEY
+    valueFrom:
+      secretKeyRef:
+        key: AWS_ACCESS_KEY_ID
+        name: {{ .Release.Name }}-s3proxy-secret
+  - name: S3_STORAGE_SECRETKEY
+    valueFrom:
+      secretKeyRef:
+        key: AWS_SECRET_ACCESS_KEY
+        name: {{ .Release.Name }}-s3proxy-secret
+  - name: S3_STORAGE_BUCKET
+    value: {{ .Values.humio.buckets.storage }}
+
+  - name: S3_ARCHIVING_PATH_STYLE_ACCESS
+    value: "true"
+
+  - name: S3_EXPORT_PATH_STYLE_ACCESS
+    value: "true"
+{{- else }}
+  - name: S3_STORAGE_ENCRYPTION_KEY
+    value: {{ .Values.humio.buckets.storageKey | default "off" | quote }}
+  - name: S3_STORAGE_BUCKET
+    value: {{ .Values.humio.buckets.storage }}
+{{- end }}
+
+  - name: AUTHENTICATION_METHOD
+    value: saml
+  - name: AUTO_CREATE_USER_ON_SUCCESSFUL_LOGIN
+    value: "true"
+  - name: AUTO_UPDATE_GROUP_MEMBERSHIPS_ON_SUCCESSFUL_LOGIN
+    value: "true"
+  - name: PUBLIC_URL
+    value: "https://{{ .Values.humio.fqdn }}"
+  - name: SAML_IDP_SIGN_ON_URL
+    value: {{ .Values.humio.sso.signOnUrl }}
+  - name: SAML_IDP_ENTITY_ID
+    value: {{ .Values.humio.sso.entityID }}
+  - name: SAML_GROUP_MEMBERSHIP_ATTRIBUTE
+    value: {{ .Values.humio.sso.groupMembershipAttribute | default "memberOf" }}
+  {{- if .Values.humio.config.smtp.enabled }}  
+  - name: SMTP_HOST
+    value: {{ .Values.humio.config.smtp.host }}
+  - name: SMTP_USERNAME
+    value: {{ .Values.humio.config.smtp.username }}
+  - name: SMTP_PASSWORD
+    value: {{ .Values.humio.config.smtp.password }}
+  - name: SMTP_SENDER_ADDRESS
+    value: {{ .Values.humio.config.smtp.sender }}
+  - name: SMTP_PORT
+    value: {{ .Values.humio.config.smtp.port | quote }}
+  - name: SMTP_USE_STARTTLS
+    value: {{ .Values.humio.config.smtp.startTLS | quote }}
+  {{- end }}
+  - name: HUMIO_JVM_ARGS
+    value: {{ .Values.humio.config.jvmARGS | quote }}
+  {{- range .Values.humio.config.enableFeatures }}
+  - name: ENABLE_{{ . | upper}}
+    value: "true"
+  {{- end }}
+  - name: HUMIO_LOG4J_CONFIGURATION
+    value: "/var/lib/humio/config/logging/log4j2-json-k8s.xml"
+  - name:  HUMIO_JVM_LOG_OPTS
+    value: "-Xlog:jit*=debug:file=/data/java-logs/jit_humio.log:time,tags:filecount=5,filesize=1024000 -Xlog:gc+jni=debug -Xlog:gc*:file=/data/java-logs/gc_humio.log:time,tags:filecount=5,filesize=102400"
+  extraHumioVolumeMounts:
+    - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
+      mountPath: /var/lib/humio/config/logging
+      readOnly: true
+    - name: java-logs
+      mountPath: /data/java-logs
+    - name: logs
+      mountPath: /data/logs
+  extraVolumes:
+    - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
+      configMap:
+        name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
+    - name: java-logs
+      emptyDir: {}      
+    - name: logs
+      emptyDir: {}      
+  esHostnameSource: {}
+  extraKafkaConfigs: {{ include "humio-instance.externalService.kafkaExtraConfig" . | quote }}
+  hostname: {{ .Values.humio.fqdn }}
+  hostnameSource: {}
+  image: "{{ .Values.humio.image.repository }}:{{ .Values.humio.image.tag }}"
+  
+  ingress: {}
+  license:
+    secretKeyRef:
+      key: license
+      name: "{{ include "humio-instance.fullname" . }}-license"
+  autoRebalancePartitions: {{ .Values.humio.config.autoRebalancePartitions }}
+  digestPartitionsCount: {{ .Values.humio.config.digestPartitionsCount }}
+  storagePartitionsCount: {{ .Values.humio.config.storagePartitionsCount }}
+  targetReplicationFactor: {{ .Values.humio.config.targetReplicationFactor }}
+  tls:
+    enabled: false

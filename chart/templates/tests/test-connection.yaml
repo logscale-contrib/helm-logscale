@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "humio-instance.fullname" . }}-test-connection"
+  labels:
+    {{- include "humio-instance.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+
+    
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "humio-instance.fullname" . }}:{{ .Values.humio.service.port }}']
+  restartPolicy: Never
