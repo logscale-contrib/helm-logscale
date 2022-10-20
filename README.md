@@ -3,7 +3,6 @@
 This helm chart creates an instance of the HumioCluster defined by the Humio-operator and 
 conditionally creates Strimzi/Kakfa and S3Proxy instances (azure)
 
-
 ## Using
 
 Update copies of the example/* files appropriate for your environment
