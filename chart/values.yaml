@@ -55,10 +55,7 @@ humio:
     # The name of the service account to use.
     # If not set and create is true, a name is generated using the fullname template
     name: ""
-  podAnnotations:
-    sidecar.opentelemetry.io/inject: "true"
-    instrumentation.opentelemetry.io/inject-java: "true"
-    instrumentation.opentelemetry.io/container-names: "humio"
+  podAnnotations: {}
 
   service:
     type: ClusterIP
