@@ -58,6 +58,8 @@ spec:
     value: "true"
   - name: S3_STORAGE_BUCKET
     value: {{ .Values.humio.buckets.storage }}
+  - name: S3_STORAGE_REGION
+    value: {{ .Values.humio.buckets.region }}
 {{- else if eq  .Values.humio.s3mode "s3proxy" }}
   - name: S3_STORAGE_PATH_STYLE_ACCESS
     value: "true"
