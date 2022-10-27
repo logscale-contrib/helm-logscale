@@ -13,9 +13,6 @@ spec:
 
   {{- with .Values.humio.podAnnotations }}
   podAnnotations:
-    sidecar.opentelemetry.io/inject: "true"
-    instrumentation.opentelemetry.io/inject-java: "true"
-    instrumentation.opentelemetry.io/container-names: "humio"
     {{- toYaml . | nindent 4 }}
   {{- end }}
 
