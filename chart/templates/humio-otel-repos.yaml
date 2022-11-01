@@ -94,7 +94,10 @@ metadata:
 spec:
   managedClusterName: {{ include "humio-instance.fullname" . }}
   name: "otel-trace"
-  parserScript: "parseJson()"
+  parserScript: | 
+    parseJson()
+    | #service.name := service.name
+    | #trace_id := trace_id
   repositoryName: "all-humio-infra-trace"
   tagFields:
   testData:
