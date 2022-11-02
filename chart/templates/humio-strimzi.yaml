@@ -1,4 +1,4 @@
-{{- if eq .Values.humio.s3mode "strimzi" }}
+{{- if eq .Values.humio.kafkaManager "strimzi" }}
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
