@@ -10,10 +10,15 @@ metadata:
   labels:
     strimzi.io/cluster: {{ .Values.strimziCluster }}
 spec:
+{{- if .Values.humio.kafkaPrefixEnable }}
+  topicName: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-global-events
+{{ else }}
+  topicName: global-events
+{{- end }}
   partitions: 1
   replicas: 3
   config:
-    cleanup.policy: compact,delete
+    cleanup.policy: "compact,delete"
     compression.type: producer
     min.insync.replicas: 2    
 ---
@@ -28,10 +33,15 @@ metadata:
   labels:
     strimzi.io/cluster: {{ .Values.strimziCluster }}
 spec:
+{{- if .Values.humio.kafkaPrefixEnable }}
+  topicName: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-transientChatter-events
+{{ else }}
+  topicName: transientChatter-events
+{{- end }}
   partitions: 12
   replicas: 3
   config:
-    cleanup.policy: compact,delete
+    cleanup.policy: "compact,delete"
     compression.type: producer
     min.insync.replicas: 2    
 ---
@@ -46,10 +56,15 @@ metadata:
   labels:
     strimzi.io/cluster: {{ .Values.strimziCluster }}
 spec:
+{{- if .Values.humio.kafkaPrefixEnable }}
+  topicName: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-humio-ingest
+{{ else }}
+  topicName: humio-ingest
+{{- end }}
   partitions: 720
   replicas: 2
   config:
-    cleanup.policy: compact,delete
+    cleanup.policy: "compact,delete"
     compression.type: producer
     min.insync.replicas: 2    
 {{- end }}
