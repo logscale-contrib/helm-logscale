@@ -2,6 +2,16 @@ apiVersion: v1
 entries:
   helm-logscale:
   - apiVersion: v2
+    appVersion: 1.1.6
+    created: "2022-11-02T14:26:18.097184865Z"
+    description: Deploy a Humio Cluster using Humio Operator
+    digest: 11ed0057343dd1dbc6141f344b6f880372b538bef9d4beb31646fc8959c410f1
+    name: helm-logscale
+    type: application
+    urls:
+    - https://github.com/logscale-contrib/helm-logscale/releases/download/v1.1.6/helm-logscale-1.1.6.tgz
+    version: 1.1.6
+  - apiVersion: v2
     appVersion: 1.1.5
     created: "2022-11-02T14:20:52.179539649Z"
     description: Deploy a Humio Cluster using Humio Operator
@@ -111,4 +121,4 @@ entries:
     urls:
     - https://github.com/logscale-contrib/helm-logscale/releases/download/v1.0.4/helm-logscale-1.0.4.tgz
     version: 1.0.4
-generated: "2022-11-02T14:20:52.178379349Z"
+generated: "2022-11-02T14:26:18.096402258Z"
