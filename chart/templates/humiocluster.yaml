@@ -41,7 +41,17 @@ spec:
     value: {{ include "humio-instance.externalService.zookeeper" . | quote }}
   - name: KAFKA_SERVERS
     value:  {{ include "humio-instance.externalService.kafka" . | quote }}
-
+{{- if eq .Values.humio.kafkaManager "humio" }}
+  - name: KAFKA_MANAGED_BY_HUMIO
+    value: "true"
+{{- else if or (eq .Values.humio.s3mode "strimzi") (eq .Values.humio.s3mode "external") }}
+  - name: KAFKA_MANAGED_BY_HUMIO
+    value: "false"
+{{- end }}
+{{- if .Values.humio.kafkaPrefixEnable }}
+  - name: HUMIO_KAFKA_TOPIC_PREFIX
+    value: {{ .Values.humio.kafkaPrefix | default .Release.Name | quote }}-
+{{- end }}
   #Object Storage config
   - name: USING_EPHEMERAL_DISKS
     value: "true"

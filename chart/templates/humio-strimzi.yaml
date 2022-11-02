@@ -1,0 +1,34 @@
+{{- if eq .Values.humio.s3mode "strimzi" }}
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+{{- if .Values.humio.kafkaPrefixEnable }}
+  name: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-global-events
+{{ else }}
+  name: global-events
+{{- end }}
+  labels:
+    strimzi.io/cluster: {{ .Values.strimziCluster }}
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+{{- if .Values.humio.kafkaPrefixEnable }}
+  name: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-transientChatter-events
+{{ else }}
+  name: transientChatter-events
+{{- end }}
+  labels:
+    strimzi.io/cluster: {{ .Values.strimziCluster }}
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+{{- if .Values.humio.kafkaPrefixEnable }}
+  name: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-humio-ingest
+{{ else }}
+  name: humio-ingest
+{{- end }}
+  labels:
+    strimzi.io/cluster: {{ .Values.strimziCluster }}
+{{- end }}
