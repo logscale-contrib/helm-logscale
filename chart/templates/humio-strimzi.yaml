@@ -18,7 +18,7 @@ spec:
   partitions: 1
   replicas: 3
   config:
-    cleanup.policy: "compact,delete"
+    cleanup.policy: compact
     compression.type: producer
     min.insync.replicas: 2    
 ---
@@ -41,7 +41,7 @@ spec:
   partitions: 12
   replicas: 3
   config:
-    cleanup.policy: "compact,delete"
+    cleanup.policy: compact
     compression.type: producer
     min.insync.replicas: 2    
 ---
@@ -64,7 +64,7 @@ spec:
   partitions: 720
   replicas: 2
   config:
-    cleanup.policy: "compact,delete"
+    cleanup.policy: compact
     compression.type: producer
     min.insync.replicas: 2    
 {{- end }}
