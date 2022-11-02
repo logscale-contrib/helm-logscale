@@ -28,7 +28,7 @@ metadata:
 {{- if .Values.humio.kafkaPrefixEnable }}
   name: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-transientchatter-events
 {{ else }}
-  name: transientChatter-events
+  name: transientchatter-events
 {{- end }}
   labels:
     strimzi.io/cluster: {{ .Values.strimziCluster }}
