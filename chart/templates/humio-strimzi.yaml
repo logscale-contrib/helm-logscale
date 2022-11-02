@@ -26,7 +26,7 @@ apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
 {{- if .Values.humio.kafkaPrefixEnable }}
-  name: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-transientChatter-events
+  name: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-transientchatter-events
 {{ else }}
   name: transientChatter-events
 {{- end }}
