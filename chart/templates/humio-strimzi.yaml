@@ -9,6 +9,13 @@ metadata:
 {{- end }}
   labels:
     strimzi.io/cluster: {{ .Values.strimziCluster }}
+spec:
+  partitions: 1
+  replicas: 3
+  config:
+    cleanup.policy: compact,delete
+    compression.type: producer
+    min.insync.replicas: 2    
 ---
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
@@ -20,6 +27,13 @@ metadata:
 {{- end }}
   labels:
     strimzi.io/cluster: {{ .Values.strimziCluster }}
+spec:
+  partitions: 12
+  replicas: 3
+  config:
+    cleanup.policy: compact,delete
+    compression.type: producer
+    min.insync.replicas: 2    
 ---
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
@@ -31,4 +45,11 @@ metadata:
 {{- end }}
   labels:
     strimzi.io/cluster: {{ .Values.strimziCluster }}
+spec:
+  partitions: 720
+  replicas: 2
+  config:
+    cleanup.policy: compact,delete
+    compression.type: producer
+    min.insync.replicas: 2    
 {{- end }}
