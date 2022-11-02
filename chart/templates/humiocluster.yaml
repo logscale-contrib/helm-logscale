@@ -50,7 +50,7 @@ spec:
 {{- end }}
 {{- if .Values.humio.kafkaPrefixEnable }}
   - name: HUMIO_KAFKA_TOPIC_PREFIX
-    value: {{ .Values.humio.kafkaPrefix | default .Release.Name | quote }}-
+    value: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-
 {{- end }}
   #Object Storage config
   - name: USING_EPHEMERAL_DISKS
