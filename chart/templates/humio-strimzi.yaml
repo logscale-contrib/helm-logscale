@@ -66,5 +66,8 @@ spec:
   config:
     cleanup.policy: "compact,delete"
     compression.type: producer
-    min.insync.replicas: 2    
+    min.insync.replicas: 2
+    retention.ms: 604800000    
+    retention.bytes: 1073741824
+
 {{- end }}
