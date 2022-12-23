@@ -230,6 +230,8 @@ spec:
           - name: HUMIO_KAFKA_TOPIC_PREFIX
             value: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-
         {{- end }}
+          - name: USING_EPHEMERAL_DISKS
+            value: "true"
           - name: AUTHENTICATION_METHOD
             value: "single-user"
           - name: SINGLE_USER_PASSWORD
