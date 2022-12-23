@@ -37,8 +37,6 @@ spec:
 
   environmentVariables:
 
-  - name: ZOOKEEPER_URL
-    value: {{ include "humio-instance.externalService.zookeeper" . | quote }}
   - name: KAFKA_SERVERS
     value:  {{ include "humio-instance.externalService.kafka" . | quote }}
 {{- if eq .Values.humio.kafkaManager "humio" }}
