@@ -184,7 +184,7 @@ spec:
         image: "{{ .Values.humio.image.repository }}:{{ .Values.humio.image.tag }}"
         nodeCount: 1
         dataVolumePersistentVolumeClaimSpecTemplate:
-          storageClassName: standard
+          storageClassName: ebs-gp3-noenc
           accessModes: [ReadWriteOnce]
           resources:
             requests:
