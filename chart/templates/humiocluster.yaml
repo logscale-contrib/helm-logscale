@@ -197,8 +197,8 @@ spec:
             cpu: "1"
             memory: 2Gi
         environmentVariables:
-          - name: "HUMIO_MEMORY_OPTS"
-            value: "-Xss2m -Xms1g -Xmx2g -XX:MaxDirectMemorySize=1g"
+          # - name: "HUMIO_MEMORY_OPTS"
+            # value: "-Xss2m -Xms1g -Xmx2g -XX:MaxDirectMemorySize=1g"
           - name: ZOOKEEPER_URL
             value: {{ include "humio-instance.externalService.zookeeper" . | quote }}
           - name: KAFKA_SERVERS
@@ -218,5 +218,15 @@ spec:
             value: "single-user"
           - name: SINGLE_USER_PASSWORD
             value: "password"
+          - name: HUMIO_JVM_ARGS
+            value: {{ .Values.humio.config.jvmARGS | quote }}
+          {{- range .Values.humio.config.enableFeatures }}
+          - name: ENABLE_{{ . | upper}}
+            value: "true"
+          {{- end }}
+          - name: HUMIO_LOG4J_CONFIGURATION
+            value: "/var/lib/humio/config/logging/log4j2-json-k8s.xml"
+          - name:  HUMIO_JVM_LOG_OPTS
+            value: "-Xlog:jit*=debug:file=/data/java-logs/jit_humio.log:time,tags:filecount=5,filesize=1024000 -Xlog:gc+jni=debug -Xlog:gc*:file=/data/java-logs/gc_humio.log:time,tags:filecount=5,filesize=102400"            
           - name: NODE_ROLES
             value: ingestonly
