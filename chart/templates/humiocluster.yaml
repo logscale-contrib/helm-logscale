@@ -183,7 +183,6 @@ spec:
       spec:
         image: "{{ .Values.humio.image.repository }}:{{ .Values.humio.image.tag }}"
         nodeCount: 1
-        hostname: {{ .Values.humio.fqdnInputs }}
         dataVolumePersistentVolumeClaimSpecTemplate:
           storageClassName: ebs-gp3-noenc
           accessModes: [ReadWriteOnce]
