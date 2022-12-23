@@ -190,6 +190,14 @@ spec:
           resources:
             requests:
               storage: 10Gi
+        extraHumioVolumeMounts:
+          - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
+            mountPath: /var/lib/humio/config/logging
+            readOnly: true
+          - name: java-logs
+            mountPath: /data/java-logs
+          - name: logs
+            mountPath: /data/logs              
         extraVolumes:
           - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
             configMap:
