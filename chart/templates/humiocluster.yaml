@@ -178,3 +178,43 @@ spec:
   targetReplicationFactor: {{ .Values.humio.config.targetReplicationFactor }}
   tls:
     enabled: false
+  nodePools:
+    - name: ingest-only
+      spec:
+        image: "{{ .Values.humio.image.repository }}:{{ .Values.humio.image.tag }}"
+        nodeCount: 1
+        dataVolumePersistentVolumeClaimSpecTemplate:
+          storageClassName: standard
+          accessModes: [ReadWriteOnce]
+          resources:
+            requests:
+              storage: 10Gi
+        resources:
+          limits:
+            cpu: "2"
+            memory: 4Gi
+          requests:
+            cpu: "1"
+            memory: 2Gi
+        environmentVariables:
+          - name: "HUMIO_MEMORY_OPTS"
+            value: "-Xss2m -Xms1g -Xmx2g -XX:MaxDirectMemorySize=1g"
+          - name: ZOOKEEPER_URL
+            value: {{ include "humio-instance.externalService.zookeeper" . | quote }}
+          - name: KAFKA_SERVERS
+            value:  {{ include "humio-instance.externalService.kafka" . | quote }}
+        {{- if eq .Values.humio.kafkaManager "humio" }}
+          - name: KAFKA_MANAGED_BY_HUMIO
+            value: "true"
+        {{- else if or (eq .Values.humio.s3mode "strimzi") (eq .Values.humio.s3mode "external") }}
+          - name: KAFKA_MANAGED_BY_HUMIO
+            value: "false"
+        {{- end }}
+        {{- if .Values.humio.kafkaPrefixEnable }}
+          - name: HUMIO_KAFKA_TOPIC_PREFIX
+            value: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-
+        {{- end }}
+          - name: AUTHENTICATION_METHOD
+            value: "single-user"
+          - name: SINGLE_USER_PASSWORD
+            value: "password"
