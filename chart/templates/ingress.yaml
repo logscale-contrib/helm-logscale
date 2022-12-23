@@ -32,7 +32,7 @@ spec:
     - hosts:
         - {{ .Values.humio.fqdn }}
     - hosts:
-        - {{ .Values.humio.fqdn }}-inputs
+        - {{ .Values.humio.fqdnInputs }}
       secretName: {{ $fullName }}-tls
   {{- end }}
   rules:    
@@ -53,7 +53,7 @@ spec:
               serviceName: {{ $fullName }}
               servicePort: {{ $svcPort }}
               {{- end }}
-    - host: {{ .Values.humio.fqdn }}-inputs
+    - host: {{ .Values.humio.fqdnInputsqdn }}
       http:
         paths:
           - path: /_bulk
