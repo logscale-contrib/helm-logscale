@@ -34,51 +34,6 @@ spec:
       secretName: {{ $fullName }}-tls
   {{- end }}
   rules:    
-    - host: {{ .Values.humio.fqdnInputs }}
-      http:
-        paths:
-          - path: /api/v1/ingest
-            {{- if semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion }}
-            pathType: Prefix
-            {{- end }}
-            backend:
-              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
-              service:
-                name: {{ $fullName }}-ingest-only
-                port:
-                  number: {{ $svcPort }}
-              {{- else }}
-              serviceName: {{ $fullName }}-ingest-only
-              servicePort: {{ $svcPort }}
-              {{- end }}
-          - path: /_bulk
-            {{- if semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion }}
-            pathType: Prefix
-            {{- end }}
-            backend:
-              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
-              service:
-                name: {{ $fullName }}-ingest-only
-                port:
-                  number: {{ $svcPort }}
-              {{- else }}
-              serviceName: {{ $fullName }}-ingest-only
-              servicePort: {{ $svcPort }}
-              {{- end }}
-        - path: /services/collector
-            {{- if semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion }}
-            pathType: Prefix
-            {{- end }}
-            backend:
-              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
-              service:
-                name: {{ $fullName }}-ingest-only
-                port:
-                  number: {{ $svcPort }}
-              {{- else }}
-              serviceName: {{ $fullName }}-ingest-only
-              servicePort: {{ $svcPort }}
-              {{- end }}                 
     - host: {{ .Values.humio.fqdn }}
       http:
         paths:
