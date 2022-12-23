@@ -218,3 +218,5 @@ spec:
             value: "single-user"
           - name: SINGLE_USER_PASSWORD
             value: "password"
+          - name: NODE_ROLES
+            value: ingestonly
