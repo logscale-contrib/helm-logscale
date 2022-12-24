@@ -183,6 +183,9 @@ spec:
       spec:
         image: "{{ .Values.humio.image.repository }}:{{ .Values.humio.image.tag }}"
         nodeCount: 1
+        initServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
+        authServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
+        humioServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
         dataVolumePersistentVolumeClaimSpecTemplate:
           storageClassName: ebs-gp3-noenc
           accessModes: [ReadWriteOnce]
