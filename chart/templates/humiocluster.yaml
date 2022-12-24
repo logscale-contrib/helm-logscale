@@ -212,6 +212,7 @@ spec:
           requests:
             cpu: "1"
             memory: 2Gi
+        extraKafkaConfigs: {{ include "humio-instance.externalService.kafkaExtraConfig" . | quote }}            
         environmentVariables:
           # - name: "HUMIO_MEMORY_OPTS"
             # value: "-Xss2m -Xms1g -Xmx2g -XX:MaxDirectMemorySize=1g"
@@ -248,3 +249,56 @@ spec:
             value: "-Xlog:jit*=debug:file=/data/java-logs/jit_humio.log:time,tags:filecount=5,filesize=1024000 -Xlog:gc+jni=debug -Xlog:gc*:file=/data/java-logs/gc_humio.log:time,tags:filecount=5,filesize=102400"            
           - name: NODE_ROLES
             value: ingestonly
+
+
+          - name: S3_STORAGE_PREFERRED_COPY_SOURCE
+            value: "true"
+
+        {{- if eq  .Values.humio.s3mode "aws" }}
+          - name: S3_STORAGE_ENCRYPTION_KEY
+            value: {{ .Values.humio.buckets.storageKey | default "off" | quote }}
+          - name: BUCKET_STORAGE_SSE_COMPATIBLE
+            value: "true"
+          - name: S3_STORAGE_BUCKET
+            value: {{ .Values.humio.buckets.storage }}
+          - name: S3_STORAGE_REGION
+            value: {{ .Values.humio.buckets.region }}
+        {{- else if eq  .Values.humio.s3mode "s3proxy" }}
+          - name: S3_STORAGE_PATH_STYLE_ACCESS
+            value: "true"
+          - name: S3_STORAGE_IBM_COMPAT
+            value: "true"
+          - name:  BUCKET_STORAGE_IGNORE_ETAG_UPLOAD 
+            value: "true"
+          - name:  BUCKET_STORAGE_IGNORE_ETAG_AFTER_UPLOAD 
+            value: "true"
+          - name: BUCKET_STORAGE_SSE_COMPATIBLE
+            value: "true"
+          - name: S3_STORAGE_ENDPOINT_BASE
+            value: http://{{ .Release.Name }}-s3proxy
+          - name: S3_STORAGE_ENCRYPTION_KEY
+            value: "off"
+          - name: S3_STORAGE_ACCESSKEY
+            valueFrom:
+              secretKeyRef:
+                key: AWS_ACCESS_KEY_ID
+                name: {{ .Release.Name }}-s3proxy-secret
+          - name: S3_STORAGE_SECRETKEY
+            valueFrom:
+              secretKeyRef:
+                key: AWS_SECRET_ACCESS_KEY
+                name: {{ .Release.Name }}-s3proxy-secret
+          - name: S3_STORAGE_BUCKET
+            value: {{ .Values.humio.buckets.storage }}
+
+          - name: S3_ARCHIVING_PATH_STYLE_ACCESS
+            value: "true"
+
+          - name: S3_EXPORT_PATH_STYLE_ACCESS
+            value: "true"
+        {{- else }}
+          - name: S3_STORAGE_ENCRYPTION_KEY
+            value: {{ .Values.humio.buckets.storageKey | default "off" | quote }}
+          - name: S3_STORAGE_BUCKET
+            value: {{ .Values.humio.buckets.storage }}
+        {{- end }}
