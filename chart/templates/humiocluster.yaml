@@ -186,12 +186,12 @@ spec:
         initServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
         authServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
         humioServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
-        dataVolumePersistentVolumeClaimSpecTemplate:
-          storageClassName: ebs-gp3-noenc
-          accessModes: [ReadWriteOnce]
-          resources:
-            requests:
-              storage: 10Gi
+        # dataVolumePersistentVolumeClaimSpecTemplate:
+        #   storageClassName: ebs-gp3-noenc
+        #   accessModes: [ReadWriteOnce]
+        #   resources:
+        #     requests:
+        #       storage: 10Gi
         extraHumioVolumeMounts:
           - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
             mountPath: /var/lib/humio/config/logging
