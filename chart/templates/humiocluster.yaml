@@ -36,9 +36,10 @@ spec:
   {{- end }}  
 
   environmentVariables:
-
+{{- if .Values.humio.externalzookeeperHostname }}              
   # - name: ZOOKEEPER_URL
   #   value: {{ include "humio-instance.externalService.zookeeper" . | quote }}
+{{- end }}  
   - name: KAFKA_SERVERS
     value:  {{ include "humio-instance.externalService.kafka" . | quote }}
 {{- if eq .Values.humio.kafkaManager "humio" }}
@@ -219,8 +220,10 @@ spec:
         environmentVariables:
           # - name: "HUMIO_MEMORY_OPTS"
             # value: "-Xss2m -Xms1g -Xmx2g -XX:MaxDirectMemorySize=1g"
-          # - name: ZOOKEEPER_URL
-          #   value: {{ include "humio-instance.externalService.zookeeper" . | quote }}
+{{- if .Values.humio.externalzookeeperHostname }}              
+          - name: ZOOKEEPER_URL
+            value: {{ include "humio-instance.externalService.zookeeper" . | quote }}
+{{- end }}          
           - name: KAFKA_SERVERS
             value:  {{ include "humio-instance.externalService.kafka" . | quote }}
         {{- if eq .Values.humio.kafkaManager "humio" }}
@@ -252,8 +255,8 @@ spec:
             value: "-Xlog:jit*=debug:file=/data/java-logs/jit_humio.log:time,tags:filecount=5,filesize=1024000 -Xlog:gc+jni=debug -Xlog:gc*:file=/data/java-logs/gc_humio.log:time,tags:filecount=5,filesize=102400"            
           - name: NODE_ROLES
             value: httponly
-
-
+          - name: QUERY_COORDINATOR
+            value: "false"
           - name: S3_STORAGE_PREFERRED_COPY_SOURCE
             value: "true"
 
