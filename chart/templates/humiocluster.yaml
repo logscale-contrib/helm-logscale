@@ -37,8 +37,8 @@ spec:
 
   environmentVariables:
 
-  - name: ZOOKEEPER_URL
-    value: {{ include "humio-instance.externalService.zookeeper" . | quote }}
+  # - name: ZOOKEEPER_URL
+  #   value: {{ include "humio-instance.externalService.zookeeper" . | quote }}
   - name: KAFKA_SERVERS
     value:  {{ include "humio-instance.externalService.kafka" . | quote }}
 {{- if eq .Values.humio.kafkaManager "humio" }}
@@ -219,8 +219,8 @@ spec:
         environmentVariables:
           # - name: "HUMIO_MEMORY_OPTS"
             # value: "-Xss2m -Xms1g -Xmx2g -XX:MaxDirectMemorySize=1g"
-          - name: ZOOKEEPER_URL
-            value: {{ include "humio-instance.externalService.zookeeper" . | quote }}
+          # - name: ZOOKEEPER_URL
+          #   value: {{ include "humio-instance.externalService.zookeeper" . | quote }}
           - name: KAFKA_SERVERS
             value:  {{ include "humio-instance.externalService.kafka" . | quote }}
         {{- if eq .Values.humio.kafkaManager "humio" }}
