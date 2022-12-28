@@ -384,7 +384,7 @@ spec:
           - name: NODE_ROLES
             value: httponly
           - name: QUERY_COORDINATOR
-            value: "false"
+            value: "true"
           - name: S3_STORAGE_PREFERRED_COPY_SOURCE
             value: "true"
 
