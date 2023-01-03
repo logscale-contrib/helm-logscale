@@ -34,7 +34,7 @@ spec:
       secretName: {{ $fullName }}-tls
   {{- end }}
   rules:    
-    - host: {{ .Values.humio.fqdnInputsqdn }}
+    - host: {{ .Values.humio.fqdnInputs }}
       http:
         paths:
           - path: /_bulk
