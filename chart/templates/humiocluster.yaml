@@ -10,7 +10,6 @@ spec:
   authServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
   humioServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
 
-
   {{- with .Values.humio.podAnnotations }}
   podAnnotations:
     {{- toYaml . | nindent 4 }}
@@ -164,6 +163,8 @@ spec:
       emptyDir: {}      
   esHostnameSource: {}
   extraKafkaConfigs: {{ include "humio-instance.externalService.kafkaExtraConfig" . | quote }}
+  idpCertificateSecretName: "{{ include "humio-instance.fullname" . }}-idp-certificate"
+
   hostname: {{ .Values.humio.fqdn }}
   hostnameSource: {}
   image: "{{ .Values.humio.image.repository }}:{{ .Values.humio.image.tag }}"
