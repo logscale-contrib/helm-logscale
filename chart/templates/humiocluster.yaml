@@ -10,7 +10,6 @@ spec:
   authServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
   humioServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
 
-
   {{- with .Values.humio.podAnnotations }}
   podAnnotations:
     {{- toYaml . | nindent 4 }}
@@ -36,9 +35,10 @@ spec:
   {{- end }}  
 
   environmentVariables:
-
-  - name: ZOOKEEPER_URL
-    value: {{ include "humio-instance.externalService.zookeeper" . | quote }}
+{{- if .Values.humio.externalzookeeperHostname }}              
+  # - name: ZOOKEEPER_URL
+  #   value: {{ include "humio-instance.externalService.zookeeper" . | quote }}
+{{- end }}  
   - name: KAFKA_SERVERS
     value:  {{ include "humio-instance.externalService.kafka" . | quote }}
 {{- if eq .Values.humio.kafkaManager "humio" }}
@@ -163,6 +163,8 @@ spec:
       emptyDir: {}      
   esHostnameSource: {}
   extraKafkaConfigs: {{ include "humio-instance.externalService.kafkaExtraConfig" . | quote }}
+  idpCertificateSecretName: "{{ include "humio-instance.fullname" . }}-idp-certificate"
+
   hostname: {{ .Values.humio.fqdn }}
   hostnameSource: {}
   image: "{{ .Values.humio.image.repository }}:{{ .Values.humio.image.tag }}"
@@ -178,3 +180,270 @@ spec:
   targetReplicationFactor: {{ .Values.humio.config.targetReplicationFactor }}
   tls:
     enabled: false
+  nodePools:
+    - name: ingest-only
+      spec:
+        image: "{{ .Values.humio.image.repository }}:{{ .Values.humio.image.tag }}"
+        nodeCount: 1
+        initServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
+        authServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
+        humioServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
+        # dataVolumePersistentVolumeClaimSpecTemplate:
+        #   storageClassName: ebs-gp3-noenc
+        #   accessModes: [ReadWriteOnce]
+        #   resources:
+        #     requests:
+        #       storage: 10Gi
+        extraHumioVolumeMounts:
+          - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
+            mountPath: /var/lib/humio/config/logging
+            readOnly: true
+          - name: java-logs
+            mountPath: /data/java-logs
+          - name: logs
+            mountPath: /data/logs              
+        extraVolumes:
+          - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
+            configMap:
+              name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
+          - name: java-logs
+            emptyDir: {}      
+          - name: logs
+            emptyDir: {}              
+        resources:
+          limits:
+            cpu: "2"
+            memory: 4Gi
+          requests:
+            cpu: "1"
+            memory: 2Gi
+        extraKafkaConfigs: {{ include "humio-instance.externalService.kafkaExtraConfig" . | quote }}            
+        environmentVariables:
+          # - name: "HUMIO_MEMORY_OPTS"
+            # value: "-Xss2m -Xms1g -Xmx2g -XX:MaxDirectMemorySize=1g"
+{{- if .Values.humio.externalzookeeperHostname }}              
+          - name: ZOOKEEPER_URL
+            value: {{ include "humio-instance.externalService.zookeeper" . | quote }}
+{{- end }}          
+          - name: KAFKA_SERVERS
+            value:  {{ include "humio-instance.externalService.kafka" . | quote }}
+        {{- if eq .Values.humio.kafkaManager "humio" }}
+          - name: KAFKA_MANAGED_BY_HUMIO
+            value: "true"
+        {{- else if or (eq .Values.humio.s3mode "strimzi") (eq .Values.humio.s3mode "external") }}
+          - name: KAFKA_MANAGED_BY_HUMIO
+            value: "false"
+        {{- end }}
+        {{- if .Values.humio.kafkaPrefixEnable }}
+          - name: HUMIO_KAFKA_TOPIC_PREFIX
+            value: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-
+        {{- end }}
+          - name: USING_EPHEMERAL_DISKS
+            value: "true"
+          - name: AUTHENTICATION_METHOD
+            value: "single-user"
+          - name: SINGLE_USER_PASSWORD
+            value: "password"
+          - name: HUMIO_JVM_ARGS
+            value: {{ .Values.humio.config.jvmARGS | quote }}
+          {{- range .Values.humio.config.enableFeatures }}
+          - name: ENABLE_{{ . | upper}}
+            value: "true"
+          {{- end }}
+          - name: HUMIO_LOG4J_CONFIGURATION
+            value: "/var/lib/humio/config/logging/log4j2-json-k8s.xml"
+          - name:  HUMIO_JVM_LOG_OPTS
+            value: "-Xlog:jit*=debug:file=/data/java-logs/jit_humio.log:time,tags:filecount=5,filesize=1024000 -Xlog:gc+jni=debug -Xlog:gc*:file=/data/java-logs/gc_humio.log:time,tags:filecount=5,filesize=102400"            
+          - name: NODE_ROLES
+            value: httponly
+          - name: QUERY_COORDINATOR
+            value: "false"
+          - name: S3_STORAGE_PREFERRED_COPY_SOURCE
+            value: "true"
+
+        {{- if eq  .Values.humio.s3mode "aws" }}
+          - name: S3_STORAGE_ENCRYPTION_KEY
+            value: {{ .Values.humio.buckets.storageKey | default "off" | quote }}
+          - name: BUCKET_STORAGE_SSE_COMPATIBLE
+            value: "true"
+          - name: S3_STORAGE_BUCKET
+            value: {{ .Values.humio.buckets.storage }}
+          - name: S3_STORAGE_REGION
+            value: {{ .Values.humio.buckets.region }}
+        {{- else if eq  .Values.humio.s3mode "s3proxy" }}
+          - name: S3_STORAGE_PATH_STYLE_ACCESS
+            value: "true"
+          - name: S3_STORAGE_IBM_COMPAT
+            value: "true"
+          - name:  BUCKET_STORAGE_IGNORE_ETAG_UPLOAD 
+            value: "true"
+          - name:  BUCKET_STORAGE_IGNORE_ETAG_AFTER_UPLOAD 
+            value: "true"
+          - name: BUCKET_STORAGE_SSE_COMPATIBLE
+            value: "true"
+          - name: S3_STORAGE_ENDPOINT_BASE
+            value: http://{{ .Release.Name }}-s3proxy
+          - name: S3_STORAGE_ENCRYPTION_KEY
+            value: "off"
+          - name: S3_STORAGE_ACCESSKEY
+            valueFrom:
+              secretKeyRef:
+                key: AWS_ACCESS_KEY_ID
+                name: {{ .Release.Name }}-s3proxy-secret
+          - name: S3_STORAGE_SECRETKEY
+            valueFrom:
+              secretKeyRef:
+                key: AWS_SECRET_ACCESS_KEY
+                name: {{ .Release.Name }}-s3proxy-secret
+          - name: S3_STORAGE_BUCKET
+            value: {{ .Values.humio.buckets.storage }}
+
+          - name: S3_ARCHIVING_PATH_STYLE_ACCESS
+            value: "true"
+
+          - name: S3_EXPORT_PATH_STYLE_ACCESS
+            value: "true"
+        {{- else }}
+          - name: S3_STORAGE_ENCRYPTION_KEY
+            value: {{ .Values.humio.buckets.storageKey | default "off" | quote }}
+          - name: S3_STORAGE_BUCKET
+            value: {{ .Values.humio.buckets.storage }}
+        {{- end }}
+    - name: http-only
+      spec:
+        image: "{{ .Values.humio.image.repository }}:{{ .Values.humio.image.tag }}"
+        nodeCount: 1
+        initServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
+        authServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
+        humioServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
+        # dataVolumePersistentVolumeClaimSpecTemplate:
+        #   storageClassName: ebs-gp3-noenc
+        #   accessModes: [ReadWriteOnce]
+        #   resources:
+        #     requests:
+        #       storage: 10Gi
+        extraHumioVolumeMounts:
+          - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
+            mountPath: /var/lib/humio/config/logging
+            readOnly: true
+          - name: java-logs
+            mountPath: /data/java-logs
+          - name: logs
+            mountPath: /data/logs              
+        extraVolumes:
+          - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
+            configMap:
+              name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
+          - name: java-logs
+            emptyDir: {}      
+          - name: logs
+            emptyDir: {}              
+        resources:
+          limits:
+            cpu: "2"
+            memory: 4Gi
+          requests:
+            cpu: "1"
+            memory: 2Gi
+        extraKafkaConfigs: {{ include "humio-instance.externalService.kafkaExtraConfig" . | quote }}            
+        environmentVariables:
+          # - name: "HUMIO_MEMORY_OPTS"
+            # value: "-Xss2m -Xms1g -Xmx2g -XX:MaxDirectMemorySize=1g"
+{{- if .Values.humio.externalzookeeperHostname }}              
+          - name: ZOOKEEPER_URL
+            value: {{ include "humio-instance.externalService.zookeeper" . | quote }}
+{{- end }}          
+          - name: KAFKA_SERVERS
+            value:  {{ include "humio-instance.externalService.kafka" . | quote }}
+        {{- if eq .Values.humio.kafkaManager "humio" }}
+          - name: KAFKA_MANAGED_BY_HUMIO
+            value: "true"
+        {{- else if or (eq .Values.humio.s3mode "strimzi") (eq .Values.humio.s3mode "external") }}
+          - name: KAFKA_MANAGED_BY_HUMIO
+            value: "false"
+        {{- end }}
+        {{- if .Values.humio.kafkaPrefixEnable }}
+          - name: HUMIO_KAFKA_TOPIC_PREFIX
+            value: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-
+        {{- end }}
+          - name: USING_EPHEMERAL_DISKS
+            value: "true"
+          - name: AUTHENTICATION_METHOD
+            value: saml
+          - name: AUTO_CREATE_USER_ON_SUCCESSFUL_LOGIN
+            value: "true"
+          - name: AUTO_UPDATE_GROUP_MEMBERSHIPS_ON_SUCCESSFUL_LOGIN
+            value: "true"
+          - name: PUBLIC_URL
+            value: "https://{{ .Values.humio.fqdn }}"
+          - name: SAML_IDP_SIGN_ON_URL
+            value: {{ .Values.humio.sso.signOnUrl }}
+          - name: SAML_IDP_ENTITY_ID
+            value: {{ .Values.humio.sso.entityID }}
+          - name: SAML_GROUP_MEMBERSHIP_ATTRIBUTE
+            value: {{ .Values.humio.sso.groupMembershipAttribute | default "memberOf" }}
+          - name: HUMIO_JVM_ARGS
+            value: {{ .Values.humio.config.jvmARGS | quote }}
+          {{- range .Values.humio.config.enableFeatures }}
+          - name: ENABLE_{{ . | upper}}
+            value: "true"
+          {{- end }}
+          - name: HUMIO_LOG4J_CONFIGURATION
+            value: "/var/lib/humio/config/logging/log4j2-json-k8s.xml"
+          - name:  HUMIO_JVM_LOG_OPTS
+            value: "-Xlog:jit*=debug:file=/data/java-logs/jit_humio.log:time,tags:filecount=5,filesize=1024000 -Xlog:gc+jni=debug -Xlog:gc*:file=/data/java-logs/gc_humio.log:time,tags:filecount=5,filesize=102400"            
+          - name: NODE_ROLES
+            value: httponly
+          - name: QUERY_COORDINATOR
+            value: "true"
+          - name: S3_STORAGE_PREFERRED_COPY_SOURCE
+            value: "true"
+
+        {{- if eq  .Values.humio.s3mode "aws" }}
+          - name: S3_STORAGE_ENCRYPTION_KEY
+            value: {{ .Values.humio.buckets.storageKey | default "off" | quote }}
+          - name: BUCKET_STORAGE_SSE_COMPATIBLE
+            value: "true"
+          - name: S3_STORAGE_BUCKET
+            value: {{ .Values.humio.buckets.storage }}
+          - name: S3_STORAGE_REGION
+            value: {{ .Values.humio.buckets.region }}
+        {{- else if eq  .Values.humio.s3mode "s3proxy" }}
+          - name: S3_STORAGE_PATH_STYLE_ACCESS
+            value: "true"
+          - name: S3_STORAGE_IBM_COMPAT
+            value: "true"
+          - name:  BUCKET_STORAGE_IGNORE_ETAG_UPLOAD 
+            value: "true"
+          - name:  BUCKET_STORAGE_IGNORE_ETAG_AFTER_UPLOAD 
+            value: "true"
+          - name: BUCKET_STORAGE_SSE_COMPATIBLE
+            value: "true"
+          - name: S3_STORAGE_ENDPOINT_BASE
+            value: http://{{ .Release.Name }}-s3proxy
+          - name: S3_STORAGE_ENCRYPTION_KEY
+            value: "off"
+          - name: S3_STORAGE_ACCESSKEY
+            valueFrom:
+              secretKeyRef:
+                key: AWS_ACCESS_KEY_ID
+                name: {{ .Release.Name }}-s3proxy-secret
+          - name: S3_STORAGE_SECRETKEY
+            valueFrom:
+              secretKeyRef:
+                key: AWS_SECRET_ACCESS_KEY
+                name: {{ .Release.Name }}-s3proxy-secret
+          - name: S3_STORAGE_BUCKET
+            value: {{ .Values.humio.buckets.storage }}
+
+          - name: S3_ARCHIVING_PATH_STYLE_ACCESS
+            value: "true"
+
+          - name: S3_EXPORT_PATH_STYLE_ACCESS
+            value: "true"
+        {{- else }}
+          - name: S3_STORAGE_ENCRYPTION_KEY
+            value: {{ .Values.humio.buckets.storageKey | default "off" | quote }}
+          - name: S3_STORAGE_BUCKET
+            value: {{ .Values.humio.buckets.storage }}
+        {{- end }}        
