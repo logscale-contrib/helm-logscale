@@ -66,11 +66,11 @@ humio:
     port: 80
 
   ingress:
-    enabled: true
-    className: "ngnix"
+    enabled: false
+    # className: "ngnix"
     annotations: {}
 
-    tls: true
+    tls: false
 
   nodeSelector: {}
 
