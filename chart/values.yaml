@@ -85,3 +85,7 @@ opentelemetryOperator:
   enabled: true
   serviceAccount:
     create: true
+setroot:
+  image:
+    repository: curlimages/curl
+    tag: 7.83.1

@@ -10,7 +10,7 @@ spec:
     spec:
       containers:
         - name: humio-set-root
-          image: curlimages/curl:7.83.1
+          image: "{{ .Values.setroot.image.repository }}:{{ .Values.setroot.image.tag }}"
           command:
             - sh
             - -c
