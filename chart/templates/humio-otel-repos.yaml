@@ -4,10 +4,6 @@ kind: HumioRepository
 metadata:
   name: {{ include "humio-instance.fullname" . }}-all-humio-infra-trace
   annotations:
-
-   
-   
-    
 spec:
   managedClusterName: {{ include "humio-instance.fullname" . }}
   name: "all-humio-infra-trace"
@@ -25,11 +21,6 @@ kind: HumioRepository
 metadata:
   name: {{ include "humio-instance.fullname" . }}-all-humio-infra-metrics
   annotations:
-
-   
-   
-    
-    
 spec:
   managedClusterName: {{ include "humio-instance.fullname" . }}
   name: "all-humio-infra-metrics"

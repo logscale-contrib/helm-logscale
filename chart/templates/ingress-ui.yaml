@@ -31,7 +31,7 @@ spec:
   tls:
     - hosts:
         - {{ .Values.humio.fqdn }}
-      secretName: {{ $fullName }}-tls
+      secretName: {{ $fullName }}-ui-tls
   {{- end }}
   rules:    
     - host: {{ .Values.humio.fqdn }}

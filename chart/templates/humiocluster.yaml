@@ -215,8 +215,8 @@ spec:
             cpu: "2"
             memory: 4Gi
           requests:
-            cpu: "1"
-            memory: 2Gi
+            cpu: "2"
+            memory: 4Gi
         extraKafkaConfigs: {{ include "humio-instance.externalService.kafkaExtraConfig" . | quote }}            
         environmentVariables:
           # - name: "HUMIO_MEMORY_OPTS"
@@ -343,8 +343,8 @@ spec:
             cpu: "2"
             memory: 4Gi
           requests:
-            cpu: "1"
-            memory: 2Gi
+            cpu: "2"
+            memory: 4Gi
         extraKafkaConfigs: {{ include "humio-instance.externalService.kafkaExtraConfig" . | quote }}            
         environmentVariables:
           # - name: "HUMIO_MEMORY_OPTS"
