@@ -184,16 +184,11 @@ spec:
     - name: ingest-only
       spec:
         image: "{{ .Values.humio.image.repository }}:{{ .Values.humio.image.tag }}"
-        nodeCount: 1
+        nodeCount: {{ .Values.humio.nodepools.ingest.nodeCount }}
         initServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
         authServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
         humioServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
-        # dataVolumePersistentVolumeClaimSpecTemplate:
-        #   storageClassName: ebs-gp3-noenc
-        #   accessModes: [ReadWriteOnce]
-        #   resources:
-        #     requests:
-        #       storage: 10Gi
+
         extraHumioVolumeMounts:
           - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
             mountPath: /var/lib/humio/config/logging
@@ -211,16 +206,10 @@ spec:
           - name: logs
             emptyDir: {}              
         resources:
-          limits:
-            cpu: "2"
-            memory: 2Gi
-          requests:
-            cpu: "2"
-            memory: 2Gi
+          {{- toYaml .Values.humio.nodepools.ingest.resources | nindent 14 }}
         extraKafkaConfigs: {{ include "humio-instance.externalService.kafkaExtraConfig" . | quote }}            
         environmentVariables:
-          # - name: "HUMIO_MEMORY_OPTS"
-            # value: "-Xss2m -Xms1g -Xmx2g -XX:MaxDirectMemorySize=1g"
+
 {{- if .Values.humio.externalzookeeperHostname }}              
           - name: ZOOKEEPER_URL
             value: {{ include "humio-instance.externalService.zookeeper" . | quote }}
@@ -312,16 +301,11 @@ spec:
     - name: http-only
       spec:
         image: "{{ .Values.humio.image.repository }}:{{ .Values.humio.image.tag }}"
-        nodeCount: 1
+        nodeCount: {{ .Values.humio.nodepools.ui.nodeCount }}
         initServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
         authServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
         humioServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
-        # dataVolumePersistentVolumeClaimSpecTemplate:
-        #   storageClassName: ebs-gp3-noenc
-        #   accessModes: [ReadWriteOnce]
-        #   resources:
-        #     requests:
-        #       storage: 10Gi
+
         extraHumioVolumeMounts:
           - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
             mountPath: /var/lib/humio/config/logging
@@ -339,12 +323,7 @@ spec:
           - name: logs
             emptyDir: {}              
         resources:
-          limits:
-            cpu: "2"
-            memory: 2Gi
-          requests:
-            cpu: "2"
-            memory: 2Gi
+          {{- toYaml .Values.humio.nodepools.ui.resources | nindent 14 }}
         extraKafkaConfigs: {{ include "humio-instance.externalService.kafkaExtraConfig" . | quote }}            
         environmentVariables:
           # - name: "HUMIO_MEMORY_OPTS"
