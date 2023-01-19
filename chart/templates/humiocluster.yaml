@@ -207,6 +207,15 @@ spec:
             emptyDir: {}              
         resources:
           {{- toYaml .Values.humio.nodepools.ingest.resources | nindent 14 }}
+        {{- with .Values.humio.nodepools.ingest.affinity }}
+        affinity:
+          {{- toYaml . | nindent 14 }}
+        {{- end }}  
+        {{- with .Values.humio.nodepools.ingest.tolerations }}
+        tolerations:
+          {{- toYaml . | nindent 14 }}
+        {{- end }}  
+
         extraKafkaConfigs: {{ include "humio-instance.externalService.kafkaExtraConfig" . | quote }}            
         environmentVariables:
 
@@ -324,6 +333,14 @@ spec:
             emptyDir: {}              
         resources:
           {{- toYaml .Values.humio.nodepools.ui.resources | nindent 14 }}
+        {{- with .Values.humio.nodepools.ui.affinity }}
+        affinity:
+          {{- toYaml . | nindent 14 }}
+        {{- end }}  
+        {{- with .Values.humio.nodepools.ui.tolerations }}
+        tolerations:
+          {{- toYaml . | nindent 14 }}
+        {{- end }}            
         extraKafkaConfigs: {{ include "humio-instance.externalService.kafkaExtraConfig" . | quote }}            
         environmentVariables:
           # - name: "HUMIO_MEMORY_OPTS"
