@@ -1,9 +1,9 @@
-{{- if .Values.humio.ingress.enabled -}}
+{{- if .Values.humio.ingress.inputs.enabled -}}
 {{- $fullName := include "humio-instance.fullname" . -}}
 {{- $svcPort := 8080 -}}
-{{- if and .Values.humio.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
-  {{- if not (hasKey .Values.humio.ingress.annotations "kubernetes.io/humio.ingress.class") }}
-  {{- $_ := set .Values.humio.ingress.annotations "kubernetes.io/humio.ingress.class" .Values.humio.ingress.className}}
+{{- if and .Values.humio.ingress.inputs.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
+  {{- if not (hasKey .Values.humio.ingress.inputs.annotations "kubernetes.io/humio.ingress.inputs.class") }}
+  {{- $_ := set .Values.humio.ingress.inputs.annotations "kubernetes.io/humio.ingress.inputs.class" .Values.humio.ingress.inputs.className}}
   {{- end }}
 {{- end }}
 {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
@@ -20,14 +20,14 @@ metadata:
     {{- include "humio-instance.labels" . | nindent 4 }}
   annotations:
     "helm.sh/resource-policy": "keep"
-  {{- with .Values.humio.ingress.annotationsInputs }}
+  {{- with .Values.humio.ingress.inputs.annotationsInputs }}
     {{- toYaml . | nindent 4 }}    
   {{- end }}
 spec:
-  {{- if and .Values.humio.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
-  ingressClassName: {{ .Values.humio.ingress.className }}
+  {{- if and .Values.humio.ingress.inputs.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  ingress.inputsClassName: {{ .Values.humio.ingress.inputs.className }}
   {{- end }}
-  {{- if .Values.humio.ingress.tls }}
+  {{- if .Values.humio.ingress.inputs.tls }}
   tls:
     - hosts:
         - {{ .Values.humio.fqdnInputs }}
