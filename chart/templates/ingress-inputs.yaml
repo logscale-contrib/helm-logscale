@@ -13,7 +13,7 @@ apiVersion: networking.k8s.io/v1beta1
 {{- else -}}
 apiVersion: extensions/v1beta1
 {{- end }}
-kind: ingress.inputs
+kind: ingress
 metadata:
   name: {{ $fullName }}-inputs
   labels:
