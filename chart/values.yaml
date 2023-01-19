@@ -16,40 +16,39 @@ humio:
   image:
     repository: humio/humio-core
     tag: "1.70.0--SNAPSHOT--build-323434--SHA-dfa77220c22755bc0f8dee124ef548e8c0d740b1"
-  config:
-    autoRebalancePartitions: true
-    digestPartitionsCount: 720
-    storagePartitionsCount: 24
-    targetReplicationFactor: 2
-    smtp:
-      enabled: false
-      host: ""
-      username: ""
-      password: ""
-      sender:
-      port: 587
-      startTLS: true
-    jvmARGS:
-      ""
-      # -server -Xss2m
-      # -XX:MaxRAMPercentage=75.0
-      # -XX:+UseParallelGC -XX:+UseNUMA
-      # -XX:+UseTransparentHugePages
-      # -XX:+UnlockDiagnosticVMOptions
-      # -XX:CompileCommand=dontinline,com/humio/util/HotspotUtilsJ.dontInline
-      # -Xlog:gc+jni=debug:stdout
-      # -Xlog:gc*:stdout:time,tags
-      # -Dakka.log-config-on-start=on -Dzookeeper.client.secure=false
-    enableFeatures:
-      - FOWARDING
-      - FDR_POLLING_ON_NODE
-    dataVolumePersistentVolumeClaimSpecTemplate:
-      accessModes:
-        - ReadWriteOnce
-      resources:
-        requests:
-          storage: 1.5Ti
-      storageClassName: openebs-lvmpv
+  autoRebalancePartitions: true
+  digestPartitionsCount: 720
+  storagePartitionsCount: 24
+  targetReplicationFactor: 2
+  smtp:
+    enabled: false
+    host: ""
+    username: ""
+    password: ""
+    sender:
+    port: 587
+    startTLS: true
+  jvmARGS:
+    ""
+    # -server -Xss2m
+    # -XX:MaxRAMPercentage=75.0
+    # -XX:+UseParallelGC -XX:+UseNUMA
+    # -XX:+UseTransparentHugePages
+    # -XX:+UnlockDiagnosticVMOptions
+    # -XX:CompileCommand=dontinline,com/humio/util/HotspotUtilsJ.dontInline
+    # -Xlog:gc+jni=debug:stdout
+    # -Xlog:gc*:stdout:time,tags
+    # -Dakka.log-config-on-start=on -Dzookeeper.client.secure=false
+  enableFeatures:
+    - FOWARDING
+    - FDR_POLLING_ON_NODE
+  dataVolumePersistentVolumeClaimSpecTemplate:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 1.5Ti
+    storageClassName: openebs-lvmpv
   nodeCount: 3
   serviceAccount:
     # Specifies whether a service account should be created
@@ -66,12 +65,16 @@ humio:
     port: 80
 
   ingress:
-    enabled: false
-    # className: "ngnix"
-    annotations: {}
-
-    tls: false
-
+    ui:
+      enabled: false
+      # className: "ngnix"
+      annotations: {}
+      tls: false
+    inputs:
+      enabled: false
+      # className: "ngnix"
+      annotations: {}
+      tls: false
   nodeSelector: {}
 
   tolerations: []

@@ -30,7 +30,7 @@ spec:
 
   
   dataVolumePersistentVolumeClaimSpecTemplate:
-  {{- with .Values.humio.config.dataVolumePersistentVolumeClaimSpecTemplate }}  
+  {{- with .Values.humio.dataVolumePersistentVolumeClaimSpecTemplate }}  
     {{- toYaml . | nindent 4 }}
   {{- end }}  
 
@@ -121,23 +121,23 @@ spec:
     value: {{ .Values.humio.sso.entityID }}
   - name: SAML_GROUP_MEMBERSHIP_ATTRIBUTE
     value: {{ .Values.humio.sso.groupMembershipAttribute | default "memberOf" }}
-  {{- if .Values.humio.config.smtp.enabled }}  
+  {{- if .Values.humio.smtp.enabled }}  
   - name: SMTP_HOST
-    value: {{ .Values.humio.config.smtp.host }}
+    value: {{ .Values.humio.smtp.host }}
   - name: SMTP_USERNAME
-    value: {{ .Values.humio.config.smtp.username }}
+    value: {{ .Values.humio.smtp.username }}
   - name: SMTP_PASSWORD
-    value: {{ .Values.humio.config.smtp.password }}
+    value: {{ .Values.humio.smtp.password }}
   - name: SMTP_SENDER_ADDRESS
-    value: {{ .Values.humio.config.smtp.sender }}
+    value: {{ .Values.humio.smtp.sender }}
   - name: SMTP_PORT
-    value: {{ .Values.humio.config.smtp.port | quote }}
+    value: {{ .Values.humio.smtp.port | quote }}
   - name: SMTP_USE_STARTTLS
-    value: {{ .Values.humio.config.smtp.startTLS | quote }}
+    value: {{ .Values.humio.smtp.startTLS | quote }}
   {{- end }}
   - name: HUMIO_JVM_ARGS
-    value: {{ .Values.humio.config.jvmARGS | quote }}
-  {{- range .Values.humio.config.enableFeatures }}
+    value: {{ .Values.humio.jvmARGS | quote }}
+  {{- range .Values.humio.enableFeatures }}
   - name: ENABLE_{{ . | upper}}
     value: "true"
   {{- end }}
@@ -168,16 +168,16 @@ spec:
   hostname: {{ .Values.humio.fqdn }}
   hostnameSource: {}
   image: "{{ .Values.humio.image.repository }}:{{ .Values.humio.image.tag }}"
-  
+  #We use helm to produce ingress so we prevent operator from doing it
   ingress: {}
   license:
     secretKeyRef:
       key: license
       name: "{{ include "humio-instance.fullname" . }}-license"
-  autoRebalancePartitions: {{ .Values.humio.config.autoRebalancePartitions }}
-  digestPartitionsCount: {{ .Values.humio.config.digestPartitionsCount }}
-  storagePartitionsCount: {{ .Values.humio.config.storagePartitionsCount }}
-  targetReplicationFactor: {{ .Values.humio.config.targetReplicationFactor }}
+  autoRebalancePartitions: {{ .Values.humio.autoRebalancePartitions }}
+  digestPartitionsCount: {{ .Values.humio.digestPartitionsCount }}
+  storagePartitionsCount: {{ .Values.humio.storagePartitionsCount }}
+  targetReplicationFactor: {{ .Values.humio.targetReplicationFactor }}
   tls:
     enabled: false
   nodePools:
@@ -245,8 +245,8 @@ spec:
           - name: SINGLE_USER_PASSWORD
             value: "password"
           - name: HUMIO_JVM_ARGS
-            value: {{ .Values.humio.config.jvmARGS | quote }}
-          {{- range .Values.humio.config.enableFeatures }}
+            value: {{ .Values.humio.jvmARGS | quote }}
+          {{- range .Values.humio.enableFeatures }}
           - name: ENABLE_{{ . | upper}}
             value: "true"
           {{- end }}
@@ -383,8 +383,8 @@ spec:
           - name: SAML_GROUP_MEMBERSHIP_ATTRIBUTE
             value: {{ .Values.humio.sso.groupMembershipAttribute | default "memberOf" }}
           - name: HUMIO_JVM_ARGS
-            value: {{ .Values.humio.config.jvmARGS | quote }}
-          {{- range .Values.humio.config.enableFeatures }}
+            value: {{ .Values.humio.jvmARGS | quote }}
+          {{- range .Values.humio.enableFeatures }}
           - name: ENABLE_{{ . | upper}}
             value: "true"
           {{- end }}
