@@ -8,7 +8,7 @@ metadata:
   name: global-events
 {{- end }}
   labels:
-    strimzi.io/cluster: {{ .Values.strimziCluster }}
+    strimzi.io/cluster: {{ .Values.humio.strimziCluster }}
 spec:
 {{- if .Values.humio.kafkaPrefixEnable }}
   topicName: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-global-events
@@ -31,7 +31,7 @@ metadata:
   name: transientchatter-events
 {{- end }}
   labels:
-    strimzi.io/cluster: {{ .Values.strimziCluster }}
+    strimzi.io/cluster: {{ .Values.humio.strimziCluster }}
 spec:
 {{- if .Values.humio.kafkaPrefixEnable }}
   topicName: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-transientChatter-events
@@ -54,7 +54,7 @@ metadata:
   name: humio-ingest
 {{- end }}
   labels:
-    strimzi.io/cluster: {{ .Values.strimziCluster }}
+    strimzi.io/cluster: {{ .Values.humio.strimziCluster }}
 spec:
 {{- if .Values.humio.kafkaPrefixEnable }}
   topicName: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-humio-ingest
