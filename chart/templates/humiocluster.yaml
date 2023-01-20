@@ -287,12 +287,12 @@ spec:
             valueFrom:
               secretKeyRef:
                 key: AWS_ACCESS_KEY_ID
-                name: {{ .Values.humio.s3proxySecret }}
+                name: {{ .Values.humio.s3proxy.secret }}
           - name: S3_STORAGE_SECRETKEY
             valueFrom:
               secretKeyRef:
                 key: AWS_SECRET_ACCESS_KEY
-                name: {{ .Values.humio.s3proxySecret }}
+                name: {{ .Values.humio.s3proxy.secret }}
           - name: S3_STORAGE_BUCKET
             value: {{ .Values.humio.buckets.storage }}
 
@@ -423,12 +423,12 @@ spec:
             valueFrom:
               secretKeyRef:
                 key: AWS_ACCESS_KEY_ID
-                name: {{ .Values.humio.s3proxySecret }}
+                name: {{ .Values.humio.s3proxy.secret }}
           - name: S3_STORAGE_SECRETKEY
             valueFrom:
               secretKeyRef:
                 key: AWS_SECRET_ACCESS_KEY
-                name: {{ .Values.humio.s3proxySecret }}
+                name: {{ .Values.humio.s3proxy.secret }}
           - name: S3_STORAGE_BUCKET
             value: {{ .Values.humio.buckets.storage }}
 
