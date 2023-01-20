@@ -79,19 +79,19 @@ spec:
   - name: BUCKET_STORAGE_SSE_COMPATIBLE
     value: "true"
   - name: S3_STORAGE_ENDPOINT_BASE
-    value: http://{{ .Release.Name }}-s3proxy
+    value: {{ .Values.humio.s3proxy.endpoint }}
   - name: S3_STORAGE_ENCRYPTION_KEY
     value: "off"
   - name: S3_STORAGE_ACCESSKEY
     valueFrom:
       secretKeyRef:
         key: AWS_ACCESS_KEY_ID
-        name: {{ .Values.humio.s3proxySecret }}
+        name: {{ .Values.humio.s3proxy.secret }}
   - name: S3_STORAGE_SECRETKEY
     valueFrom:
       secretKeyRef:
         key: AWS_SECRET_ACCESS_KEY
-        name: {{ .Values.humio.s3proxySecret }}
+        name: {{ .Values.humio.s3proxy.secret }}
   - name: S3_STORAGE_BUCKET
     value: {{ .Values.humio.buckets.storage }}
 
@@ -280,7 +280,7 @@ spec:
           - name: BUCKET_STORAGE_SSE_COMPATIBLE
             value: "true"
           - name: S3_STORAGE_ENDPOINT_BASE
-            value: http://{{ .Release.Name }}-s3proxy
+            value: {{ .Values.humio.s3proxy.endpoint }}
           - name: S3_STORAGE_ENCRYPTION_KEY
             value: "off"
           - name: S3_STORAGE_ACCESSKEY
@@ -416,7 +416,7 @@ spec:
           - name: BUCKET_STORAGE_SSE_COMPATIBLE
             value: "true"
           - name: S3_STORAGE_ENDPOINT_BASE
-            value: http://{{ .Release.Name }}-s3proxy
+            value: {{ .Values.humio.s3proxy.endpoint }}
           - name: S3_STORAGE_ENCRYPTION_KEY
             value: "off"
           - name: S3_STORAGE_ACCESSKEY
