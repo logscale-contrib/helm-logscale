@@ -1,0 +1,70 @@
+{
+    "scanExcludes": [
+        "node_modules",
+        "**/.git",
+        "**/pkg/mod/**",
+        "**/.kube",
+        "**/*.swp",
+        ".monokle"
+    ],
+    "fileIncludes": [
+        "*.yaml",
+        "*.yml"
+    ],
+    "folderReadsMaxDepth": 10,
+    "k8sVersion": "1.26.0",
+    "settings": {
+        "helmPreviewMode": "template",
+        "kustomizeCommand": "kubectl",
+        "createDefaultObjects": false,
+        "setDefaultPrimitiveValues": true,
+        "allowEditInClusterMode": true
+    },
+    "kubeConfig": {
+        "path": "/Users/rfaircloth/.kube/config",
+        "currentContext": "logscale-admin"
+    },
+    "helm": {
+        "previewConfigurationMap": {
+            "c2fa911e-02ac-490e-a890-d390540bbe83": {
+                "id": "c2fa911e-02ac-490e-a890-d390540bbe83",
+                "name": "Azure",
+                "helmChartFilePath": "/chart/Chart.yaml",
+                "command": "template",
+                "options": {},
+                "valuesFileItemMap": {
+                    "/chart/values": {
+                        "id": "/chart/values",
+                        "filePath": "/chart/values.yaml",
+                        "isChecked": true,
+                        "order": 0
+                    },
+                    "/chart/values-common-host": {
+                        "id": "/chart/values-common-host",
+                        "filePath": "/chart/values-common-host.yaml",
+                        "isChecked": true,
+                        "order": 1
+                    },
+                    "/chart/values-common-humio": {
+                        "id": "/chart/values-common-humio",
+                        "filePath": "/chart/values-common-humio.yaml",
+                        "isChecked": true,
+                        "order": 2
+                    },
+                    "/chart/values-common-sso": {
+                        "id": "/chart/values-common-sso",
+                        "filePath": "/chart/values-common-sso.yaml",
+                        "isChecked": true,
+                        "order": 3
+                    },
+                    "/chart/values-common-azure": {
+                        "id": "/chart/values-common-azure",
+                        "filePath": "/chart/values-common-azure.yaml",
+                        "isChecked": true,
+                        "order": 4
+                    }
+                }
+            }
+        }
+    }
+}
