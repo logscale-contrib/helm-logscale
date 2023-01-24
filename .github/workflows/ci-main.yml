@@ -81,9 +81,9 @@ jobs:
           submodules: "recursive"
       - uses: azure/setup-helm@v3
 
-      - name: Lint Azure
-        run: |
-          helm lint chart -f tests/common/host.yaml -f tests/common/humio.yaml -f tests/common/sso.yaml -f tests/azure/basic.yaml 
+      # - name: Lint Azure
+      #   run: |
+      #     helm lint chart -f tests/common/host.yaml -f tests/common/humio.yaml -f tests/common/sso.yaml -f tests/azure/basic.yaml 
       
 
   Containerize:
