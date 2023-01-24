@@ -44,7 +44,7 @@ spec:
 {{- if eq .Values.humio.kafkaManager "humio" }}
   - name: KAFKA_MANAGED_BY_HUMIO
     value: "true"
-{{- else if or (eq .Values.humio.s3mode "strimzi") (eq .Values.humio.s3mode "external") }}
+{{- else if eq .Values.humio.kafkaManager "strimzi" }}
   - name: KAFKA_MANAGED_BY_HUMIO
     value: "false"
 {{- end }}

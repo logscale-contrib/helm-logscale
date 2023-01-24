@@ -31,7 +31,6 @@
                 "name": "Azure",
                 "helmChartFilePath": "/chart/Chart.yaml",
                 "command": "template",
-                "options": {},
                 "valuesFileItemMap": {
                     "/chart/values": {
                         "id": "/chart/values",
@@ -62,8 +61,21 @@
                         "filePath": "/chart/values-common-azure.yaml",
                         "isChecked": true,
                         "order": 4
+                    },
+                    "/chart/values-common-aws": {
+                        "id": "/chart/values-common-aws",
+                        "filePath": "/chart/values-common-aws.yaml",
+                        "isChecked": false,
+                        "order": 5
+                    },
+                    "/chart/values-common-azure-istio": {
+                        "id": "/chart/values-common-azure-istio",
+                        "filePath": "/chart/values-common-azure-istio.yaml",
+                        "isChecked": false,
+                        "order": 6
                     }
-                }
+                },
+                "options": {}
             },
             "b8457200-a867-48f9-a8bf-68aaf2fbac14": {
                 "id": "b8457200-a867-48f9-a8bf-68aaf2fbac14",
