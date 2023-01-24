@@ -7,8 +7,9 @@ fullnameOverride: ""
 humio:
   s3mode: default
   #One of humio,strimzi,external
-  kafkaManager: "humio"
-  kafkaPrefixEnable: false
+  kafka:
+    manager: "humio"
+    prefixEnable: false
   #kafkaPrefix
   buckets: {}
 

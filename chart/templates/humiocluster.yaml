@@ -41,14 +41,14 @@ spec:
 {{- end }}  
   - name: KAFKA_SERVERS
     value:  {{ include "humio-instance.externalService.kafka" . | quote }}
-{{- if eq .Values.humio.kafkaManager "humio" }}
+{{- if eq .Values.humio.kafka.manager "humio" }}
   - name: KAFKA_MANAGED_BY_HUMIO
     value: "true"
-{{- else if or (eq .Values.humio.kafkaManager "strimzi") (eq .Values.humio.kafkaManager "external") }}
+{{- else if or (eq .Values.humio.kafka.manager "strimzi") (eq .Values.humio.kafka.manager "external") }}
   - name: KAFKA_MANAGED_BY_HUMIO
     value: "false"
 {{- end }}
-{{- if .Values.humio.kafkaPrefixEnable }}
+{{- if .Values.humio.kafka.prefixEnable }}
   - name: HUMIO_KAFKA_TOPIC_PREFIX
     value: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-
 {{- end }}
@@ -153,6 +153,10 @@ spec:
       mountPath: /data/java-logs
     - name: logs
       mountPath: /data/logs
+{{- if eq .Values.humio.kafka.manager "strimzi" }}      
+    - name: kafka-secrets
+      mountPath: /etc/logscale/kafkaclient
+{{- end }}
   extraVolumes:
     - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
       configMap:
@@ -160,9 +164,14 @@ spec:
     - name: java-logs
       emptyDir: {}      
     - name: logs
-      emptyDir: {}      
+      emptyDir: {}
+{{- if eq .Values.humio.kafka.manager "strimzi" }}      
+    - name: kafka-secrets
+      secret:
+        secretName: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-kafka-user
+{{- end }}
   esHostnameSource: {}
-  extraKafkaConfigs: {{ include "humio-instance.externalService.kafkaExtraConfig" . | quote }}
+  extraKafkaConfigs: {{ include "humio-instance.kafka.extraConfig" . | quote }}
   idpCertificateSecretName: "{{ include "humio-instance.fullname" . }}-idp-certificate"
 
   hostname: {{ .Values.humio.fqdn }}
@@ -216,7 +225,7 @@ spec:
           {{- toYaml . | nindent 14 }}
         {{- end }}  
 
-        extraKafkaConfigs: {{ include "humio-instance.externalService.kafkaExtraConfig" . | quote }}            
+        extraKafkaConfigs: {{ include "humio-instance.kafka.extraConfig" . | quote }}            
         environmentVariables:
 
 {{- if .Values.humio.externalzookeeperHostname }}              
@@ -225,14 +234,14 @@ spec:
 {{- end }}          
           - name: KAFKA_SERVERS
             value:  {{ include "humio-instance.externalService.kafka" . | quote }}
-        {{- if eq .Values.humio.kafkaManager "humio" }}
+        {{- if eq .Values.humio.kafka.manager "humio" }}
           - name: KAFKA_MANAGED_BY_HUMIO
             value: "true"
         {{- else if or (eq .Values.humio.s3mode "strimzi") (eq .Values.humio.s3mode "external") }}
           - name: KAFKA_MANAGED_BY_HUMIO
             value: "false"
         {{- end }}
-        {{- if .Values.humio.kafkaPrefixEnable }}
+        {{- if .Values.humio.kafka.prefixEnable }}
           - name: HUMIO_KAFKA_TOPIC_PREFIX
             value: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-
         {{- end }}
@@ -341,7 +350,7 @@ spec:
         tolerations:
           {{- toYaml . | nindent 14 }}
         {{- end }}            
-        extraKafkaConfigs: {{ include "humio-instance.externalService.kafkaExtraConfig" . | quote }}            
+        extraKafkaConfigs: {{ include "humio-instance.kafka.extraConfig" . | quote }}            
         environmentVariables:
           # - name: "HUMIO_MEMORY_OPTS"
             # value: "-Xss2m -Xms1g -Xmx2g -XX:MaxDirectMemorySize=1g"
@@ -351,14 +360,14 @@ spec:
 {{- end }}          
           - name: KAFKA_SERVERS
             value:  {{ include "humio-instance.externalService.kafka" . | quote }}
-        {{- if eq .Values.humio.kafkaManager "humio" }}
+        {{- if eq .Values.humio.kafka.manager "humio" }}
           - name: KAFKA_MANAGED_BY_HUMIO
             value: "true"
         {{- else if or (eq .Values.humio.s3mode "strimzi") (eq .Values.humio.s3mode "external") }}
           - name: KAFKA_MANAGED_BY_HUMIO
             value: "false"
         {{- end }}
-        {{- if .Values.humio.kafkaPrefixEnable }}
+        {{- if .Values.humio.kafka.prefixEnable }}
           - name: HUMIO_KAFKA_TOPIC_PREFIX
             value: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-
         {{- end }}

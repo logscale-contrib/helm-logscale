@@ -1,16 +1,16 @@
-{{- if eq .Values.humio.kafkaManager "strimzi" }}
+{{- if eq .Values.humio.kafka.manager "strimzi" }}
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
-{{- if .Values.humio.kafkaPrefixEnable }}
+{{- if .Values.humio.kafka.prefixEnable }}
   name: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-global-events
 {{ else }}
   name: global-events
 {{- end }}
   labels:
-    strimzi.io/cluster: {{ .Values.humio.strimziCluster }}
+    strimzi.io/cluster: {{ .Values.humio.kafka.strimziCluster }}
 spec:
-{{- if .Values.humio.kafkaPrefixEnable }}
+{{- if .Values.humio.kafka.prefixEnable }}
   topicName: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-global-events
 {{ else }}
   topicName: global-events
@@ -28,15 +28,15 @@ spec:
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
-{{- if .Values.humio.kafkaPrefixEnable }}
+{{- if .Values.humio.kafka.prefixEnable }}
   name: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-transientchatter-events
 {{ else }}
   name: transientchatter-events
 {{- end }}
   labels:
-    strimzi.io/cluster: {{ .Values.humio.strimziCluster }}
+    strimzi.io/cluster: {{ .Values.humio.kafka.strimziCluster }}
 spec:
-{{- if .Values.humio.kafkaPrefixEnable }}
+{{- if .Values.humio.kafka.prefixEnable }}
   topicName: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-transientChatter-events
 {{ else }}
   topicName: transientChatter-events
@@ -52,15 +52,15 @@ spec:
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
-{{- if .Values.humio.kafkaPrefixEnable }}
+{{- if .Values.humio.kafka.prefixEnable }}
   name: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-humio-ingest
 {{ else }}
   name: humio-ingest
 {{- end }}
   labels:
-    strimzi.io/cluster: {{ .Values.humio.strimziCluster }}
+    strimzi.io/cluster: {{ .Values.humio.kafka.strimziCluster }}
 spec:
-{{- if .Values.humio.kafkaPrefixEnable }}
+{{- if .Values.humio.kafka.prefixEnable }}
   topicName: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-humio-ingest
 {{ else }}
   topicName: humio-ingest
@@ -80,7 +80,7 @@ kind: KafkaUser
 metadata:
   name: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-kafka-user
   labels:
-    strimzi.io/cluster: {{ .Values.humio.strimziCluster }}
+    strimzi.io/cluster: {{ .Values.humio.kafka.strimziCluster }}
 spec:
   authentication:
     type: tls
@@ -90,7 +90,7 @@ spec:
       # Example consumer Acls for topic my-topic using consumer group my-group
       - resource:
           type: topic
-        {{- if .Values.humio.kafkaPrefixEnable }}
+        {{- if .Values.humio.kafka.prefixEnable }}
           name: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-global-events
         {{ else }}
           name: global-events
@@ -103,7 +103,7 @@ spec:
         host: "*"      
       - resource:
           type: topic
-        {{- if .Values.humio.kafkaPrefixEnable }}
+        {{- if .Values.humio.kafka.prefixEnable }}
           name: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-transientChatter-events
         {{ else }}
           name: transientChatter-events
@@ -116,7 +116,7 @@ spec:
         host: "*"     
       - resource:
           type: topic
-        {{- if .Values.humio.kafkaPrefixEnable }}
+        {{- if .Values.humio.kafka.prefixEnable }}
           name: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-humio-ingest
         {{ else }}
           name: humio-ingest

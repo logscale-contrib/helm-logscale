@@ -9,10 +9,11 @@ humio:
     storage: data
 
   #Kafka
-  kafkaManager: strimzi
-  kafkaPrefixEnable: true
-  strimziCluster: "ops-logscale-strimzi-kafka"
-  externalKafkaHostname: "ops-logscale-strimzi-kafka-kafka-bootstrap:9092"
+  kafka:
+    manager: strimzi
+    prefixEnable: true
+    strimziCluster: "ops-logscale-strimzi-kafka"
+    externalKafkaHostname: "ops-logscale-strimzi-kafka-kafka-bootstrap:9092"
 
   #Image is shared by all node pools
   image:
