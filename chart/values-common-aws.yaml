@@ -1,9 +1,6 @@
 humio:
   # Object Storage Settings
-  s3mode: s3proxy
-  s3proxy:
-    secret: ops-s3proxy-secret
-    endpoint: http://ops-s3proxy
+  s3mode: aws
   buckets:
     region: us-east-1
     storage: data
@@ -35,6 +32,8 @@ humio:
     "instrumentation.opentelemetry.io/container-names": "humio"
   serviceAccount:
     name: "logscale-ops"
+    annotations:
+      "eks.amazonaws.com/role-arn": "somearn"
   tolerations:
     - key: "workloadClass"
       operator: "Equal"
@@ -73,27 +72,33 @@ humio:
     accessModes: ["ReadWriteOnce"]
     resources:
       requests:
-        storage: "1Ti"
-    storageClassName: "openebs-lvmpv"
+        storage: "100Gi"
+    storageClassName: "ebs-gp3-enc"
 
   ingress:
     ui:
       enabled: true
-      tls: true
+      tls: false
       annotations:
+        "alb.ingress.kubernetes.io/certificate-arn": "${dependency.acm_ui.outputs.acm_certificate_arn}"
+        "alb.ingress.kubernetes.io/listen-ports": '[{"HTTP": 80}, {"HTTPS": 443}]'
+        "alb.ingress.kubernetes.io/ssl-redirect": "443"
+        "alb.ingress.kubernetes.io/scheme": "internet-facing"
+        "alb.ingress.kubernetes.io/target-type": "ip"
+        "alb.ingress.kubernetes.io/group.name": "logscale-${local.env}"
         "external-dns.alpha.kubernetes.io/hostname": "logscale-ops.${local.domain_name}"
-        "kubernetes.io/ingress.class": "azure/application-gateway"
-        "cert-manager.io/cluster-issuer": "aag-letsencrypt"
-        "appgw.ingress.kubernetes.io/ssl-redirect": "true"
+
     inputs:
       enabled: true
-      tls: true
+      tls: false
       annotations:
-        "external-dns.alpha.kubernetes.io/hostname": "logscale-ops-inputs.${local.domain_name}"
-        "kubernetes.io/ingress.class": "azure/application-gateway"
-        "cert-manager.io/cluster-issuer": "aag-letsencrypt"
-        "appgw.ingress.kubernetes.io/ssl-redirect": "true"
-
+          "alb.ingress.kubernetes.io/certificate-arn" : "${dependency.acm_ui.outputs.acm_certificate_arn}"
+          "alb.ingress.kubernetes.io/listen-ports"    : "[{\"HTTP\": 80}, {\"HTTPS\": 443}]"
+          "alb.ingress.kubernetes.io/ssl-redirect"    : "443"
+          "alb.ingress.kubernetes.io/scheme"          : "internet-facing"
+          "alb.ingress.kubernetes.io/target-type"     : "ip"
+          "alb.ingress.kubernetes.io/group.name"      : "logscale-${local.env}"
+          "external-dns.alpha.kubernetes.io/hostname" : "logscale-ops-inputs.${local.domain_name}"
   nodepools:
     ingest:
       nodeCount: 2

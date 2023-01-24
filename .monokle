@@ -22,7 +22,7 @@
     },
     "kubeConfig": {
         "path": "/Users/rfaircloth/.kube/config",
-        "currentContext": "logscale-admin"
+        "currentContext": "arn:aws:eks:us-east-1:473367108367:cluster/logscale-dev"
     },
     "helm": {
         "previewConfigurationMap": {
@@ -62,6 +62,57 @@
                         "filePath": "/chart/values-common-azure.yaml",
                         "isChecked": true,
                         "order": 4
+                    }
+                }
+            },
+            "b8457200-a867-48f9-a8bf-68aaf2fbac14": {
+                "id": "b8457200-a867-48f9-a8bf-68aaf2fbac14",
+                "name": "Azure-istio",
+                "helmChartFilePath": "/chart/Chart.yaml",
+                "command": "template",
+                "options": {},
+                "valuesFileItemMap": {
+                    "/chart/values": {
+                        "id": "/chart/values",
+                        "filePath": "/chart/values.yaml",
+                        "isChecked": true,
+                        "order": 0
+                    },
+                    "/chart/values-common-azure": {
+                        "id": "/chart/values-common-azure",
+                        "filePath": "/chart/values-common-azure.yaml",
+                        "isChecked": false,
+                        "order": 1
+                    },
+                    "/chart/values-common-host": {
+                        "id": "/chart/values-common-host",
+                        "filePath": "/chart/values-common-host.yaml",
+                        "isChecked": true,
+                        "order": 2
+                    },
+                    "/chart/values-common-humio": {
+                        "id": "/chart/values-common-humio",
+                        "filePath": "/chart/values-common-humio.yaml",
+                        "isChecked": true,
+                        "order": 3
+                    },
+                    "/chart/values-common-sso": {
+                        "id": "/chart/values-common-sso",
+                        "filePath": "/chart/values-common-sso.yaml",
+                        "isChecked": true,
+                        "order": 4
+                    },
+                    "/chart/values-common-aws": {
+                        "id": "/chart/values-common-aws",
+                        "filePath": "/chart/values-common-aws.yaml",
+                        "isChecked": false,
+                        "order": 5
+                    },
+                    "/chart/values-common-azure-istio": {
+                        "id": "/chart/values-common-azure-istio",
+                        "filePath": "/chart/values-common-azure-istio.yaml",
+                        "isChecked": true,
+                        "order": 6
                     }
                 }
             }
