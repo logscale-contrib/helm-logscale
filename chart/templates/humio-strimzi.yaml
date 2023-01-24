@@ -78,7 +78,7 @@ spec:
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaUser
 metadata:
-  name: {{ .Values.humio.kafkaPrefix | default .Release.Name }}
+  name: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-kafka-user
   labels:
     strimzi.io/cluster: {{ .Values.humio.strimziCluster }}
 spec:
