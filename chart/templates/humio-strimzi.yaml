@@ -83,7 +83,7 @@ metadata:
     strimzi.io/cluster: {{ .Values.humio.kafka.strimziCluster }}
 spec:
   authentication:
-    type: tls
+    type: scram-sha-512
   authorization:
     type: simple
     acls:
