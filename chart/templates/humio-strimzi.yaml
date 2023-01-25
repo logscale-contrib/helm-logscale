@@ -113,7 +113,7 @@ spec:
           - Describe
           - Read
           - Write
-          - AlterConfigs
+          # - AlterConfigs
         host: "*"     
       - resource:
           type: topic
