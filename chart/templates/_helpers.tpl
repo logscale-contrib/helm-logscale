@@ -77,11 +77,6 @@ Create the kafka service
 {{- default (printf "%s-%s" .Release.Name "kafka-kafkacluster-kafka-bootstrap:9092") .Values.humio.kafka.externalKafkaHostname }}
 {{- end }}
 
-{{- define "humio-instance.kafka.extraConfig" -}}
-{{- default "security.protocol=PLAINTEXT" .Values.humio.kafka.extraConfig }}
-{{- end }}
-
-
 {{- define "humio-instance.persistance.storageclass" -}}
 {{- if .Values.platform eq "Azure" }}
 {{- printf "managed-csi-premium" }}
