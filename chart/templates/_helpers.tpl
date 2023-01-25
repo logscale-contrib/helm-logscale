@@ -74,13 +74,8 @@ Create the zookeeper service
 Create the kafka service
 */}}
 {{- define "humio-instance.externalService.kafka" -}}
-{{- default (printf "%s-%s" .Release.Name "kafka-kafkacluster-kafka-bootstrap:9092") .Values.humio.externalKafkaHostname }}
+{{- default (printf "%s-%s" .Release.Name "kafka-kafkacluster-kafka-bootstrap:9092") .Values.humio.kafka.externalKafkaHostname }}
 {{- end }}
-
-{{- define "humio-instance.externalService.kafkaExtraConfig" -}}
-{{- default "security.protocol=PLAINTEXT" .Values.humio.kafkaExtraConfig }}
-{{- end }}
-
 
 {{- define "humio-instance.persistance.storageclass" -}}
 {{- if .Values.platform eq "Azure" }}
