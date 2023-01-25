@@ -35,10 +35,6 @@ spec:
   {{- end }}  
 
   environmentVariables:
-{{- if .Values.humio.externalzookeeperHostname }}              
-  # - name: ZOOKEEPER_URL
-  #   value: {{ include "humio-instance.externalService.zookeeper" . | quote }}
-{{- end }}  
   - name: KAFKA_SERVERS
     value:  {{ include "humio-instance.externalService.kafka" . | quote }}
 {{- if eq .Values.humio.kafka.manager "humio" }}
@@ -153,10 +149,6 @@ spec:
       mountPath: /data/java-logs
     - name: logs
       mountPath: /data/logs
-{{- if eq .Values.humio.kafka.manager "strimzi" }}      
-    - name: kafka-secrets
-      mountPath: /etc/logscale/kafkaclient
-{{- end }}
   extraVolumes:
     - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
       configMap:
@@ -165,11 +157,6 @@ spec:
       emptyDir: {}      
     - name: logs
       emptyDir: {}
-{{- if eq .Values.humio.kafka.manager "strimzi" }}      
-    - name: kafka-secrets
-      secret:
-        secretName: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-kafka-user
-{{- end }}
   esHostnameSource: {}
   extraKafkaConfigs: {{ include "humio-instance.kafka.extraConfig" . | quote }}
   idpCertificateSecretName: "{{ include "humio-instance.fullname" . }}-idp-certificate"
@@ -205,11 +192,7 @@ spec:
           - name: java-logs
             mountPath: /data/java-logs
           - name: logs
-            mountPath: /data/logs              
-{{- if eq .Values.humio.kafka.manager "strimzi" }}      
-          - name: kafka-secrets
-            mountPath: /etc/logscale/kafkaclient
-{{- end }}            
+            mountPath: /data/logs             
         extraVolumes:
           - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
             configMap:
@@ -217,12 +200,7 @@ spec:
           - name: java-logs
             emptyDir: {}      
           - name: logs
-            emptyDir: {}              
-{{- if eq .Values.humio.kafka.manager "strimzi" }}      
-          - name: kafka-secrets
-            secret:
-              secretName: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-kafka-user
-{{- end }}            
+            emptyDir: {}                      
         resources:
           {{- toYaml .Values.humio.nodepools.ingest.resources | nindent 14 }}
         {{- with .Values.humio.nodepools.ingest.affinity }}
@@ -237,10 +215,6 @@ spec:
         extraKafkaConfigs: {{ include "humio-instance.kafka.extraConfig" . | quote }}            
         environmentVariables:
 
-{{- if .Values.humio.externalzookeeperHostname }}              
-          - name: ZOOKEEPER_URL
-            value: {{ include "humio-instance.externalService.zookeeper" . | quote }}
-{{- end }}          
           - name: KAFKA_SERVERS
             value:  {{ include "humio-instance.externalService.kafka" . | quote }}
         {{- if eq .Values.humio.kafka.manager "humio" }}
@@ -341,10 +315,6 @@ spec:
             mountPath: /data/java-logs
           - name: logs
             mountPath: /data/logs              
-{{- if eq .Values.humio.kafka.manager "strimzi" }}      
-          - name: kafka-secrets
-            mountPath: /etc/logscale/kafkaclient
-{{- end }}            
         extraVolumes:
           - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
             configMap:
@@ -353,11 +323,6 @@ spec:
             emptyDir: {}      
           - name: logs
             emptyDir: {}              
-{{- if eq .Values.humio.kafka.manager "strimzi" }}      
-          - name: kafka-secrets
-            secret:
-              secretName: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-kafka-user
-{{- end }}            
         resources:
           {{- toYaml .Values.humio.nodepools.ui.resources | nindent 14 }}
         {{- with .Values.humio.nodepools.ui.affinity }}
@@ -372,10 +337,6 @@ spec:
         environmentVariables:
           # - name: "HUMIO_MEMORY_OPTS"
             # value: "-Xss2m -Xms1g -Xmx2g -XX:MaxDirectMemorySize=1g"
-{{- if .Values.humio.externalzookeeperHostname }}              
-          - name: ZOOKEEPER_URL
-            value: {{ include "humio-instance.externalService.zookeeper" . | quote }}
-{{- end }}          
           - name: KAFKA_SERVERS
             value:  {{ include "humio-instance.externalService.kafka" . | quote }}
         {{- if eq .Values.humio.kafka.manager "humio" }}
