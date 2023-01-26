@@ -20,7 +20,7 @@ metadata:
     {{- include "humio-instance.labels" . | nindent 4 }}
   annotations:
     "helm.sh/resource-policy": "keep"
-  {{- with .Values.humio.ingress.inputs.annotationsInputs }}
+  {{- with .Values.humio.ingress.inputs.annotations }}
     {{- toYaml . | nindent 4 }}    
   {{- end }}
 spec:
