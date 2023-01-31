@@ -3,6 +3,8 @@ apiVersion: core.humio.com/v1alpha1
 kind: HumioRepository
 metadata:
   name: {{ include "humio-instance.fullname" . }}-all-humio-infra-trace
+  labels:
+    {{- include "humio-instance.labels" . | nindent 4 }}
 spec:
   managedClusterName: {{ include "humio-instance.fullname" . }}
   name: "all-humio-infra-trace"
@@ -19,6 +21,8 @@ apiVersion: core.humio.com/v1alpha1
 kind: HumioRepository
 metadata:
   name: {{ include "humio-instance.fullname" . }}-all-humio-infra-metrics
+  labels:
+    {{- include "humio-instance.labels" . | nindent 4 }}
 spec:
   managedClusterName: {{ include "humio-instance.fullname" . }}
   name: "all-humio-infra-metrics"
@@ -35,6 +39,8 @@ apiVersion: core.humio.com/v1alpha1
 kind: HumioRepository
 metadata:
   name: {{ include "humio-instance.fullname" . }}-all-humio-infra-logs
+  labels:
+    {{- include "humio-instance.labels" . | nindent 4 }}
 spec:
   managedClusterName: {{ include "humio-instance.fullname" . }}
   name: "all-humio-infra-logs"
@@ -51,6 +57,8 @@ apiVersion: core.humio.com/v1alpha1
 kind: HumioView
 metadata:
   name: {{ include "humio-instance.fullname" . }}-all-humio-infra
+  labels:
+    {{- include "humio-instance.labels" . | nindent 4 }}
 spec:
   managedClusterName: {{ include "humio-instance.fullname" . }}
   name: all-humio-infra
@@ -66,6 +74,8 @@ apiVersion: core.humio.com/v1alpha1
 kind: HumioParser
 metadata:
   name: {{ include "humio-instance.fullname" . }}--all-humio-infra-otel-trace
+  labels:
+    {{- include "humio-instance.labels" . | nindent 4 }}
 spec:
   managedClusterName: {{ include "humio-instance.fullname" . }}
   name: "otel-trace"
@@ -81,6 +91,8 @@ apiVersion: core.humio.com/v1alpha1
 kind: HumioParser
 metadata:
   name: {{ include "humio-instance.fullname" . }}--all-humio-infra-otel-metrics
+  labels:
+    {{- include "humio-instance.labels" . | nindent 4 }}
 spec:
   managedClusterName: {{ include "humio-instance.fullname" . }}
   name: "otel-metrics"
@@ -93,6 +105,8 @@ apiVersion: core.humio.com/v1alpha1
 kind: HumioParser
 metadata:
   name: {{ include "humio-instance.fullname" . }}--all-humio-infra-otel-logs
+  labels:
+    {{- include "humio-instance.labels" . | nindent 4 }}
 spec:
   managedClusterName: {{ include "humio-instance.fullname" . }}
   name: "otel-logs"
@@ -105,6 +119,8 @@ apiVersion: core.humio.com/v1alpha1
 kind: HumioParser
 metadata:
   name: {{ include "humio-instance.fullname" . }}--all-humio-infra-k8s-metrics
+  labels:
+    {{- include "humio-instance.labels" . | nindent 4 }}
 spec:
   managedClusterName: {{ include "humio-instance.fullname" . }}
   name: "k8s-metrics"
@@ -117,6 +133,8 @@ apiVersion: core.humio.com/v1alpha1
 kind: HumioParser
 metadata:
   name: {{ include "humio-instance.fullname" . }}--all-humio-infra-k8s-logs
+  labels:
+    {{- include "humio-instance.labels" . | nindent 4 }}
 spec:
   managedClusterName: {{ include "humio-instance.fullname" . }}
   name: "k8s-logs"
@@ -129,6 +147,8 @@ apiVersion: core.humio.com/v1alpha1
 kind: HumioIngestToken
 metadata:
   name: {{ include "humio-instance.fullname" . }}-all-humio-infra-k8s-metrics
+  labels:
+    {{- include "humio-instance.labels" . | nindent 4 }}
 spec:
   managedClusterName: {{ include "humio-instance.fullname" . }}
   name: {{ include "humio-instance.fullname" . }}-all-humio-infra-k8s-metrics
@@ -140,6 +160,8 @@ apiVersion: core.humio.com/v1alpha1
 kind: HumioIngestToken
 metadata:
   name: {{ include "humio-instance.fullname" . }}-all-humio-infra-k8s-logs
+  labels:
+    {{- include "humio-instance.labels" . | nindent 4 }}
 spec:
   managedClusterName: {{ include "humio-instance.fullname" . }}
   name: {{ include "humio-instance.fullname" . }}-all-humio-infra-k8s-logs
@@ -151,6 +173,8 @@ apiVersion: core.humio.com/v1alpha1
 kind: HumioIngestToken
 metadata:
   name: {{ include "humio-instance.fullname" . }}-all-humio-infra-otel-metrics
+  labels:
+    {{- include "humio-instance.labels" . | nindent 4 }}
 spec:
   managedClusterName: {{ include "humio-instance.fullname" . }}
   name: {{ include "humio-instance.fullname" . }}-all-humio-infra-otel-metrics
@@ -162,6 +186,8 @@ apiVersion: core.humio.com/v1alpha1
 kind: HumioIngestToken
 metadata:
   name: {{ include "humio-instance.fullname" . }}-all-humio-infra-otel-logs
+  labels:
+    {{- include "humio-instance.labels" . | nindent 4 }}
 spec:
   managedClusterName: {{ include "humio-instance.fullname" . }}
   name: {{ include "humio-instance.fullname" . }}-all-humio-infra-otel-logs
@@ -173,6 +199,8 @@ apiVersion: core.humio.com/v1alpha1
 kind: HumioIngestToken
 metadata:
   name: {{ include "humio-instance.fullname" . }}-all-humio-infra-otel-trace
+  labels:
+    {{- include "humio-instance.labels" . | nindent 4 }}
 spec:
   managedClusterName: {{ include "humio-instance.fullname" . }}
   name: {{ include "humio-instance.fullname" . }}-all-humio-infra-otel-trace

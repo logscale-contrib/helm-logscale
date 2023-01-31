@@ -9,6 +9,7 @@ metadata:
 {{- end }}
   labels:
     strimzi.io/cluster: {{ .Values.humio.kafka.strimziCluster }}
+    {{- include "humio-instance.labels" . | nindent 4 }}
 spec:
 {{- if .Values.humio.kafka.prefixEnable }}
   topicName: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-global-events
