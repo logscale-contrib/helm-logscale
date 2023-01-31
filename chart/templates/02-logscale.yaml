@@ -35,8 +35,13 @@ spec:
   {{- end }}  
 
   environmentVariables:
+{{- if eq .Values.humio.kafka.manager "strimzi" }}
+  - name: KAFKA_SERVERS
+    value:  {{ include "humio-instance.fullname" . }}-kafka-bootstrap
+{{- else }}
   - name: KAFKA_SERVERS
     value:  {{ include "humio-instance.externalService.kafka" . | quote }}
+{{- end }}    
 {{- if or (eq .Values.humio.kafka.manager "strimzi") (eq .Values.humio.kafka.manager "external") }}
   - name: KAFKA_MANAGED_BY_HUMIO
     value: "false"
@@ -215,8 +220,13 @@ spec:
         extraKafkaConfigs: {{ .Values.humio.kafka.extraConfig | quote }}
         environmentVariables:
 
+        {{- if eq .Values.humio.kafka.manager "strimzi" }}
+          - name: KAFKA_SERVERS
+            value:  {{ include "humio-instance.fullname" . }}-kafka-bootstrap
+        {{- else }}
           - name: KAFKA_SERVERS
             value:  {{ include "humio-instance.externalService.kafka" . | quote }}
+        {{- end }}   
         {{- if or (eq .Values.humio.kafka.manager "strimzi") (eq .Values.humio.kafka.manager "external") }}
           - name: KAFKA_MANAGED_BY_HUMIO
             value: "false"
@@ -335,10 +345,13 @@ spec:
         {{- end }}            
         extraKafkaConfigs: {{ .Values.humio.kafka.extraConfig | quote }}
         environmentVariables:
-          # - name: "HUMIO_MEMORY_OPTS"
-            # value: "-Xss2m -Xms1g -Xmx2g -XX:MaxDirectMemorySize=1g"
+        {{- if eq .Values.humio.kafka.manager "strimzi" }}
+          - name: KAFKA_SERVERS
+            value:  {{ include "humio-instance.fullname" . }}-kafka-bootstrap
+        {{- else }}
           - name: KAFKA_SERVERS
             value:  {{ include "humio-instance.externalService.kafka" . | quote }}
+        {{- end }}   
         {{- if or (eq .Values.humio.kafka.manager "strimzi") (eq .Values.humio.kafka.manager "external") }}
           - name: KAFKA_MANAGED_BY_HUMIO
             value: "false"
