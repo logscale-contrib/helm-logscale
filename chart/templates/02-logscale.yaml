@@ -37,7 +37,7 @@ spec:
   environmentVariables:
 {{- if eq .Values.humio.kafka.manager "strimzi" }}
   - name: KAFKA_SERVERS
-    value:  {{ include "humio-instance.fullname" . }}-kafka-bootstrap
+    value:  {{ include "humio-instance.fullname" . }}-kafka-bootstrap:9092
 {{- else }}
   - name: KAFKA_SERVERS
     value:  {{ include "humio-instance.externalService.kafka" . | quote }}
@@ -222,7 +222,7 @@ spec:
 
         {{- if eq .Values.humio.kafka.manager "strimzi" }}
           - name: KAFKA_SERVERS
-            value:  {{ include "humio-instance.fullname" . }}-kafka-bootstrap
+            value:  {{ include "humio-instance.fullname" . }}-kafka-bootstrap:9092
         {{- else }}
           - name: KAFKA_SERVERS
             value:  {{ include "humio-instance.externalService.kafka" . | quote }}
@@ -347,7 +347,7 @@ spec:
         environmentVariables:
         {{- if eq .Values.humio.kafka.manager "strimzi" }}
           - name: KAFKA_SERVERS
-            value:  {{ include "humio-instance.fullname" . }}-kafka-bootstrap
+            value:  {{ include "humio-instance.fullname" . }}-kafka-bootstrap:9092
         {{- else }}
           - name: KAFKA_SERVERS
             value:  {{ include "humio-instance.externalService.kafka" . | quote }}
