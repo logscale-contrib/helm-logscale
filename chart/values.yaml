@@ -91,3 +91,60 @@ setroot:
   image:
     repository: curlimages/curl
     tag: 7.87.0
+
+kafka:
+  replicas: 3
+  allowAutoCreate: true
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: kubernetes.io/arch
+                operator: In
+                values:
+                  - amd64
+              - key: kubernetes.io/os
+                operator: In
+                values:
+                  - linux
+  resources:
+    requests:
+      memory: 3Gi
+      cpu: 1
+    limits:
+      memory: 4Gi
+      cpu: 2
+  storage:
+    type: persistent-claim
+    size: 250Gi
+    deleteClaim: true
+    #class: managed-csi-premium
+
+zookeeper:
+  replicas: 5
+  resources:
+    requests:
+      memory: 3Gi
+      cpu: 1
+    limits:
+      memory: 4Gi
+      cpu: 2
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: kubernetes.io/arch
+                operator: In
+                values:
+                  - amd64
+              - key: kubernetes.io/os
+                operator: In
+                values:
+                  - linux
+  storage:
+    deleteClaim: true
+    type: persistent-claim
+    size: 32Gi
+#    class: managed-csi-premium

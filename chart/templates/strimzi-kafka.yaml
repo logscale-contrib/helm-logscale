@@ -1,4 +1,4 @@
-{{- if .Values.kafka.manager eq 'strimzi' -}}
+{{- if eq .Values.humio.kafka.manager "strimzi" -}}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -23,10 +23,8 @@ metadata:
 spec:
   cruiseControl: {}
   entityOperator:
-    topicOperator:
-      watchedNamespace: {{.Release.namespace}}
-    userOperator: 
-      watchedNamespace: {{.Release.namespace}}
+    topicOperator: {}
+    userOperator: {}
   kafka:
     template:
       pod:
