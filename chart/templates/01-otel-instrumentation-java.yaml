@@ -1,0 +1,43 @@
+apiVersion: opentelemetry.io/v1alpha1
+kind: Instrumentation
+metadata:
+  name: {{ include "humio-instance.fullname" . }}-java
+  labels:
+    {{- include "humio-instance.labels" . | nindent 4 }}  
+spec:
+  env:
+    - name: OTEL_TRACES_EXPORTER
+      value: otlp
+    - name: OTEL_METRICS_EXPORTER
+      value: otlp
+    - name: OTEL_LOGS_EXPORTER
+      value: otlp
+    # - name: OTEL_EXPORTER_OTLP_ENDPOINT
+    #   value: http://humio-agent-apphumio-collector-headless:4317
+    # - name: OTEL_EXPORTER_OTLP_TIMEOUT
+    #   value: "20"
+    # - name: SPLUNK_TRACE_RESPONSE_HEADER_ENABLED
+    #   value: "true"
+  exporter:
+    endpoint: http://{{ include "humio-instance.fullname" . }-app-headless.{{ .Release.Namespace }}:4317
+
+  propagators:
+    - tracecontext
+    - baggage
+  # sampler:
+  #   type: parentbased_traceidratio
+  #   argument: "0.25"
+  java:
+    env:
+      - name: OTEL_JAVAAGENT_DEBUG
+        value: "false"
+      - name: OTEL_INSTRUMENTATION_JDBC_ENABLED
+        value: "false"
+      - name: OTEL_INSTRUMENTATION_RUNTIME_METRICS_ENABLED
+        value: "true"
+      - name: OTEL_INSTRUMENTATION_LOG4J_CONTEXT_DATA_ENABLED
+        value: "true"
+      - name: OTEL_INSTRUMENTATION_LOG4J_APPENDER_ENABLED
+        value: "true"
+      - name: OTEL_INSTRUMENTATION_OSHIENABLED
+        value: "true"
