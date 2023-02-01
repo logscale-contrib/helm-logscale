@@ -237,3 +237,4 @@ otel:
     cluster: false
     nodes: false
     serviceaccount: false
+  resourcedetectors: [env]

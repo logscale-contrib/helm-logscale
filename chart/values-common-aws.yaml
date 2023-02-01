@@ -8,10 +8,10 @@ humio:
 
   #Kafka
   kafka:
-      manager: strimzi
-      prefixEnable: true
-      strimziCluster: "ops-logscale-strimzi-kafka"
-      externalKafkaHostname: "ops-logscale-strimzi-kafka-kafka-bootstrap:9092"
+    manager: strimzi
+    prefixEnable: true
+    strimziCluster: "ops-logscale-strimzi-kafka"
+    externalKafkaHostname: "ops-logscale-strimzi-kafka-kafka-bootstrap:9092"
 
   #Image is shared by all node pools
   image:
@@ -94,13 +94,13 @@ humio:
       enabled: true
       tls: false
       annotations:
-          "alb.ingress.kubernetes.io/certificate-arn" : "${dependency.acm_ui.outputs.acm_certificate_arn}"
-          "alb.ingress.kubernetes.io/listen-ports"    : "[{\"HTTP\": 80}, {\"HTTPS\": 443}]"
-          "alb.ingress.kubernetes.io/ssl-redirect"    : "443"
-          "alb.ingress.kubernetes.io/scheme"          : "internet-facing"
-          "alb.ingress.kubernetes.io/target-type"     : "ip"
-          "alb.ingress.kubernetes.io/group.name"      : "logscale-${local.env}"
-          "external-dns.alpha.kubernetes.io/hostname" : "logscale-ops-inputs.${local.domain_name}"
+        "alb.ingress.kubernetes.io/certificate-arn": "${dependency.acm_ui.outputs.acm_certificate_arn}"
+        "alb.ingress.kubernetes.io/listen-ports": '[{"HTTP": 80}, {"HTTPS": 443}]'
+        "alb.ingress.kubernetes.io/ssl-redirect": "443"
+        "alb.ingress.kubernetes.io/scheme": "internet-facing"
+        "alb.ingress.kubernetes.io/target-type": "ip"
+        "alb.ingress.kubernetes.io/group.name": "logscale-${local.env}"
+        "external-dns.alpha.kubernetes.io/hostname": "logscale-ops-inputs.${local.domain_name}"
   nodepools:
     ingest:
       nodeCount: 2
@@ -181,3 +181,6 @@ humio:
                     operator: In
                     values: ["ops-logscale-http-only"]
               topologyKey: "kubernetes.io/hostname"
+
+otel:
+  resourcedetectors: [env, aws]

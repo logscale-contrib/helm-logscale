@@ -176,3 +176,6 @@ humio:
                     operator: In
                     values: ["ops-logscale-http-only"]
               topologyKey: "kubernetes.io/hostname"
+
+otel:
+  resourcedetectors: [env, azure]

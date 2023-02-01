@@ -324,7 +324,10 @@ spec:
       #     - type: remove
       #       field: body.__MONOTONIC_TIMESTAMP
       resourcedetection:
-        detectors: [env, {{ .Values.platform }}]
+        detectors: 
+{{- range .Values.otel.resourcedetectors }}
+          - {{.}}
+{{- end }}
         timeout: 2s
         override: false
     service:

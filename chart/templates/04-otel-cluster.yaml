@@ -56,7 +56,10 @@ spec:
     processors:
       batch:
       resourcedetection:
-        detectors: [env, {{ .Values.platform }}]
+        detectors: 
+{{- range .Values.otel.resourcedetectors }}
+          - {{.}}
+{{- end }}
       k8sattributes:
         auth_type: "serviceAccount"
         passthrough: false
