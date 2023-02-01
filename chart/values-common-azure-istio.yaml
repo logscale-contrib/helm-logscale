@@ -1,3 +1,4 @@
+platform: azure
 humio:
   # Object Storage Settings
   s3mode: s3proxy

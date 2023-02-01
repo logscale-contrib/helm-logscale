@@ -324,7 +324,7 @@ spec:
       #     - type: remove
       #       field: body.__MONOTONIC_TIMESTAMP
       resourcedetection:
-        detectors: [env, aks,azure]
+        detectors: [env, {{ .Values.platform }}]
         timeout: 2s
         override: false
     service:

@@ -1,3 +1,4 @@
+platform: aws
 humio:
   # Object Storage Settings
   s3mode: aws
