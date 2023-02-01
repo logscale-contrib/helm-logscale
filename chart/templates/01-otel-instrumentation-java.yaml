@@ -1,3 +1,4 @@
+{{- if .Values.otel.components.app }}
 apiVersion: opentelemetry.io/v1alpha1
 kind: Instrumentation
 metadata:
@@ -19,7 +20,7 @@ spec:
     # - name: SPLUNK_TRACE_RESPONSE_HEADER_ENABLED
     #   value: "true"
   exporter:
-    endpoint: http://{{ include "humio-instance.fullname" . }-app-headless.{{ .Release.Namespace }}:4317
+    endpoint: http://{{ include "humio-instance.fullname" . }}-app-headless.{{ .Release.Namespace }}:4317
 
   propagators:
     - tracecontext
@@ -41,3 +42,4 @@ spec:
         value: "true"
       - name: OTEL_INSTRUMENTATION_OSHIENABLED
         value: "true"
+{{- end }}                      

@@ -2,7 +2,7 @@
 apiVersion: opentelemetry.io/v1alpha1
 kind: OpenTelemetryCollector
 metadata:
-  name: {{ include "humio-instance.fullname" . }-app
+  name: {{ include "humio-instance.fullname" . }}-app
   labels:
     {{- include "humio-instance.labels" . | nindent 4 }}
   {{- with .Values.otel.serviceAccount.annotations }}
