@@ -182,6 +182,12 @@
                         "filePath": "/chart/values-strimzi.yaml",
                         "isChecked": true,
                         "order": 7
+                    },
+                    "/chart/values-otel-self": {
+                        "id": "/chart/values-otel-self",
+                        "filePath": "/chart/values-otel-self.yaml",
+                        "isChecked": true,
+                        "order": 8
                     }
                 }
             }
