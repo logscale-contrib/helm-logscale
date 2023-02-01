@@ -1,0 +1,6 @@
+otel:
+  components:
+    app: true
+    cluster: true
+    nodes: true
+    serviceaccount: true
