@@ -17,6 +17,8 @@ humio:
   image:
     tag: 1.70.0
 
+  podAnnotations:
+    thisisatest: "value"
   # Primary Node pool used for digest/storage
   nodeCount: 3
   #In general for these node requests and limits should match

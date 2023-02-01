@@ -20,7 +20,7 @@ spec:
     # - name: SPLUNK_TRACE_RESPONSE_HEADER_ENABLED
     #   value: "true"
   exporter:
-    endpoint: http://{{ include "humio-instance.fullname" . }}-app-collector-headless.{{ .Release.Namespace }}:4317
+    endpoint: http://{{ include "humio-instance.fullname" . }}-app-collector-headless:4317
 
   propagators:
     - tracecontext

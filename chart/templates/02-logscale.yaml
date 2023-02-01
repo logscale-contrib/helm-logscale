@@ -192,6 +192,13 @@ spec:
         authServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
         humioServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
 
+        podAnnotations:
+          "instrumentation.opentelemetry.io/inject-java": {{ include "humio-instance.fullname" . }}-java
+          "instrumentation.opentelemetry.io/container-names": "humio"
+        {{- with .Values.humio.podAnnotations }}
+          {{- toYaml . | nindent 14 }}
+        {{- end }}
+
         extraHumioVolumeMounts:
           - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
             mountPath: /var/lib/humio/config/logging
@@ -319,6 +326,13 @@ spec:
         authServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
         humioServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
 
+        podAnnotations:
+          "instrumentation.opentelemetry.io/inject-java": {{ include "humio-instance.fullname" . }}-java
+          "instrumentation.opentelemetry.io/container-names": "humio"
+        {{- with .Values.humio.podAnnotations }}
+          {{- toYaml . | nindent 14 }}
+        {{- end }}
+        
         extraHumioVolumeMounts:
           - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
             mountPath: /var/lib/humio/config/logging
