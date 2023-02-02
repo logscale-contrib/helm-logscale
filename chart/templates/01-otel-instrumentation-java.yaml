@@ -18,7 +18,7 @@ spec:
     endpoint: http://{{ include "humio-instance.fullname" . }}-app-collector-headless:4317
     {{- else }}
     endpoint: {{ .Values.otlp.components.otlpURI }}
-    {{- end if }}
+    {{- end }}
   propagators:
     - tracecontext
     - baggage
