@@ -233,6 +233,7 @@ otel:
   affinity: {}
 
   components:
+    inject: false
     app: false
     cluster: false
     nodes: false

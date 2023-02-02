@@ -1,4 +1,3 @@
-#Note: Kafka is a subchart
 kafka:
   allowAutoCreate: false
   # affinity:
