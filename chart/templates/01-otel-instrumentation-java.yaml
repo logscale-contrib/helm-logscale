@@ -1,4 +1,4 @@
-{{- if .Values.otel.components.app }}
+{{- if .Values.otel.components.inject }}
 apiVersion: opentelemetry.io/v1alpha1
 kind: Instrumentation
 metadata:
@@ -13,15 +13,12 @@ spec:
       value: otlp
     - name: OTEL_LOGS_EXPORTER
       value: otlp
-    # - name: OTEL_EXPORTER_OTLP_ENDPOINT
-    #   value: http://humio-agent-apphumio-collector-headless:4317
-    # - name: OTEL_EXPORTER_OTLP_TIMEOUT
-    #   value: "20"
-    # - name: SPLUNK_TRACE_RESPONSE_HEADER_ENABLED
-    #   value: "true"
   exporter:
+    {{- if .Values.otlp.components.app }}
     endpoint: http://{{ include "humio-instance.fullname" . }}-app-collector-headless:4317
-
+    {{- else }}
+    endpoint: {{ .Values.otlp.components.otlpURI }}
+    {{- end if }}
   propagators:
     - tracecontext
     - baggage
