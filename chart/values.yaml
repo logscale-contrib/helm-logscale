@@ -233,5 +233,6 @@ otel:
     app: false
     cluster: false
     nodes: false
+    logScaleConfig: false
     serviceaccount: false
   resourcedetectors: [env]
