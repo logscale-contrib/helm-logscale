@@ -83,10 +83,6 @@ humio:
 
   affinity: {}
 
-opentelemetryOperator:
-  enabled: true
-  serviceAccount:
-    create: true
 setroot:
   image:
     repository: curlimages/curl
