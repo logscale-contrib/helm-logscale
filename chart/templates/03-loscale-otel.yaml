@@ -153,7 +153,7 @@ spec:
   managedClusterName: {{ include "humio-instance.fullname" . }}
   name: {{ include "humio-instance.fullname" . }}-all-humio-infra-k8s-metrics
   repositoryName: "all-humio-infra-metrics"
-  parserName: "k8s-metrics"
+  # parserName: "k8s-metrics"
   tokenSecretName: {{ include "humio-instance.fullname" . }}-all-humio-infra-k8s-metrics  
 ---  
 apiVersion: core.humio.com/v1alpha1
@@ -166,7 +166,7 @@ spec:
   managedClusterName: {{ include "humio-instance.fullname" . }}
   name: {{ include "humio-instance.fullname" . }}-all-humio-infra-k8s-logs
   repositoryName: "all-humio-infra-logs"
-  parserName: "k8s-logs"
+  # parserName: "k8s-logs"
   tokenSecretName: {{ include "humio-instance.fullname" . }}-all-humio-infra-k8s-logs  
 ---  
 apiVersion: core.humio.com/v1alpha1
@@ -179,7 +179,7 @@ spec:
   managedClusterName: {{ include "humio-instance.fullname" . }}
   name: {{ include "humio-instance.fullname" . }}-all-humio-infra-otel-metrics
   repositoryName: "all-humio-infra-metrics"
-  parserName: "otel-metrics"
+  # parserName: "otel-metrics"
   tokenSecretName: {{ include "humio-instance.fullname" . }}-all-humio-infra-otel-metrics  
 ---  
 apiVersion: core.humio.com/v1alpha1
@@ -192,7 +192,7 @@ spec:
   managedClusterName: {{ include "humio-instance.fullname" . }}
   name: {{ include "humio-instance.fullname" . }}-all-humio-infra-otel-logs
   repositoryName: "all-humio-infra-logs"
-  parserName: "otel-logs"
+  # parserName: "otel-logs"
   tokenSecretName: {{ include "humio-instance.fullname" . }}-all-humio-infra-otel-logs  
 ---  
 apiVersion: core.humio.com/v1alpha1
@@ -205,6 +205,6 @@ spec:
   managedClusterName: {{ include "humio-instance.fullname" . }}
   name: {{ include "humio-instance.fullname" . }}-all-humio-infra-otel-trace
   repositoryName: "all-humio-infra-trace"
-  parserName: "otel-trace"
+  # parserName: "otel-trace"
   tokenSecretName: {{ include "humio-instance.fullname" . }}-all-humio-infra-otel-trace  
 {{- end }}    
