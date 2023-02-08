@@ -30,11 +30,11 @@ spec:
             secretKeyRef:
                 name: {{ include "humio-instance.fullname" . }}-all-humio-infra-otel-metrics  
                 key: token
-        - name: HUMIO_TOKEN_OTEL_TRACE
-          valueFrom:
-            secretKeyRef:
-                name: {{ include "humio-instance.fullname" . }}-all-humio-infra-otel-trace
-                key: token
+        # - name: HUMIO_TOKEN_OTEL_TRACE
+        #   valueFrom:
+        #     secretKeyRef:
+        #         name: {{ include "humio-instance.fullname" . }}-all-humio-infra-otel-trace
+        #         key: token
   config: |
     exporters:
         otlphttp/otel_logs:
