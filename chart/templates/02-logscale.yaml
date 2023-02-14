@@ -31,7 +31,7 @@ spec:
   tolerations:
     {{- toYaml . | nindent 4 }}
   {{- end }}  
-  {{- with .Values.humio.nodepools.ingest.topologySpreadConstraints }}
+  {{- with .Values.humio.topologySpreadConstraints }}
   topologySpreadConstraints:
     {{- toYaml . | nindent 4 }}
   {{- end }}
@@ -372,7 +372,6 @@ spec:
         tolerations:
           {{- toYaml . | nindent 14 }}
         {{- end }}
-        :        
         {{- with .Values.humio.nodepools.ui.topologySpreadConstraints }}
         topologySpreadConstraints:
           {{- toYaml . | nindent 14 }}
