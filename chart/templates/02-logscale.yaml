@@ -31,7 +31,10 @@ spec:
   tolerations:
     {{- toYaml . | nindent 4 }}
   {{- end }}  
-
+  {{- with .Values.humio.nodepools.ingest.topologySpreadConstraints }}
+  topologySpreadConstraints:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   
   dataVolumePersistentVolumeClaimSpecTemplate:
   {{- with .Values.humio.dataVolumePersistentVolumeClaimSpecTemplate }}  
@@ -229,6 +232,10 @@ spec:
         tolerations:
           {{- toYaml . | nindent 14 }}
         {{- end }}  
+        {{- with .Values.humio.nodepools.ingest.topologySpreadConstraints }}
+        topologySpreadConstraints:
+          {{- toYaml . | nindent 14 }}
+        {{- end }}
 
         extraKafkaConfigs: {{ .Values.humio.kafka.extraConfig | quote }}
         environmentVariables:
@@ -364,7 +371,12 @@ spec:
         {{- with .Values.humio.nodepools.ui.tolerations }}
         tolerations:
           {{- toYaml . | nindent 14 }}
-        {{- end }}            
+        {{- end }}
+        :        
+        {{- with .Values.humio.nodepools.ui.topologySpreadConstraints }}
+        topologySpreadConstraints:
+          {{- toYaml . | nindent 14 }}
+        {{- end }}
         extraKafkaConfigs: {{ .Values.humio.kafka.extraConfig | quote }}
         environmentVariables:
         {{- if eq .Values.humio.kafka.manager "strimzi" }}
