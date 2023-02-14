@@ -36,7 +36,7 @@ spec:
         tolerations:
           {{- toYaml . | nindent 10 }}
         {{- end }}          
-        {{- with .Values.kafka.tolerations }}
+        {{- with .Values.kafka.topologySpreadConstraints }}
         topologySpreadConstraints:
           {{- toYaml . | nindent 10 }}
         {{- end }}             
@@ -90,7 +90,7 @@ spec:
         tolerations:
           {{- toYaml . | nindent 10 }}
         {{- end }}
-        {{- with .Values.topologySpreadConstraints.tolerations }}
+        {{- with .Values.zookeeper.topologySpreadConstraints }}
         topologySpreadConstraints:
           {{- toYaml . | nindent 10 }}
         {{- end }}        
