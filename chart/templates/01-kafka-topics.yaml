@@ -16,8 +16,8 @@ spec:
 {{ else }}
   topicName: global-events
 {{- end }}
-  partitions: 1
-  replicas: 3
+  partitions: 2
+  replicas: {{ .Values.humio.targetReplicationFactor }}
   config:
     cleanup.policy: "compact,delete"
     compression.type: producer
@@ -43,7 +43,7 @@ spec:
   topicName: transientChatter-events
 {{- end }}
   partitions: 12
-  replicas: 3
+  replicas: {{ .Values.humio.targetReplicationFactor }}
   config:
     cleanup.policy: "compact,delete"
     compression.type: producer
@@ -66,8 +66,8 @@ spec:
 {{ else }}
   topicName: humio-ingest
 {{- end }}
-  partitions: 720
-  replicas: 2
+  partitions: {{ .Values.humio.digestPartitionsCount }}
+  replicas: {{ .Values.humio.targetReplicationFactor }}
   config:
     cleanup.policy: "compact,delete"
     compression.type: producer

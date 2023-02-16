@@ -19,7 +19,7 @@ humio:
     repository: humio/humio-core
     tag: "1.70.0--SNAPSHOT--build-323434--SHA-dfa77220c22755bc0f8dee124ef548e8c0d740b1"
   autoRebalancePartitions: true
-  digestPartitionsCount: 720
+  digestPartitionsCount: 24
   storagePartitionsCount: 24
   targetReplicationFactor: 2
   smtp:
