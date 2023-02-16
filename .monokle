@@ -22,7 +22,7 @@
     },
     "kubeConfig": {
         "path": "/Users/rfaircloth/.kube/config",
-        "currentContext": "logscale-admin"
+        "currentContext": "arn:aws:eks:us-east-1:473367108367:cluster/logscale-prod-ops"
     },
     "helm": {
         "previewConfigurationMap": {

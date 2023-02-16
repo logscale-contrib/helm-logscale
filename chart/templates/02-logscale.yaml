@@ -153,6 +153,8 @@ spec:
     value: "/var/lib/humio/config/logging/log4j2-json-k8s.xml"
   - name:  HUMIO_JVM_LOG_OPTS
     value: "-Xlog:jit*=debug:file=/data/java-logs/jit_humio.log:time,tags:filecount=5,filesize=1024000 -Xlog:gc+jni=debug -Xlog:gc*:file=/data/java-logs/gc_humio.log:time,tags:filecount=5,filesize=102400"
+  - name: MAX_SERIES_LIMIT
+    value: 1000    
   extraHumioVolumeMounts:
     - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
       mountPath: /var/lib/humio/config/logging
@@ -202,7 +204,7 @@ spec:
           "instrumentation.opentelemetry.io/inject-java": {{ include "humio-instance.fullname" . }}-java
           "instrumentation.opentelemetry.io/container-names": "humio"
         {{- with .Values.humio.podAnnotations }}
-          {{- toYaml . | nindent 14 }}
+          {{- toYaml . | nindent 10 }}
         {{- end }}
         {{- end }}
 
@@ -226,15 +228,15 @@ spec:
           {{- toYaml .Values.humio.nodepools.ingest.resources | nindent 14 }}
         {{- with .Values.humio.nodepools.ingest.affinity }}
         affinity:
-          {{- toYaml . | nindent 14 }}
+          {{- toYaml . | nindent 10 }}
         {{- end }}  
         {{- with .Values.humio.nodepools.ingest.tolerations }}
         tolerations:
-          {{- toYaml . | nindent 14 }}
+          {{- toYaml . | nindent 10 }}
         {{- end }}  
         {{- with .Values.humio.nodepools.ingest.topologySpreadConstraints }}
         topologySpreadConstraints:
-          {{- toYaml . | nindent 14 }}
+          {{- toYaml . | nindent 10 }}
         {{- end }}
 
         extraKafkaConfigs: {{ .Values.humio.kafka.extraConfig | quote }}
@@ -280,6 +282,8 @@ spec:
             value: "false"
           - name: S3_STORAGE_PREFERRED_COPY_SOURCE
             value: "true"
+          - name: MAX_SERIES_LIMIT
+            value: 1000    
 
         {{- if eq  .Values.humio.s3mode "aws" }}
           - name: S3_STORAGE_ENCRYPTION_KEY
@@ -343,7 +347,7 @@ spec:
           "instrumentation.opentelemetry.io/container-names": "humio"
         {{- end }}
         {{- with .Values.humio.podAnnotations }}
-          {{- toYaml . | nindent 14 }}
+          {{- toYaml . | nindent 10 }}
         {{- end }}
 
         extraHumioVolumeMounts:
@@ -366,15 +370,15 @@ spec:
           {{- toYaml .Values.humio.nodepools.ui.resources | nindent 14 }}
         {{- with .Values.humio.nodepools.ui.affinity }}
         affinity:
-          {{- toYaml . | nindent 14 }}
+          {{- toYaml . | nindent 10 }}
         {{- end }}  
         {{- with .Values.humio.nodepools.ui.tolerations }}
         tolerations:
-          {{- toYaml . | nindent 14 }}
+          {{- toYaml . | nindent 10 }}
         {{- end }}
         {{- with .Values.humio.nodepools.ui.topologySpreadConstraints }}
         topologySpreadConstraints:
-          {{- toYaml . | nindent 14 }}
+          {{- toYaml . | nindent 10 }}
         {{- end }}
         extraKafkaConfigs: {{ .Values.humio.kafka.extraConfig | quote }}
         environmentVariables:
@@ -428,6 +432,8 @@ spec:
             value: "true"
           - name: S3_STORAGE_PREFERRED_COPY_SOURCE
             value: "true"
+          - name: MAX_SERIES_LIMIT
+            value: 1000    
 
         {{- if eq  .Values.humio.s3mode "aws" }}
           - name: S3_STORAGE_ENCRYPTION_KEY
