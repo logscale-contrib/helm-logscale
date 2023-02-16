@@ -24,7 +24,7 @@ spec:
     min.insync.replicas: 2    
     max.message.bytes: 2097152
     retention.bytes: 1073741824
-    retention.ms: -1
+    retention.ms: 86400
 ---
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
@@ -48,7 +48,7 @@ spec:
     cleanup.policy: "compact,delete"
     compression.type: producer
     min.insync.replicas: 2    
-    retention.ms: 3600000
+    retention.ms: 86400
 ---
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
@@ -72,7 +72,7 @@ spec:
     cleanup.policy: "compact,delete"
     compression.type: producer
     min.insync.replicas: 2
-    retention.ms: 604800000    
+    retention.ms: 259200    
     retention.bytes: 1073741824
     max.message.bytes: 10485760
 # ---
