@@ -154,7 +154,7 @@ spec:
   - name:  HUMIO_JVM_LOG_OPTS
     value: "-Xlog:jit*=debug:file=/data/java-logs/jit_humio.log:time,tags:filecount=5,filesize=1024000 -Xlog:gc+jni=debug -Xlog:gc*:file=/data/java-logs/gc_humio.log:time,tags:filecount=5,filesize=102400"
   - name: MAX_SERIES_LIMIT
-    value: 1000    
+    value: "1000"    
   extraHumioVolumeMounts:
     - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
       mountPath: /var/lib/humio/config/logging
@@ -283,7 +283,7 @@ spec:
           - name: S3_STORAGE_PREFERRED_COPY_SOURCE
             value: "true"
           - name: MAX_SERIES_LIMIT
-            value: 1000    
+            value: "1000"    
 
         {{- if eq  .Values.humio.s3mode "aws" }}
           - name: S3_STORAGE_ENCRYPTION_KEY
@@ -433,7 +433,7 @@ spec:
           - name: S3_STORAGE_PREFERRED_COPY_SOURCE
             value: "true"
           - name: MAX_SERIES_LIMIT
-            value: 1000    
+            value: "1000"    
 
         {{- if eq  .Values.humio.s3mode "aws" }}
           - name: S3_STORAGE_ENCRYPTION_KEY
