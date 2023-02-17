@@ -153,8 +153,10 @@ spec:
     value: "/var/lib/humio/config/logging/log4j2-json-k8s.xml"
   - name:  HUMIO_JVM_LOG_OPTS
     value: "-Xlog:jit*=debug:file=/data/java-logs/jit_humio.log:time,tags:filecount=5,filesize=1024000 -Xlog:gc+jni=debug -Xlog:gc*:file=/data/java-logs/gc_humio.log:time,tags:filecount=5,filesize=102400"
-  - name: MAX_SERIES_LIMIT
-    value: "1000"    
+  {{- range .Values.humio.extraENV }}
+  - name: {{ .name }}
+    value: {{ .value | quote }}
+  {{- end }}  
   extraHumioVolumeMounts:
     - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
       mountPath: /var/lib/humio/config/logging
@@ -282,10 +284,7 @@ spec:
             value: "false"
           - name: S3_STORAGE_PREFERRED_COPY_SOURCE
             value: "true"
-          - name: MAX_SERIES_LIMIT
-            value: "1000"    
-
-        {{- if eq  .Values.humio.s3mode "aws" }}
+        {{- if eq .Values.humio.s3mode "aws" }}
           - name: S3_STORAGE_ENCRYPTION_KEY
             value: {{ .Values.humio.buckets.storageKey | default "off" | quote }}
           - name: BUCKET_STORAGE_SSE_COMPATIBLE
@@ -333,6 +332,10 @@ spec:
           - name: S3_STORAGE_BUCKET
             value: {{ .Values.humio.buckets.storage }}
         {{- end }}
+        {{- range .Values.humio.extraENV }}
+          - name: {{ .name }}
+            value: {{ .value | quote }}
+        {{- end }}  
     - name: http-only
       spec:
         image: "{{ .Values.humio.image.repository }}:{{ .Values.humio.image.tag }}"
@@ -432,9 +435,6 @@ spec:
             value: "true"
           - name: S3_STORAGE_PREFERRED_COPY_SOURCE
             value: "true"
-          - name: MAX_SERIES_LIMIT
-            value: "1000"    
-
         {{- if eq  .Values.humio.s3mode "aws" }}
           - name: S3_STORAGE_ENCRYPTION_KEY
             value: {{ .Values.humio.buckets.storageKey | default "off" | quote }}
@@ -483,3 +483,7 @@ spec:
           - name: S3_STORAGE_BUCKET
             value: {{ .Values.humio.buckets.storage }}
         {{- end }}        
+        {{- range .Values.humio.extraENV }}
+          - name: {{ .name }}
+            value: {{ .value | quote }}
+        {{- end }}  

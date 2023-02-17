@@ -30,6 +30,12 @@ humio:
     sender:
     port: 587
     startTLS: true
+  extraENV:
+    - name: MAX_SERIES_LIMIT
+      value: "1000"
+    - name: ENABLE_IOC_SERVICE
+      value: "false"
+
   jvmARGS:
     ""
     # -server -Xss2m
