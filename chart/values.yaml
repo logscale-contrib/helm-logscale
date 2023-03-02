@@ -92,7 +92,7 @@ humio:
 setroot:
   image:
     repository: curlimages/curl
-    tag: 7.87.0
+    tag: 7.88.1
 
 kafka:
   replicas: 3
