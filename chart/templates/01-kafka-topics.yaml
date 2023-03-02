@@ -8,22 +8,23 @@ metadata:
   name: global-events
 {{- end }}
   labels:
-    strimzi.io/cluster: {{ .Values.humio.kafka.strimziCluster }}
+    strimzi.io/cluster: {{ include "humio-instance.fullname" . }}
+    {{- include "humio-instance.labels" . | nindent 4 }}
 spec:
 {{- if .Values.humio.kafka.prefixEnable }}
   topicName: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-global-events
 {{ else }}
   topicName: global-events
 {{- end }}
-  partitions: 1
-  replicas: 3
+  partitions: 2
+  replicas: {{ .Values.humio.targetReplicationFactor }}
   config:
     cleanup.policy: "compact,delete"
     compression.type: producer
     min.insync.replicas: 2    
     max.message.bytes: 2097152
     retention.bytes: 1073741824
-    retention.ms: -1
+    retention.ms: 86400
 ---
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
@@ -34,7 +35,7 @@ metadata:
   name: transientchatter-events
 {{- end }}
   labels:
-    strimzi.io/cluster: {{ .Values.humio.kafka.strimziCluster }}
+    strimzi.io/cluster: {{ include "humio-instance.fullname" . }}
 spec:
 {{- if .Values.humio.kafka.prefixEnable }}
   topicName: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-transientChatter-events
@@ -42,12 +43,12 @@ spec:
   topicName: transientChatter-events
 {{- end }}
   partitions: 12
-  replicas: 3
+  replicas: {{ .Values.humio.targetReplicationFactor }}
   config:
     cleanup.policy: "compact,delete"
     compression.type: producer
     min.insync.replicas: 2    
-    retention.ms: 3600000
+    retention.ms: 86400
 ---
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
@@ -58,20 +59,20 @@ metadata:
   name: humio-ingest
 {{- end }}
   labels:
-    strimzi.io/cluster: {{ .Values.humio.kafka.strimziCluster }}
+    strimzi.io/cluster: {{ include "humio-instance.fullname" . }}
 spec:
 {{- if .Values.humio.kafka.prefixEnable }}
   topicName: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-humio-ingest
 {{ else }}
   topicName: humio-ingest
 {{- end }}
-  partitions: 720
-  replicas: 2
+  partitions: {{ .Values.humio.digestPartitionsCount }}
+  replicas: {{ .Values.humio.targetReplicationFactor }}
   config:
     cleanup.policy: "compact,delete"
     compression.type: producer
     min.insync.replicas: 2
-    retention.ms: 604800000    
+    retention.ms: 259200    
     retention.bytes: 1073741824
     max.message.bytes: 10485760
 # ---
@@ -80,7 +81,7 @@ spec:
 # metadata:
 #   name: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-kafka-user
 #   labels:
-#     strimzi.io/cluster: {{ .Values.humio.kafka.strimziCluster }}
+#     strimzi.io/cluster: {{ include "humio-instance.fullname" . }}
 # spec:
 #   authentication:
 #     type: scram-sha-512

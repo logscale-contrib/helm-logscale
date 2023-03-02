@@ -10,9 +10,13 @@ spec:
   authServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
   humioServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
 
-  {{- with .Values.humio.podAnnotations }}
   podAnnotations:
-    {{- toYaml . | nindent 4 }}
+  {{- if .Values.otel.components.inject }}                        
+    "instrumentation.opentelemetry.io/inject-java": {{ include "humio-instance.fullname" . }}-java
+    "instrumentation.opentelemetry.io/container-names": "humio"
+  {{- end }}
+  {{- with .Values.humio.podAnnotations }}
+    #{{- toYaml . | nindent 4 }}
   {{- end }}
 
   resources:
@@ -27,7 +31,10 @@ spec:
   tolerations:
     {{- toYaml . | nindent 4 }}
   {{- end }}  
-
+  {{- with .Values.humio.topologySpreadConstraints }}
+  topologySpreadConstraints:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   
   dataVolumePersistentVolumeClaimSpecTemplate:
   {{- with .Values.humio.dataVolumePersistentVolumeClaimSpecTemplate }}  
@@ -35,8 +42,13 @@ spec:
   {{- end }}  
 
   environmentVariables:
+{{- if eq .Values.humio.kafka.manager "strimzi" }}
+  - name: KAFKA_SERVERS
+    value:  {{ include "humio-instance.fullname" . }}-kafka-bootstrap:9092
+{{- else }}
   - name: KAFKA_SERVERS
     value:  {{ include "humio-instance.externalService.kafka" . | quote }}
+{{- end }}    
 {{- if or (eq .Values.humio.kafka.manager "strimzi") (eq .Values.humio.kafka.manager "external") }}
   - name: KAFKA_MANAGED_BY_HUMIO
     value: "false"
@@ -141,6 +153,10 @@ spec:
     value: "/var/lib/humio/config/logging/log4j2-json-k8s.xml"
   - name:  HUMIO_JVM_LOG_OPTS
     value: "-Xlog:jit*=debug:file=/data/java-logs/jit_humio.log:time,tags:filecount=5,filesize=1024000 -Xlog:gc+jni=debug -Xlog:gc*:file=/data/java-logs/gc_humio.log:time,tags:filecount=5,filesize=102400"
+  {{- range .Values.humio.extraENV }}
+  - name: {{ .name }}
+    value: {{ .value | quote }}
+  {{- end }}  
   extraHumioVolumeMounts:
     - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
       mountPath: /var/lib/humio/config/logging
@@ -185,6 +201,15 @@ spec:
         authServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
         humioServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
 
+        podAnnotations:
+        {{- if .Values.otel.components.inject }}
+          "instrumentation.opentelemetry.io/inject-java": {{ include "humio-instance.fullname" . }}-java
+          "instrumentation.opentelemetry.io/container-names": "humio"
+        {{- with .Values.humio.podAnnotations }}
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- end }}
+
         extraHumioVolumeMounts:
           - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
             mountPath: /var/lib/humio/config/logging
@@ -205,18 +230,27 @@ spec:
           {{- toYaml .Values.humio.nodepools.ingest.resources | nindent 14 }}
         {{- with .Values.humio.nodepools.ingest.affinity }}
         affinity:
-          {{- toYaml . | nindent 14 }}
+          {{- toYaml . | nindent 10 }}
         {{- end }}  
         {{- with .Values.humio.nodepools.ingest.tolerations }}
         tolerations:
-          {{- toYaml . | nindent 14 }}
+          {{- toYaml . | nindent 10 }}
         {{- end }}  
+        {{- with .Values.humio.nodepools.ingest.topologySpreadConstraints }}
+        topologySpreadConstraints:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
 
         extraKafkaConfigs: {{ .Values.humio.kafka.extraConfig | quote }}
         environmentVariables:
 
+        {{- if eq .Values.humio.kafka.manager "strimzi" }}
+          - name: KAFKA_SERVERS
+            value:  {{ include "humio-instance.fullname" . }}-kafka-bootstrap:9092
+        {{- else }}
           - name: KAFKA_SERVERS
             value:  {{ include "humio-instance.externalService.kafka" . | quote }}
+        {{- end }}   
         {{- if or (eq .Values.humio.kafka.manager "strimzi") (eq .Values.humio.kafka.manager "external") }}
           - name: KAFKA_MANAGED_BY_HUMIO
             value: "false"
@@ -250,8 +284,7 @@ spec:
             value: "false"
           - name: S3_STORAGE_PREFERRED_COPY_SOURCE
             value: "true"
-
-        {{- if eq  .Values.humio.s3mode "aws" }}
+        {{- if eq .Values.humio.s3mode "aws" }}
           - name: S3_STORAGE_ENCRYPTION_KEY
             value: {{ .Values.humio.buckets.storageKey | default "off" | quote }}
           - name: BUCKET_STORAGE_SSE_COMPATIBLE
@@ -299,6 +332,10 @@ spec:
           - name: S3_STORAGE_BUCKET
             value: {{ .Values.humio.buckets.storage }}
         {{- end }}
+        {{- range .Values.humio.extraENV }}
+          - name: {{ .name }}
+            value: {{ .value | quote }}
+        {{- end }}  
     - name: http-only
       spec:
         image: "{{ .Values.humio.image.repository }}:{{ .Values.humio.image.tag }}"
@@ -306,6 +343,15 @@ spec:
         initServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
         authServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
         humioServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
+
+        podAnnotations:
+        {{- if .Values.otel.components.inject }}                
+          "instrumentation.opentelemetry.io/inject-java": {{ include "humio-instance.fullname" . }}-java
+          "instrumentation.opentelemetry.io/container-names": "humio"
+        {{- end }}
+        {{- with .Values.humio.podAnnotations }}
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
 
         extraHumioVolumeMounts:
           - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
@@ -327,18 +373,25 @@ spec:
           {{- toYaml .Values.humio.nodepools.ui.resources | nindent 14 }}
         {{- with .Values.humio.nodepools.ui.affinity }}
         affinity:
-          {{- toYaml . | nindent 14 }}
+          {{- toYaml . | nindent 10 }}
         {{- end }}  
         {{- with .Values.humio.nodepools.ui.tolerations }}
         tolerations:
-          {{- toYaml . | nindent 14 }}
-        {{- end }}            
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with .Values.humio.nodepools.ui.topologySpreadConstraints }}
+        topologySpreadConstraints:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
         extraKafkaConfigs: {{ .Values.humio.kafka.extraConfig | quote }}
         environmentVariables:
-          # - name: "HUMIO_MEMORY_OPTS"
-            # value: "-Xss2m -Xms1g -Xmx2g -XX:MaxDirectMemorySize=1g"
+        {{- if eq .Values.humio.kafka.manager "strimzi" }}
+          - name: KAFKA_SERVERS
+            value:  {{ include "humio-instance.fullname" . }}-kafka-bootstrap:9092
+        {{- else }}
           - name: KAFKA_SERVERS
             value:  {{ include "humio-instance.externalService.kafka" . | quote }}
+        {{- end }}   
         {{- if or (eq .Values.humio.kafka.manager "strimzi") (eq .Values.humio.kafka.manager "external") }}
           - name: KAFKA_MANAGED_BY_HUMIO
             value: "false"
@@ -382,7 +435,6 @@ spec:
             value: "true"
           - name: S3_STORAGE_PREFERRED_COPY_SOURCE
             value: "true"
-
         {{- if eq  .Values.humio.s3mode "aws" }}
           - name: S3_STORAGE_ENCRYPTION_KEY
             value: {{ .Values.humio.buckets.storageKey | default "off" | quote }}
@@ -431,3 +483,7 @@ spec:
           - name: S3_STORAGE_BUCKET
             value: {{ .Values.humio.buckets.storage }}
         {{- end }}        
+        {{- range .Values.humio.extraENV }}
+          - name: {{ .name }}
+            value: {{ .value | quote }}
+        {{- end }}  

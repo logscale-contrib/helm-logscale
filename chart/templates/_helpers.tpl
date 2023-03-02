@@ -86,3 +86,15 @@ Create the kafka service
 {{- printf "default" }}
 {{- end }}
 {{- end }}
+
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "otel.serviceAccountName" -}}
+{{- if .Values.otel.serviceAccount.create }}
+{{- default (include "otel.fullname" .) .Values.otel.serviceAccount.name }}
+{{- else }}
+{{- default "default" .Values.otel.serviceAccount.name }}
+{{- end }}
+{{- end }}

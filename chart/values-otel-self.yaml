@@ -1,0 +1,7 @@
+otel:
+  components:
+    app: true
+    cluster: true
+    nodes: true
+    logScaleConfig: true
+    serviceaccount: true

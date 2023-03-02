@@ -1,3 +1,4 @@
+platform: aws
 humio:
   # Object Storage Settings
   s3mode: aws
@@ -7,15 +8,17 @@ humio:
 
   #Kafka
   kafka:
-      manager: strimzi
-      prefixEnable: true
-      strimziCluster: "ops-logscale-strimzi-kafka"
-      externalKafkaHostname: "ops-logscale-strimzi-kafka-kafka-bootstrap:9092"
+    manager: strimzi
+    prefixEnable: true
+    strimziCluster: "ops-logscale-strimzi-kafka"
+    externalKafkaHostname: "ops-logscale-strimzi-kafka-kafka-bootstrap:9092"
 
   #Image is shared by all node pools
   image:
     tag: 1.70.0
 
+  podAnnotations:
+    thisisatest: "value"
   # Primary Node pool used for digest/storage
   nodeCount: 3
   #In general for these node requests and limits should match
@@ -27,10 +30,6 @@ humio:
       memory: 4Gi
       cpu: 4
 
-  podAnnotations:
-    "config.linkerd.io/skip-outbound-ports": "443"
-    "instrumentation.opentelemetry.io/inject-java": "true"
-    "instrumentation.opentelemetry.io/container-names": "humio"
   serviceAccount:
     name: "logscale-ops"
     annotations:
@@ -69,6 +68,16 @@ humio:
                 operator: In
                 values: ["ops-logscale"]
           topologyKey: "kubernetes.io/hostname"
+  topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: topology.kubernetes.io/zone
+      whenUnsatisfiable: DoNotSchedule
+      labelSelector:
+        matchExpressions:
+          - key: humio.com/node-pool
+            operator: In
+            values:
+              - "ops-logscale"
   dataVolumePersistentVolumeClaimSpecTemplate:
     accessModes: ["ReadWriteOnce"]
     resources:
@@ -93,13 +102,13 @@ humio:
       enabled: true
       tls: false
       annotations:
-          "alb.ingress.kubernetes.io/certificate-arn" : "${dependency.acm_ui.outputs.acm_certificate_arn}"
-          "alb.ingress.kubernetes.io/listen-ports"    : "[{\"HTTP\": 80}, {\"HTTPS\": 443}]"
-          "alb.ingress.kubernetes.io/ssl-redirect"    : "443"
-          "alb.ingress.kubernetes.io/scheme"          : "internet-facing"
-          "alb.ingress.kubernetes.io/target-type"     : "ip"
-          "alb.ingress.kubernetes.io/group.name"      : "logscale-${local.env}"
-          "external-dns.alpha.kubernetes.io/hostname" : "logscale-ops-inputs.${local.domain_name}"
+        "alb.ingress.kubernetes.io/certificate-arn": "${dependency.acm_ui.outputs.acm_certificate_arn}"
+        "alb.ingress.kubernetes.io/listen-ports": '[{"HTTP": 80}, {"HTTPS": 443}]'
+        "alb.ingress.kubernetes.io/ssl-redirect": "443"
+        "alb.ingress.kubernetes.io/scheme": "internet-facing"
+        "alb.ingress.kubernetes.io/target-type": "ip"
+        "alb.ingress.kubernetes.io/group.name": "logscale-${local.env}"
+        "external-dns.alpha.kubernetes.io/hostname": "logscale-ops-inputs.${local.domain_name}"
   nodepools:
     ingest:
       nodeCount: 2
@@ -140,7 +149,16 @@ humio:
                     operator: In
                     values: ["ops-logscale-ingest-only"]
               topologyKey: "kubernetes.io/hostname"
-
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: topology.kubernetes.io/zone
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchExpressions:
+              - key: humio.com/node-pool
+                operator: In
+                values:
+                  - "ops-logscale-ingest-only"
     ui:
       nodeCount: 2
       resources:
@@ -180,3 +198,15 @@ humio:
                     operator: In
                     values: ["ops-logscale-http-only"]
               topologyKey: "kubernetes.io/hostname"
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: topology.kubernetes.io/zone
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchExpressions:
+              - key: humio.com/node-pool
+                operator: In
+                values:
+                  - "ops-logscale-ingest-only"
+otel:
+  resourcedetectors: [env, aws]

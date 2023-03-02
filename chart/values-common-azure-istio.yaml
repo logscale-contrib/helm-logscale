@@ -1,3 +1,4 @@
+platform: azure
 humio:
   # Object Storage Settings
   s3mode: s3proxy
@@ -163,3 +164,5 @@ humio:
                     operator: In
                     values: ["ops-logscale-http-only"]
               topologyKey: "kubernetes.io/hostname"
+otel:
+  resourcedetectors: [env, azure]

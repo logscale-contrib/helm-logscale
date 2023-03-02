@@ -2,7 +2,8 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: "{{ include "humio-instance.fullname" . }}-idp-certificate"
-    
+  labels:
+    {{- include "humio-instance.labels" . | nindent 4 }}    
 type: Opaque
 data:
   idp-certificate.pem: {{ .Values.humio.sso.idpCertificate }}

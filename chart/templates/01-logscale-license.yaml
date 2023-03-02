@@ -4,6 +4,8 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: "{{ include "humio-instance.fullname" . }}-license"
+  labels:
+    {{- include "humio-instance.labels" . | nindent 4 }}
     
 type: Opaque
 data:

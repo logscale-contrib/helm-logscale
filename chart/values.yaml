@@ -19,7 +19,7 @@ humio:
     repository: humio/humio-core
     tag: "1.70.0--SNAPSHOT--build-323434--SHA-dfa77220c22755bc0f8dee124ef548e8c0d740b1"
   autoRebalancePartitions: true
-  digestPartitionsCount: 720
+  digestPartitionsCount: 24
   storagePartitionsCount: 24
   targetReplicationFactor: 2
   smtp:
@@ -30,6 +30,12 @@ humio:
     sender:
     port: 587
     startTLS: true
+  extraENV:
+    - name: MAX_SERIES_LIMIT
+      value: "1000"
+    - name: ENABLE_IOC_SERVICE
+      value: "false"
+
   jvmARGS:
     ""
     # -server -Xss2m
@@ -83,11 +89,156 @@ humio:
 
   affinity: {}
 
-opentelemetryOperator:
-  enabled: true
-  serviceAccount:
-    create: true
 setroot:
   image:
     repository: curlimages/curl
     tag: 7.87.0
+
+kafka:
+  replicas: 3
+  allowAutoCreate: true
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: kubernetes.io/arch
+                operator: In
+                values:
+                  - amd64
+              - key: kubernetes.io/os
+                operator: In
+                values:
+                  - linux
+  resources:
+    requests:
+      memory: 3Gi
+      cpu: 1
+    limits:
+      memory: 4Gi
+      cpu: 2
+  storage:
+    type: persistent-claim
+    size: 250Gi
+    deleteClaim: true
+    #class: managed-csi-premium
+
+zookeeper:
+  replicas: 5
+  resources:
+    requests:
+      memory: 3Gi
+      cpu: 1
+    limits:
+      memory: 4Gi
+      cpu: 2
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: kubernetes.io/arch
+                operator: In
+                values:
+                  - amd64
+              - key: kubernetes.io/os
+                operator: In
+                values:
+                  - linux
+  storage:
+    deleteClaim: true
+    type: persistent-claim
+    size: 32Gi
+#    class: managed-csi-premium
+otel:
+  replicaCount: 1
+
+  image:
+    repository: nginx
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+
+  imagePullSecrets: []
+  nameOverride: ""
+  fullnameOverride: ""
+
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # Annotations to add to the service account
+    annotations: {}
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: ""
+
+  podAnnotations: {}
+
+  podSecurityContext:
+    {}
+    # fsGroup: 2000
+
+  securityContext:
+    {}
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+    # runAsUser: 1000
+
+  service:
+    type: ClusterIP
+    port: 80
+
+  ingress:
+    enabled: false
+    className: ""
+    annotations:
+      {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    hosts:
+      - host: chart-example.local
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+  resources:
+    {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+    # targetMemoryUtilizationPercentage: 80
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+  components:
+    inject: false
+    app: false
+    cluster: false
+    nodes: false
+    logScaleConfig: false
+    serviceaccount: false
+  resourcedetectors: [env]
