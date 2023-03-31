@@ -49,10 +49,10 @@ spec:
     config:
       min.insync.replicas: 2
       auto.create.topics.enable: {{ .Values.kafka.allowAutoCreate | default false }}
-      default.replication.factor: 2
-      offsets.topic.replication.factor: 2
-      transaction.state.log.min.isr: 1
-      transaction.state.log.replication.factor: 2
+      default.replication.factor: 3
+      offsets.topic.replication.factor: 3
+      transaction.state.log.min.isr: 2
+      transaction.state.log.replication.factor: 3
       replica.selector.class: org.apache.kafka.common.replica.RackAwareReplicaSelector
     rack:
       topologyKey: topology.kubernetes.io/zone
