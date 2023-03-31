@@ -3,6 +3,7 @@ humio:
   # Object Storage Settings
   s3mode: aws
   buckets:
+  
     region: us-east-1
     storage: data
 

@@ -78,9 +78,9 @@ Create the kafka service
 {{- end }}
 
 {{- define "humio-instance.persistance.storageclass" -}}
-{{- if .Values.platform eq "Azure" }}
+{{- if .Values.platform eq "azure" }}
 {{- printf "managed-csi-premium" }}
-{{- else if .Values.platform eq "AWS" }}
+{{- else if .Values.platform eq "aws" }}
 {{- printf "gp3" }}
 {{- else }}
 {{- printf "default" }}
