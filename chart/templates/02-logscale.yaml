@@ -111,6 +111,8 @@ spec:
 
   - name: S3_EXPORT_PATH_STYLE_ACCESS
     value: "true"
+{{- else if eq  .Values.humio.buckets.type "gcp" }}    
+{{- else if eq  .Values.humio.buckets.type "none" }}
 {{- else }}
   - name: USING_EPHEMERAL_DISKS
     value: "true"
@@ -337,6 +339,8 @@ spec:
 
           - name: S3_EXPORT_PATH_STYLE_ACCESS
             value: "true"
+        {{- else if eq  .Values.humio.buckets.type "gcp" }}    
+        {{- else if eq  .Values.humio.buckets.type "none" }}
         {{- else }}
           - name: USING_EPHEMERAL_DISKS
             value: "true"
@@ -496,6 +500,8 @@ spec:
 
           - name: S3_EXPORT_PATH_STYLE_ACCESS
             value: "true"
+        {{- else if eq  .Values.humio.buckets.type "gcp" }}    
+        {{- else if eq  .Values.humio.buckets.type "none" }}
         {{- else }}
           - name: USING_EPHEMERAL_DISKS
             value: "true"
