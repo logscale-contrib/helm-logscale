@@ -61,12 +61,11 @@ spec:
     value: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-
 {{- end }}
   #Object Storage config
+{{- if eq  .Values.humio.buckets.type "aws" }}
   - name: USING_EPHEMERAL_DISKS
     value: "true"
   - name: S3_STORAGE_PREFERRED_COPY_SOURCE
     value: "true"
-
-{{- if eq  .Values.humio.s3mode "aws" }}
   - name: S3_STORAGE_ENCRYPTION_KEY
     value: {{ .Values.humio.buckets.storageKey | default "off" | quote }}
   - name: BUCKET_STORAGE_SSE_COMPATIBLE
@@ -75,7 +74,11 @@ spec:
     value: {{ .Values.humio.buckets.storage }}
   - name: S3_STORAGE_REGION
     value: {{ .Values.humio.buckets.region }}
-{{- else if eq  .Values.humio.s3mode "s3proxy" }}
+{{- else if eq  .Values.humio.buckets.type "s3proxy" }}
+  - name: USING_EPHEMERAL_DISKS
+    value: "true"
+  - name: S3_STORAGE_PREFERRED_COPY_SOURCE
+    value: "true"
   - name: S3_STORAGE_PATH_STYLE_ACCESS
     value: "true"
   - name: S3_STORAGE_IBM_COMPAT
@@ -87,19 +90,19 @@ spec:
   - name: BUCKET_STORAGE_SSE_COMPATIBLE
     value: "true"
   - name: S3_STORAGE_ENDPOINT_BASE
-    value: {{ .Values.humio.s3proxy.endpoint }}
+    value: {{ .Values.humio.buckets.s3proxy.endpoint }}
   - name: S3_STORAGE_ENCRYPTION_KEY
     value: "off"
   - name: S3_STORAGE_ACCESSKEY
     valueFrom:
       secretKeyRef:
         key: AWS_ACCESS_KEY_ID
-        name: {{ .Values.humio.s3proxy.secret }}
+        name: {{ .Values.humio.buckets.s3proxy.secret }}
   - name: S3_STORAGE_SECRETKEY
     valueFrom:
       secretKeyRef:
         key: AWS_SECRET_ACCESS_KEY
-        name: {{ .Values.humio.s3proxy.secret }}
+        name: {{ .Values.humio.buckets.s3proxy.secret }}
   - name: S3_STORAGE_BUCKET
     value: {{ .Values.humio.buckets.storage }}
 
@@ -109,6 +112,10 @@ spec:
   - name: S3_EXPORT_PATH_STYLE_ACCESS
     value: "true"
 {{- else }}
+  - name: USING_EPHEMERAL_DISKS
+    value: "true"
+  - name: S3_STORAGE_PREFERRED_COPY_SOURCE
+    value: "true"
   - name: S3_STORAGE_ENCRYPTION_KEY
     value: {{ .Values.humio.buckets.storageKey | default "off" | quote }}
   - name: S3_STORAGE_BUCKET
@@ -262,8 +269,6 @@ spec:
           - name: HUMIO_KAFKA_TOPIC_PREFIX
             value: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-
         {{- end }}
-          - name: USING_EPHEMERAL_DISKS
-            value: "true"
           - name: AUTHENTICATION_METHOD
             value: "single-user"
           - name: SINGLE_USER_PASSWORD
@@ -282,9 +287,11 @@ spec:
             value: httponly
           - name: QUERY_COORDINATOR
             value: "false"
+        {{- if eq .Values.humio.buckets.type "aws" }}
+          - name: USING_EPHEMERAL_DISKS
+            value: "true"
           - name: S3_STORAGE_PREFERRED_COPY_SOURCE
             value: "true"
-        {{- if eq .Values.humio.s3mode "aws" }}
           - name: S3_STORAGE_ENCRYPTION_KEY
             value: {{ .Values.humio.buckets.storageKey | default "off" | quote }}
           - name: BUCKET_STORAGE_SSE_COMPATIBLE
@@ -293,7 +300,11 @@ spec:
             value: {{ .Values.humio.buckets.storage }}
           - name: S3_STORAGE_REGION
             value: {{ .Values.humio.buckets.region }}
-        {{- else if eq  .Values.humio.s3mode "s3proxy" }}
+        {{- else if eq  .Values.humio.buckets.type "s3proxy" }}
+          - name: USING_EPHEMERAL_DISKS
+            value: "true"
+          - name: S3_STORAGE_PREFERRED_COPY_SOURCE
+            value: "true"
           - name: S3_STORAGE_PATH_STYLE_ACCESS
             value: "true"
           - name: S3_STORAGE_IBM_COMPAT
@@ -305,19 +316,19 @@ spec:
           - name: BUCKET_STORAGE_SSE_COMPATIBLE
             value: "true"
           - name: S3_STORAGE_ENDPOINT_BASE
-            value: {{ .Values.humio.s3proxy.endpoint }}
+            value: {{ .Values.humio.buckets.s3proxy.endpoint }}
           - name: S3_STORAGE_ENCRYPTION_KEY
             value: "off"
           - name: S3_STORAGE_ACCESSKEY
             valueFrom:
               secretKeyRef:
                 key: AWS_ACCESS_KEY_ID
-                name: {{ .Values.humio.s3proxy.secret }}
+                name: {{ .Values.humio.buckets.s3proxy.secret }}
           - name: S3_STORAGE_SECRETKEY
             valueFrom:
               secretKeyRef:
                 key: AWS_SECRET_ACCESS_KEY
-                name: {{ .Values.humio.s3proxy.secret }}
+                name: {{ .Values.humio.buckets.s3proxy.secret }}
           - name: S3_STORAGE_BUCKET
             value: {{ .Values.humio.buckets.storage }}
 
@@ -327,6 +338,10 @@ spec:
           - name: S3_EXPORT_PATH_STYLE_ACCESS
             value: "true"
         {{- else }}
+          - name: USING_EPHEMERAL_DISKS
+            value: "true"
+          - name: S3_STORAGE_PREFERRED_COPY_SOURCE
+            value: "true"
           - name: S3_STORAGE_ENCRYPTION_KEY
             value: {{ .Values.humio.buckets.storageKey | default "off" | quote }}
           - name: S3_STORAGE_BUCKET
@@ -403,8 +418,6 @@ spec:
           - name: HUMIO_KAFKA_TOPIC_PREFIX
             value: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-
         {{- end }}
-          - name: USING_EPHEMERAL_DISKS
-            value: "true"
           - name: AUTHENTICATION_METHOD
             value: saml
           - name: AUTO_CREATE_USER_ON_SUCCESSFUL_LOGIN
@@ -433,9 +446,11 @@ spec:
             value: httponly
           - name: QUERY_COORDINATOR
             value: "true"
+        {{- if eq  .Values.humio.buckets.type "aws" }}
+          - name: USING_EPHEMERAL_DISKS
+            value: "true"
           - name: S3_STORAGE_PREFERRED_COPY_SOURCE
             value: "true"
-        {{- if eq  .Values.humio.s3mode "aws" }}
           - name: S3_STORAGE_ENCRYPTION_KEY
             value: {{ .Values.humio.buckets.storageKey | default "off" | quote }}
           - name: BUCKET_STORAGE_SSE_COMPATIBLE
@@ -444,7 +459,11 @@ spec:
             value: {{ .Values.humio.buckets.storage }}
           - name: S3_STORAGE_REGION
             value: {{ .Values.humio.buckets.region }}
-        {{- else if eq  .Values.humio.s3mode "s3proxy" }}
+        {{- else if eq  .Values.humio.buckets.type "s3proxy" }}
+          - name: USING_EPHEMERAL_DISKS
+            value: "true"
+          - name: S3_STORAGE_PREFERRED_COPY_SOURCE
+            value: "true"
           - name: S3_STORAGE_PATH_STYLE_ACCESS
             value: "true"
           - name: S3_STORAGE_IBM_COMPAT
@@ -456,19 +475,19 @@ spec:
           - name: BUCKET_STORAGE_SSE_COMPATIBLE
             value: "true"
           - name: S3_STORAGE_ENDPOINT_BASE
-            value: {{ .Values.humio.s3proxy.endpoint }}
+            value: {{ .Values.humio.buckets.s3proxy.endpoint }}
           - name: S3_STORAGE_ENCRYPTION_KEY
             value: "off"
           - name: S3_STORAGE_ACCESSKEY
             valueFrom:
               secretKeyRef:
                 key: AWS_ACCESS_KEY_ID
-                name: {{ .Values.humio.s3proxy.secret }}
+                name: {{ .Values.humio.buckets.s3proxy.secret }}
           - name: S3_STORAGE_SECRETKEY
             valueFrom:
               secretKeyRef:
                 key: AWS_SECRET_ACCESS_KEY
-                name: {{ .Values.humio.s3proxy.secret }}
+                name: {{ .Values.humio.buckets.s3proxy.secret }}
           - name: S3_STORAGE_BUCKET
             value: {{ .Values.humio.buckets.storage }}
 
@@ -478,6 +497,10 @@ spec:
           - name: S3_EXPORT_PATH_STYLE_ACCESS
             value: "true"
         {{- else }}
+          - name: USING_EPHEMERAL_DISKS
+            value: "true"
+          - name: S3_STORAGE_PREFERRED_COPY_SOURCE
+            value: "true"
           - name: S3_STORAGE_ENCRYPTION_KEY
             value: {{ .Values.humio.buckets.storageKey | default "off" | quote }}
           - name: S3_STORAGE_BUCKET

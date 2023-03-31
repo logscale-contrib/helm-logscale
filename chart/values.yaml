@@ -5,14 +5,15 @@ nameOverride: ""
 fullnameOverride: ""
 
 humio:
-  s3mode: default
   #One of humio,strimzi,external
   kafka:
     manager: "humio"
     prefixEnable: false
     extraConfig: security.protocol=PLAINTEXT
   #kafkaPrefix
-  buckets: {}
+  buckets: 
+    type: default
+
 
   replicaCount: 3
   image:
