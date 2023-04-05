@@ -357,8 +357,8 @@ spec:
           - name: {{ .name }}
             value: {{ .value | quote }}
         {{- end }}  
-      humioServiceAnnotations:
-        service.kubernetes.io/topology-aware-hints: auto
+        humioServiceAnnotations:
+          service.kubernetes.io/topology-aware-hints: auto
     - name: http-only
       spec:
         image: "{{ .Values.humio.image.repository }}:{{ .Values.humio.image.tag }}"
@@ -520,5 +520,5 @@ spec:
           - name: {{ .name }}
             value: {{ .value | quote }}
         {{- end }}  
-      humioServiceAnnotations:
-        service.kubernetes.io/topology-aware-hints: auto        
+        humioServiceAnnotations:
+          service.kubernetes.io/topology-aware-hints: auto        
