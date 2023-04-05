@@ -22,7 +22,7 @@ humio:
   autoRebalancePartitions: true
   digestPartitionsCount: 24
   storagePartitionsCount: 24
-  targetReplicationFactor: 2
+  targetReplicationFactor: 3
   smtp:
     enabled: false
     host: ""
