@@ -202,7 +202,7 @@ spec:
   tls:
     enabled: false
   humioServiceAnnotations:
-    service.kubernetes.io/topology-mode: auto    
+    service.kubernetes.io/topology-aware-hints: auto    
   nodePools:
     - name: ingest-only
       spec:
@@ -358,7 +358,7 @@ spec:
             value: {{ .value | quote }}
         {{- end }}  
         humioServiceAnnotations:
-          service.kubernetes.io/topology-mode: auto
+          service.kubernetes.io/topology-aware-hints: auto
     - name: http-only
       spec:
         image: "{{ .Values.humio.image.repository }}:{{ .Values.humio.image.tag }}"
@@ -521,4 +521,4 @@ spec:
             value: {{ .value | quote }}
         {{- end }}  
         humioServiceAnnotations:
-          service.kubernetes.io/topology-mode: auto        
+          service.kubernetes.io/topology-aware-hints: auto        
