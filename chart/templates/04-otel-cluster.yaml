@@ -33,11 +33,11 @@ spec:
   config: |
     exporters:
         otlphttp/k8s_logs:
-            endpoint: "http://{{ include "humio-instance.fullname" . }}:8080/api/v1/ingest/otlp"
+            endpoint: "http://{{ include "humio-instance.fullname" . }}-ingest-only:8080/api/v1/ingest/otlp"
             headers:
               Authorization: Bearer $HUMIO_TOKEN_K8S_LOGS
         otlphttp/k8s_metrics:
-            endpoint: "http://{{ include "humio-instance.fullname" . }}:8080/api/v1/ingest/otlp"
+            endpoint: "http://{{ include "humio-instance.fullname" . }}-ingest-only:8080/api/v1/ingest/otlp"
             headers:
               Authorization: Bearer $HUMIO_TOKEN_K8S_METRICS
     receivers:
