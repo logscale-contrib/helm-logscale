@@ -13,7 +13,8 @@ metadata:
 spec:
   serviceAccount: {{ include "humio-instance.humio.serviceAccountName" . }}-otel
   image: otel/opentelemetry-collector-contrib:0.56.0
-  maxReplicas: 3
+  maxReplicas: 6
+  minReplicas: 3
   mode: deployment
   env:
         - name: K8S_NODE_NAME
