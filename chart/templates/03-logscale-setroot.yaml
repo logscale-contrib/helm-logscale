@@ -22,7 +22,7 @@ spec:
             - name: EMAIL
               value: {{ .Values.humio.rootUser }}
             - name: HUMIOSVC
-              value: {{ include "humio-instance.fullname" . }}
+              value: {{ include "humio-instance.fullname" . }}-http-only   
             - name: TOKEN
               valueFrom:
                 secretKeyRef:
