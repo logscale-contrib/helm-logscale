@@ -58,7 +58,7 @@ spec:
 {{- end }}
 {{- if .Values.humio.kafka.prefixEnable }}
   - name: HUMIO_KAFKA_TOPIC_PREFIX
-    value: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-
+    value: {{ .Values.humio.kafka.topicPrefix | default .Release.Name }}-
 {{- end }}
   #Object Storage config
 {{- if eq  .Values.humio.buckets.type "aws" }}
@@ -271,7 +271,7 @@ spec:
         {{- end }}
         {{- if .Values.humio.kafka.prefixEnable }}
           - name: HUMIO_KAFKA_TOPIC_PREFIX
-            value: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-
+            value: {{ .Values.humio.kafka.topicPrefix | default .Release.Name }}-
         {{- end }}
           - name: AUTHENTICATION_METHOD
             value: "single-user"
@@ -424,7 +424,7 @@ spec:
         {{- end }}
         {{- if .Values.humio.kafka.prefixEnable }}
           - name: HUMIO_KAFKA_TOPIC_PREFIX
-            value: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-
+            value: {{ .Values.humio.kafka.topicPrefix | default .Release.Name }}-
         {{- end }}
           - name: AUTHENTICATION_METHOD
             value: saml

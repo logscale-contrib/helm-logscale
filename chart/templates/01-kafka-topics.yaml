@@ -3,7 +3,7 @@ apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
 {{- if .Values.humio.kafka.prefixEnable }}
-  name: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-global-events
+  name: {{ .Values.humio.kafka.topicPrefix | default .Release.Name }}-global-events
 {{ else }}
   name: global-events
 {{- end }}
@@ -12,7 +12,7 @@ metadata:
     {{- include "humio-instance.labels" . | nindent 4 }}
 spec:
 {{- if .Values.humio.kafka.prefixEnable }}
-  topicName: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-global-events
+  topicName: {{ .Values.humio.kafka.topicPrefix | default .Release.Name }}-global-events
 {{ else }}
   topicName: global-events
 {{- end }}
@@ -30,7 +30,7 @@ apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
 {{- if .Values.humio.kafka.prefixEnable }}
-  name: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-transientchatter-events
+  name: {{ .Values.humio.kafka.topicPrefix | default .Release.Name }}-transientchatter-events
 {{ else }}
   name: transientchatter-events
 {{- end }}
@@ -38,7 +38,7 @@ metadata:
     strimzi.io/cluster: {{ include "humio-instance.fullname" . }}
 spec:
 {{- if .Values.humio.kafka.prefixEnable }}
-  topicName: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-transientChatter-events
+  topicName: {{ .Values.humio.kafka.topicPrefix | default .Release.Name }}-transientChatter-events
 {{ else }}
   topicName: transientChatter-events
 {{- end }}
@@ -55,7 +55,7 @@ apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
 {{- if .Values.humio.kafka.prefixEnable }}
-  name: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-humio-ingest
+  name: {{ .Values.humio.kafka.topicPrefix | default .Release.Name }}-humio-ingest
 {{ else }}
   name: humio-ingest
 {{- end }}
@@ -63,7 +63,7 @@ metadata:
     strimzi.io/cluster: {{ include "humio-instance.fullname" . }}
 spec:
 {{- if .Values.humio.kafka.prefixEnable }}
-  topicName: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-humio-ingest
+  topicName: {{ .Values.humio.kafka.topicPrefix | default .Release.Name }}-humio-ingest
 {{ else }}
   topicName: humio-ingest
 {{- end }}
