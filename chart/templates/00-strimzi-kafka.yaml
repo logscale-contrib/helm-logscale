@@ -47,6 +47,8 @@ spec:
     #   superUsers:
     #     - lsadmin     
     config:
+      #set to 128mb
+      segment.bytes: 134217728
       min.insync.replicas: 2
       auto.create.topics.enable: {{ .Values.kafka.allowAutoCreate | default false }}
       default.replication.factor: 3
