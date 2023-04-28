@@ -111,17 +111,14 @@ spec:
 
   - name: S3_EXPORT_PATH_STYLE_ACCESS
     value: "true"
-{{- else if eq  .Values.humio.buckets.type "gcp" }}    
-{{- else if eq  .Values.humio.buckets.type "none" }}
-{{- else }}
+{{- else if eq  .Values.humio.buckets.type "gcp" }} 
   - name: USING_EPHEMERAL_DISKS
     value: "true"
-  - name: S3_STORAGE_PREFERRED_COPY_SOURCE
-    value: "true"
-  - name: S3_STORAGE_ENCRYPTION_KEY
-    value: {{ .Values.humio.buckets.storageKey | default "off" | quote }}
-  - name: S3_STORAGE_BUCKET
-    value: {{ .Values.humio.buckets.storage }}
+  - name: GCP_STORAGE_ENCRYPTION_KEY
+    value: "off"
+
+{{- else if eq  .Values.humio.buckets.type "none" }}
+{{- else }}
 {{- end }}
 
   - name: AUTHENTICATION_METHOD
@@ -344,14 +341,6 @@ spec:
         {{- else if eq  .Values.humio.buckets.type "gcp" }}    
         {{- else if eq  .Values.humio.buckets.type "none" }}
         {{- else }}
-          - name: USING_EPHEMERAL_DISKS
-            value: "true"
-          - name: S3_STORAGE_PREFERRED_COPY_SOURCE
-            value: "true"
-          - name: S3_STORAGE_ENCRYPTION_KEY
-            value: {{ .Values.humio.buckets.storageKey | default "off" | quote }}
-          - name: S3_STORAGE_BUCKET
-            value: {{ .Values.humio.buckets.storage }}
         {{- end }}
         {{- range .Values.humio.extraENV }}
           - name: {{ .name }}
@@ -507,14 +496,6 @@ spec:
         {{- else if eq  .Values.humio.buckets.type "gcp" }}    
         {{- else if eq  .Values.humio.buckets.type "none" }}
         {{- else }}
-          - name: USING_EPHEMERAL_DISKS
-            value: "true"
-          - name: S3_STORAGE_PREFERRED_COPY_SOURCE
-            value: "true"
-          - name: S3_STORAGE_ENCRYPTION_KEY
-            value: {{ .Values.humio.buckets.storageKey | default "off" | quote }}
-          - name: S3_STORAGE_BUCKET
-            value: {{ .Values.humio.buckets.storage }}
         {{- end }}        
         {{- range .Values.humio.extraENV }}
           - name: {{ .name }}

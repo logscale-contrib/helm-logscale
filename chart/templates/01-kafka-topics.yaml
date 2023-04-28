@@ -16,7 +16,7 @@ spec:
 {{ else }}
   topicName: global-events
 {{- end }}
-  partitions: 2
+  partitions: 1
   replicas: 3
   config:
     cleanup.policy: "delete"
