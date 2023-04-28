@@ -254,7 +254,7 @@ spec:
 
         dataVolumePersistentVolumeClaimSpecTemplate:
         {{- with .Values.humio.frontEndDataVolumePersistentVolumeClaimSpecTemplate }}  
-          {{- toYaml . | nindent 4 }}
+          {{- toYaml . | nindent 10 }}
         {{- end }}  
 
         environmentVariables:
@@ -406,7 +406,7 @@ spec:
 
         dataVolumePersistentVolumeClaimSpecTemplate:
         {{- with .Values.humio.frontEndDataVolumePersistentVolumeClaimSpecTemplate }}  
-          {{- toYaml . | nindent 4 }}
+          {{- toYaml . | nindent 10 }}
         {{- end }}  
 
         environmentVariables:
