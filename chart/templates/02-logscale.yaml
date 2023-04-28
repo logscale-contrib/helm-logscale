@@ -234,6 +234,7 @@ spec:
             emptyDir: {}      
           - name: logs
             emptyDir: {}                      
+            
         resources:
           {{- toYaml .Values.humio.nodepools.ingest.resources | nindent 14 }}
         {{- with .Values.humio.nodepools.ingest.affinity }}
@@ -250,6 +251,12 @@ spec:
         {{- end }}
 
         extraKafkaConfigs: {{ .Values.humio.kafka.extraConfig | quote }}
+
+        dataVolumePersistentVolumeClaimSpecTemplate:
+        {{- with .Values.humio.frontEndDataVolumePersistentVolumeClaimSpecTemplate }}  
+          {{- toYaml . | nindent 4 }}
+        {{- end }}  
+
         environmentVariables:
 
         {{- if eq .Values.humio.kafka.manager "strimzi" }}
@@ -396,6 +403,12 @@ spec:
           {{- toYaml . | nindent 10 }}
         {{- end }}
         extraKafkaConfigs: {{ .Values.humio.kafka.extraConfig | quote }}
+
+        dataVolumePersistentVolumeClaimSpecTemplate:
+        {{- with .Values.humio.frontEndDataVolumePersistentVolumeClaimSpecTemplate }}  
+          {{- toYaml . | nindent 4 }}
+        {{- end }}  
+
         environmentVariables:
         {{- if eq .Values.humio.kafka.manager "strimzi" }}
           - name: KAFKA_SERVERS
