@@ -200,7 +200,7 @@ spec:
     enabled: false
   humioServiceAnnotations:
     service.kubernetes.io/topology-aware-hints: auto    
-      {{- toYaml .Values.humio.serviceAnnotations | nindent 4 }}
+      {{- toYaml .Values.humio.serviceAnnotations | nindent 6 }}
 
   nodePools:
     - name: ingest-only
