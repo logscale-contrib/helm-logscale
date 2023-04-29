@@ -187,8 +187,6 @@ spec:
   hostnameSource: {}
   image: "{{ .Values.humio.image.repository }}:{{ .Values.humio.image.tag }}"
   #We use helm to produce ingress so we prevent operator from doing it
-  service:
-    {{- toYaml .Values.humio.service | nindent 4 }}
   ingress: {}
   license:
     secretKeyRef:
@@ -202,6 +200,8 @@ spec:
     enabled: false
   humioServiceAnnotations:
     service.kubernetes.io/topology-aware-hints: auto    
+      {{- toYaml .Values.humio.serviceAnnotations | nindent 4 }}
+
   nodePools:
     - name: ingest-only
       spec:
@@ -357,6 +357,7 @@ spec:
         {{- end }}  
         humioServiceAnnotations:
           service.kubernetes.io/topology-aware-hints: auto
+          {{- toYaml .Values.humio.service.inputs.annotations | nindent 10 }}
     - name: http-only
       spec:
         image: "{{ .Values.humio.image.repository }}:{{ .Values.humio.image.tag }}"
@@ -518,3 +519,4 @@ spec:
         {{- end }}  
         humioServiceAnnotations:
           service.kubernetes.io/topology-aware-hints: auto        
+          {{- toYaml .Values.humio.service.ui.annotations | nindent 10 }}
