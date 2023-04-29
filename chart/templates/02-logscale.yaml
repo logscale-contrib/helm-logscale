@@ -187,6 +187,8 @@ spec:
   hostnameSource: {}
   image: "{{ .Values.humio.image.repository }}:{{ .Values.humio.image.tag }}"
   #We use helm to produce ingress so we prevent operator from doing it
+  service:
+    {{- toYaml .Values.humio.service | nindent 4 }}
   ingress: {}
   license:
     secretKeyRef:
