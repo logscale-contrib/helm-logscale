@@ -1,6 +1,22 @@
 {{- if .Values.humio.ingress.inputs.enabled -}}
 {{- $fullName := include "humio-instance.fullname" . -}}
 {{- $svcPort := 8080 -}}
+{{- if eq  .Values.platform "gcp" }}
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: {{ $fullName }}-inputs
+spec:
+  healthCheck:
+    checkIntervalSec: 5
+    timeoutSec: 5
+    healthyThreshold: 2
+    unhealthyThreshold: 1
+    type: HTTP
+    requestPath: /api/v1/status
+    port: 8080
+---  
+{{- end }}
 {{- if and .Values.humio.ingress.inputs.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
   {{- if not (hasKey .Values.humio.ingress.inputs.annotations "kubernetes.io/humio.ingress.inputs.class") }}
   {{- $_ := set .Values.humio.ingress.inputs.annotations "kubernetes.io/humio.ingress.inputs.class" .Values.humio.ingress.inputs.className}}
@@ -20,6 +36,9 @@ metadata:
     {{- include "humio-instance.labels" . | nindent 4 }}
   annotations:
     "helm.sh/resource-policy": "keep"
+  {{- if eq .Values.platform "gcp" }}
+    cloud.google.com/backend-config: '{"default": "{{ $fullName }}-inputs"}'
+  {{- end }}
   {{- with .Values.humio.ingress.inputs.annotations }}
     {{- toYaml . | nindent 4 }}    
   {{- end }}
