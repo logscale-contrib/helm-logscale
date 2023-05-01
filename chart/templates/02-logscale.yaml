@@ -198,9 +198,6 @@ spec:
   targetReplicationFactor: {{ .Values.humio.targetReplicationFactor }}
   tls:
     enabled: false
-  humioServiceAnnotations:
-    service.kubernetes.io/topology-aware-hints: auto    
-      {{- toYaml .Values.humio.serviceAnnotations | nindent 6 }}
 
   nodePools:
     - name: ingest-only
@@ -355,9 +352,6 @@ spec:
           - name: {{ .name }}
             value: {{ .value | quote }}
         {{- end }}  
-        humioServiceAnnotations:
-          service.kubernetes.io/topology-aware-hints: auto
-          {{- toYaml .Values.humio.service.inputs.annotations | nindent 10 }}
     - name: http-only
       spec:
         image: "{{ .Values.humio.image.repository }}:{{ .Values.humio.image.tag }}"
@@ -517,6 +511,3 @@ spec:
           - name: {{ .name }}
             value: {{ .value | quote }}
         {{- end }}  
-        humioServiceAnnotations:
-          service.kubernetes.io/topology-aware-hints: auto        
-          {{- toYaml .Values.humio.service.ui.annotations | nindent 10 }}

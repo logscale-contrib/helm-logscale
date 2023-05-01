@@ -12,7 +12,7 @@
         "*.yml"
     ],
     "folderReadsMaxDepth": 10,
-    "k8sVersion": "1.25.7",
+    "k8sVersion": "1.26.2",
     "settings": {
         "helmPreviewMode": "template",
         "kustomizeCommand": "kubectl",
@@ -22,7 +22,7 @@
     },
     "kubeConfig": {
         "path": "/Users/rfaircloth/.kube/config",
-        "currentContext": "arn:aws:eks:us-east-1:473367108367:cluster/logscale-prod-ops"
+        "currentContext": "gke_logsr-life-production_us-central1_logscale-prod-ops"
     },
     "helm": {
         "previewConfigurationMap": {

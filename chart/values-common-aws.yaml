@@ -10,6 +10,7 @@ humio:
   kafka:
     manager: strimzi
     prefixEnable: true
+    topicPrefix: demo
     strimziCluster: "ops-logscale-strimzi-kafka"
     externalKafkaHostname: "ops-logscale-strimzi-kafka-kafka-bootstrap:9092"
 

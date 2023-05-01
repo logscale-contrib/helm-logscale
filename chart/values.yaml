@@ -11,9 +11,8 @@ humio:
     prefixEnable: false
     extraConfig: security.protocol=PLAINTEXT
   #kafkaPrefix
-  buckets: 
-    type: default
-
+  buckets:
+    type: none
 
   replicaCount: 3
   image:
@@ -72,6 +71,11 @@ humio:
   service:
     type: ClusterIP
     port: 80
+    annotations: {}
+    inputs:
+      annotations: {}
+    ui:
+      annotations: {}
 
   ingress:
     ui:
