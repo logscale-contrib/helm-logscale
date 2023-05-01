@@ -114,9 +114,12 @@ spec:
 {{- else if eq  .Values.humio.buckets.type "gcp" }} 
   - name: USING_EPHEMERAL_DISKS
     value: "true"
+  - name: GCP_STORAGE_BUCKET
+    value:  {{ .Values.humio.buckets.name }}
   - name: GCP_STORAGE_ENCRYPTION_KEY
     value: "off"
-
+  - name: GCP_STORAGE_OBJECT_KEY_PREFIX
+    value : "ls/"        
 {{- else if eq  .Values.humio.buckets.type "none" }}
 {{- else }}
 {{- end }}
@@ -357,7 +360,15 @@ spec:
 
           - name: S3_EXPORT_PATH_STYLE_ACCESS
             value: "true"
-        {{- else if eq  .Values.humio.buckets.type "gcp" }}    
+        {{- else if eq  .Values.humio.buckets.type "gcp" }}
+          - name: USING_EPHEMERAL_DISKS
+            value: "true"
+          - name: GCP_STORAGE_BUCKET
+            value:  {{ .Values.humio.buckets.name }}
+          - name: GCP_STORAGE_ENCRYPTION_KEY
+            value: "off"
+          - name: GCP_STORAGE_OBJECT_KEY_PREFIX
+            value : "ls/"        
         {{- else if eq  .Values.humio.buckets.type "none" }}
         {{- else }}
         {{- end }}
@@ -521,10 +532,17 @@ spec:
 
           - name: S3_ARCHIVING_PATH_STYLE_ACCESS
             value: "true"
-
           - name: S3_EXPORT_PATH_STYLE_ACCESS
             value: "true"
-        {{- else if eq  .Values.humio.buckets.type "gcp" }}    
+        {{- else if eq  .Values.humio.buckets.type "gcp" }}
+          - name: USING_EPHEMERAL_DISKS
+            value: "true"
+          - name: GCP_STORAGE_BUCKET
+            value:  {{ .Values.humio.buckets.name }}
+          - name: GCP_STORAGE_ENCRYPTION_KEY
+            value: "off"
+          - name: GCP_STORAGE_OBJECT_KEY_PREFIX
+            value : "ls/"                
         {{- else if eq  .Values.humio.buckets.type "none" }}
         {{- else }}
         {{- end }}        
