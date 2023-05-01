@@ -267,7 +267,7 @@ spec:
           {{- toYaml . | nindent 10 }}
           {{- end }}
           {{- if eq .Values.platform "gcp" }}
-          cloud.google.com/backend-config: '{"default": "{{ $fullName }}-inputs"}'
+          cloud.google.com/backend-config: '{"default": "{{ include "humio-instance.fullname" . }}-inputs"}'
           {{- end }}          
         environmentVariables:
 
@@ -425,7 +425,7 @@ spec:
           {{- toYaml . | nindent 10 }}
           {{- end }}
           {{- if eq .Values.platform "gcp" }}
-          cloud.google.com/backend-config: '{"default": "{{ $fullName }}-ui"}'
+          cloud.google.com/backend-config: '{"default": "{{ include "humio-instance.fullname" . }}-ui"}'
           {{- end }}  
         environmentVariables:
         {{- if eq .Values.humio.kafka.manager "strimzi" }}
