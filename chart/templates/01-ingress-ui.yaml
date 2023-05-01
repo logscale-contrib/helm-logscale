@@ -51,18 +51,4 @@ spec:
               serviceName: {{ $fullName }}-http-only
               servicePort: {{ $svcPort }}
               {{- end }}
-          - path: /static/
-            {{- if semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion }}
-            pathType: Prefix
-            {{- end }}
-            backend:
-              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
-              service:
-                name: {{ $fullName }}-http-only
-                port:
-                  number: {{ $svcPort }}
-              {{- else }}
-              serviceName: {{ $fullName }}-http-only
-              servicePort: {{ $svcPort }}
-              {{- end }}
 {{- end }}
