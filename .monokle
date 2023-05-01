@@ -190,6 +190,75 @@
                         "order": 8
                     }
                 }
+            },
+            "7da481ac-eb7a-438d-a209-78c70fb4b9be": {
+                "id": "7da481ac-eb7a-438d-a209-78c70fb4b9be",
+                "name": "gcp",
+                "helmChartFilePath": "/chart/Chart.yaml",
+                "command": "template",
+                "options": {},
+                "valuesFileItemMap": {
+                    "/chart/values-common-aws": {
+                        "id": "/chart/values-common-aws",
+                        "filePath": "/chart/values-common-aws.yaml",
+                        "isChecked": false,
+                        "order": 0
+                    },
+                    "/chart/values-common-azure-istio": {
+                        "id": "/chart/values-common-azure-istio",
+                        "filePath": "/chart/values-common-azure-istio.yaml",
+                        "isChecked": false,
+                        "order": 1
+                    },
+                    "/chart/values-common-azure": {
+                        "id": "/chart/values-common-azure",
+                        "filePath": "/chart/values-common-azure.yaml",
+                        "isChecked": false,
+                        "order": 2
+                    },
+                    "/chart/values": {
+                        "id": "/chart/values",
+                        "filePath": "/chart/values.yaml",
+                        "isChecked": true,
+                        "order": 3
+                    },
+                    "/chart/values-common-host": {
+                        "id": "/chart/values-common-host",
+                        "filePath": "/chart/values-common-host.yaml",
+                        "isChecked": true,
+                        "order": 5
+                    },
+                    "/chart/values-common-humio": {
+                        "id": "/chart/values-common-humio",
+                        "filePath": "/chart/values-common-humio.yaml",
+                        "isChecked": true,
+                        "order": 6
+                    },
+                    "/chart/values-common-sso": {
+                        "id": "/chart/values-common-sso",
+                        "filePath": "/chart/values-common-sso.yaml",
+                        "isChecked": true,
+                        "order": 7
+                    },
+                    "/chart/values-otel-self": {
+                        "id": "/chart/values-otel-self",
+                        "filePath": "/chart/values-otel-self.yaml",
+                        "isChecked": true,
+                        "order": 9
+                    },
+                    "/chart/values-strimzi": {
+                        "id": "/chart/values-strimzi",
+                        "filePath": "/chart/values-strimzi.yaml",
+                        "isChecked": true,
+                        "order": 8
+                    },
+                    "/chart/values-common-gcp": {
+                        "id": "/chart/values-common-gcp",
+                        "filePath": "/chart/values-common-gcp.yaml",
+                        "isChecked": true,
+                        "order": 4
+                    }
+                }
             }
         }
     }
