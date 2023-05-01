@@ -198,7 +198,12 @@ spec:
   targetReplicationFactor: {{ .Values.humio.targetReplicationFactor }}
   tls:
     enabled: false
-
+  humioServiceAnnotations:
+    service.kubernetes.io/topology-aware-hints: auto    
+    {{- with .Values.humio.service.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+    
   nodePools:
     - name: ingest-only
       spec:
@@ -256,6 +261,12 @@ spec:
           {{- toYaml . | nindent 10 }}
         {{- end }}  
 
+        humioServiceAnnotations:
+          service.kubernetes.io/topology-aware-hints: auto    
+          {{- with .Values.humio.service.annotations }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
+          
         environmentVariables:
 
         {{- if eq .Values.humio.kafka.manager "strimzi" }}
@@ -406,6 +417,12 @@ spec:
           {{- toYaml . | nindent 10 }}
         {{- end }}  
 
+        humioServiceAnnotations:
+          service.kubernetes.io/topology-aware-hints: auto    
+          {{- with .Values.humio.service.annotations }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
+          
         environmentVariables:
         {{- if eq .Values.humio.kafka.manager "strimzi" }}
           - name: KAFKA_SERVERS
