@@ -263,7 +263,7 @@ spec:
 
         humioServiceAnnotations:
           service.kubernetes.io/topology-aware-hints: auto    
-          {{- with .Values.humio.service.annotations }}
+          {{- with .Values.humio.service.inputs.annotations }}
           {{- toYaml . | nindent 10 }}
           {{- end }}
           
@@ -419,10 +419,10 @@ spec:
 
         humioServiceAnnotations:
           service.kubernetes.io/topology-aware-hints: auto    
-          {{- with .Values.humio.service.annotations }}
+          {{- with .Values.humio.service.ui.annotations }}
           {{- toYaml . | nindent 10 }}
           {{- end }}
-          
+
         environmentVariables:
         {{- if eq .Values.humio.kafka.manager "strimzi" }}
           - name: KAFKA_SERVERS
