@@ -36,9 +36,6 @@ metadata:
     {{- include "humio-instance.labels" . | nindent 4 }}
   annotations:
     "helm.sh/resource-policy": "keep"
-  {{- if eq .Values.platform "gcp" }}
-    cloud.google.com/backend-config: '{"default": "{{ $fullName }}-inputs"}'
-  {{- end }}
   {{- with .Values.humio.ingress.inputs.annotations }}
     {{- toYaml . | nindent 4 }}    
   {{- end }}

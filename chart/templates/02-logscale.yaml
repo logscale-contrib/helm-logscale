@@ -266,7 +266,9 @@ spec:
           {{- with .Values.humio.service.inputs.annotations }}
           {{- toYaml . | nindent 10 }}
           {{- end }}
-          
+          {{- if eq .Values.platform "gcp" }}
+          cloud.google.com/backend-config: '{"default": "{{ $fullName }}-inputs"}'
+          {{- end }}          
         environmentVariables:
 
         {{- if eq .Values.humio.kafka.manager "strimzi" }}
@@ -422,7 +424,9 @@ spec:
           {{- with .Values.humio.service.ui.annotations }}
           {{- toYaml . | nindent 10 }}
           {{- end }}
-
+          {{- if eq .Values.platform "gcp" }}
+          cloud.google.com/backend-config: '{"default": "{{ $fullName }}-ui"}'
+          {{- end }}  
         environmentVariables:
         {{- if eq .Values.humio.kafka.manager "strimzi" }}
           - name: KAFKA_SERVERS
