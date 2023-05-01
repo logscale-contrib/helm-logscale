@@ -114,6 +114,8 @@ spec:
 {{- else if eq  .Values.humio.buckets.type "gcp" }} 
   - name: USING_EPHEMERAL_DISKS
     value: "true"
+  - name: GCP_STORAGE_WORKLOAD_IDENTITY
+    value: "true"            
   - name: GCP_STORAGE_BUCKET
     value:  {{ .Values.humio.buckets.name }}
   - name: GCP_STORAGE_ENCRYPTION_KEY
@@ -363,6 +365,8 @@ spec:
         {{- else if eq  .Values.humio.buckets.type "gcp" }}
           - name: USING_EPHEMERAL_DISKS
             value: "true"
+          - name: GCP_STORAGE_WORKLOAD_IDENTITY
+            value: "true"            
           - name: GCP_STORAGE_BUCKET
             value:  {{ .Values.humio.buckets.name }}
           - name: GCP_STORAGE_ENCRYPTION_KEY
@@ -537,6 +541,8 @@ spec:
         {{- else if eq  .Values.humio.buckets.type "gcp" }}
           - name: USING_EPHEMERAL_DISKS
             value: "true"
+          - name: GCP_STORAGE_WORKLOAD_IDENTITY
+            value: "true"            
           - name: GCP_STORAGE_BUCKET
             value:  {{ .Values.humio.buckets.name }}
           - name: GCP_STORAGE_ENCRYPTION_KEY
