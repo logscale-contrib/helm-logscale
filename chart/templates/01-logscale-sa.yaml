@@ -10,6 +10,7 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 ---
+{{- end }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -72,4 +73,3 @@ subjects:
 - kind: ServiceAccount
   name: {{ include "humio-instance.humio.serviceAccountName" . }}
   namespace: {{ .Release.Namespace }}
-{{- end }}
