@@ -16,7 +16,7 @@ spec:
     "instrumentation.opentelemetry.io/container-names": "humio"
   {{- end }}
   {{- with .Values.humio.podAnnotations }}
-    #{{- toYaml . | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
   {{- end }}
 
   resources:
@@ -222,9 +222,9 @@ spec:
         {{- if .Values.otel.components.inject }}
           "instrumentation.opentelemetry.io/inject-java": {{ include "humio-instance.fullname" . }}-java
           "instrumentation.opentelemetry.io/container-names": "humio"
+        {{- end }}
         {{- with .Values.humio.podAnnotations }}
           {{- toYaml . | nindent 10 }}
-        {{- end }}
         {{- end }}
 
         extraHumioVolumeMounts:
