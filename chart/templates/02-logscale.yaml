@@ -379,7 +379,7 @@ spec:
           - name: GCP_STORAGE_ENCRYPTION_KEY
             value: "off"
           - name: GCP_STORAGE_OBJECT_KEY_PREFIX
-            value : "export/"
+            value : "storage/"
           - name: GCP_EXPORT_WORKLOAD_IDENTITY
             value: "true"            
           - name: GCP_EXPORT_BUCKET
@@ -563,7 +563,7 @@ spec:
           - name: GCP_STORAGE_ENCRYPTION_KEY
             value: "off"
           - name: GCP_STORAGE_OBJECT_KEY_PREFIX
-            value : "export/"
+            value : "storage/"
           - name: GCP_EXPORT_WORKLOAD_IDENTITY
             value: "true"            
           - name: GCP_EXPORT_BUCKET
