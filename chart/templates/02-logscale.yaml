@@ -108,7 +108,6 @@ spec:
 
   - name: S3_ARCHIVING_PATH_STYLE_ACCESS
     value: "true"
-
   - name: S3_EXPORT_PATH_STYLE_ACCESS
     value: "true"
 {{- else if eq  .Values.humio.buckets.type "gcp" }} 
@@ -121,7 +120,15 @@ spec:
   - name: GCP_STORAGE_ENCRYPTION_KEY
     value: "off"
   - name: GCP_STORAGE_OBJECT_KEY_PREFIX
-    value : "ls/"        
+    value : "storage/"
+  - name: GCP_EXPORT_WORKLOAD_IDENTITY
+    value: "true"            
+  - name: GCP_EXPORT_BUCKET
+    value:  {{ .Values.humio.buckets.name }}
+  - name: GCP_EXPORT_ENCRYPTION_KEY
+    value: "off"
+  - name: GCP_EXPORT_OBJECT_KEY_PREFIX
+    value : "export/"     
 {{- else if eq  .Values.humio.buckets.type "none" }}
 {{- else }}
 {{- end }}
@@ -372,7 +379,15 @@ spec:
           - name: GCP_STORAGE_ENCRYPTION_KEY
             value: "off"
           - name: GCP_STORAGE_OBJECT_KEY_PREFIX
-            value : "ls/"        
+            value : "export/"
+          - name: GCP_EXPORT_WORKLOAD_IDENTITY
+            value: "true"            
+          - name: GCP_EXPORT_BUCKET
+            value:  {{ .Values.humio.buckets.name }}
+          - name: GCP_EXPORT_ENCRYPTION_KEY
+            value: "off"
+          - name: GCP_EXPORT_OBJECT_KEY_PREFIX
+            value : "export/"             
         {{- else if eq  .Values.humio.buckets.type "none" }}
         {{- else }}
         {{- end }}
@@ -548,7 +563,15 @@ spec:
           - name: GCP_STORAGE_ENCRYPTION_KEY
             value: "off"
           - name: GCP_STORAGE_OBJECT_KEY_PREFIX
-            value : "ls/"                
+            value : "export/"
+          - name: GCP_EXPORT_WORKLOAD_IDENTITY
+            value: "true"            
+          - name: GCP_EXPORT_BUCKET
+            value:  {{ .Values.humio.buckets.name }}
+          - name: GCP_EXPORT_ENCRYPTION_KEY
+            value: "off"
+          - name: GCP_EXPORT_OBJECT_KEY_PREFIX
+            value : "export/"                            
         {{- else if eq  .Values.humio.buckets.type "none" }}
         {{- else }}
         {{- end }}        
