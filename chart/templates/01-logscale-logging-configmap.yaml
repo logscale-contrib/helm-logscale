@@ -36,7 +36,7 @@ data:
 
             <Console name="humio-stdout">
                 <JsonTemplateLayout eventTemplateUri="classpath:json-template-layout-humio.json"/>
-                <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+                <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
             </Console>
         </Appenders>
 
@@ -46,23 +46,18 @@ data:
             <Logger name="akka" level="debug" />
 
             <Logger name="nonsensitive" level="info" additivity="false">
-                <AppenderRef ref="humio-stdout"/>
                 <AppenderRef ref="short-humio-internal"/>
             </Logger>
             <Logger name="threaddumps" level="info" additivity="false">
-                <AppenderRef ref="humio-stdout"/>
                 <AppenderRef ref="short-humio-internal"/>
             </Logger>
             <Logger name="metrics" level="info" additivity="false">
-                <AppenderRef ref="humio-stdout"/>
                 <AppenderRef ref="short-humio-internal"/>
             </Logger>
             <Logger name="activity" level="info" additivity="false">
-                <AppenderRef ref="humio-stdout"/>
                 <AppenderRef ref="short-humio-internal"/>
             </Logger>
             <Logger name="requests" level="info" additivity="false">
-                <AppenderRef ref="humio-stdout"/>
                 <AppenderRef ref="short-humio-internal"/>
             </Logger>
 
