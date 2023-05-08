@@ -46,18 +46,23 @@ data:
             <Logger name="akka" level="debug" />
 
             <Logger name="nonsensitive" level="info" additivity="false">
+                <AppenderRef ref="humio-stdout"/>
                 <AppenderRef ref="short-humio-internal"/>
             </Logger>
             <Logger name="threaddumps" level="info" additivity="false">
+                <AppenderRef ref="humio-stdout"/>
                 <AppenderRef ref="short-humio-internal"/>
             </Logger>
             <Logger name="metrics" level="info" additivity="false">
+                <AppenderRef ref="humio-stdout"/>
                 <AppenderRef ref="short-humio-internal"/>
             </Logger>
             <Logger name="activity" level="info" additivity="false">
+                <AppenderRef ref="humio-stdout"/>
                 <AppenderRef ref="short-humio-internal"/>
             </Logger>
             <Logger name="requests" level="info" additivity="false">
+                <AppenderRef ref="humio-stdout"/>
                 <AppenderRef ref="short-humio-internal"/>
             </Logger>
 
