@@ -36,7 +36,6 @@ data:
 
             <Console name="humio-stdout-logs">
                 <JsonTemplateLayout eventTemplateUri="classpath:json-template-layout-humio.json"/>
-                <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
             </Console>
             <Console name="humio-stdout">
                 <JsonTemplateLayout eventTemplateUri="classpath:json-template-layout-humio.json"/>
@@ -49,27 +48,35 @@ data:
             <Logger name="org.apache.log4j.xml" level="info"/>
             <Logger name="akka" level="debug" />
 
+            <Logger name="HUMIOAUDITLOG" level="info" additivity="false">
+                <AppenderRef ref="AuditLog"/>
+            </Logger>
+
             <Logger name="nonsensitive" level="info" additivity="false">
-                <AppenderRef ref="humio-stdout"/>
+                <AppenderRef ref="Short"/>
                 <AppenderRef ref="short-humio-internal"/>
             </Logger>
             <Logger name="threaddumps" level="info" additivity="false">
-                <AppenderRef ref="humio-stdout"/>
+                <AppenderRef ref="Short"/>
                 <AppenderRef ref="short-humio-internal"/>
             </Logger>
             <Logger name="metrics" level="info" additivity="false">
-                <AppenderRef ref="humio-stdout"/>
+                <AppenderRef ref="Short"/>
                 <AppenderRef ref="short-humio-internal"/>
             </Logger>
             <Logger name="activity" level="info" additivity="false">
-                <AppenderRef ref="humio-stdout"/>
+                <AppenderRef ref="Short"/>
                 <AppenderRef ref="short-humio-internal"/>
             </Logger>
             <Logger name="requests" level="info" additivity="false">
-                <AppenderRef ref="humio-stdout"/>
+                <AppenderRef ref="Short"/>
                 <AppenderRef ref="short-humio-internal"/>
             </Logger>
-
+            <Logger name="analytics" level="info" additivity="false">
+                <AppenderRef ref="Short"/>
+                <AppenderRef ref="short-humio-internal"/>
+            </Logger>
+            
             <Root level="info">
                 <AppenderRef ref="humio-stdout-logs"/>
                 <AppenderRef ref="log-humio-internal"/>
