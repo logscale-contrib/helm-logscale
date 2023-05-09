@@ -177,6 +177,10 @@ spec:
   {{- end }}  
   - name: HUMIO_LOG4J_CONFIGURATION
     value: log4j2-json-stdout.xml
+  - name: ENABLEINTERNALLOGGER
+    value: "false"
+  - name: SEARCH_PIPELINE_MONITOR_JOB_ENABLE
+    value: "false"  
   extraHumioVolumeMounts:
     - name: java-logs
       mountPath: /data/java-logs
@@ -387,7 +391,10 @@ spec:
         {{- end }}  
           - name: HUMIO_LOG4J_CONFIGURATION
             value: log4j2-json-stdout.xml
-
+          - name: ENABLEINTERNALLOGGER
+            value: "false"
+          - name: SEARCH_PIPELINE_MONITOR_JOB_ENABLE
+            value: "false"
     - name: http-only
       spec:
         image: "{{ .Values.humio.image.repository }}:{{ .Values.humio.image.tag }}"
@@ -568,3 +575,7 @@ spec:
         {{- end }}  
           - name: HUMIO_LOG4J_CONFIGURATION
             value: log4j2-json-stdout.xml
+          - name: ENABLEINTERNALLOGGER
+            value: "false"
+          - name: SEARCH_PIPELINE_MONITOR_JOB_ENABLE
+            value: "false"
