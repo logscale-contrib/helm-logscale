@@ -169,8 +169,6 @@ spec:
   - name: ENABLE_{{ . | upper}}
     value: "true"
   {{- end }}
-  - name: HUMIO_LOG4J_CONFIGURATION
-    value: "/var/lib/humio/config/logging/log4j2-json-k8s.xml"
   - name:  HUMIO_JVM_LOG_OPTS
     value: "-Xlog:jit*=debug:file=/data/java-logs/jit_humio.log:time,tags:filecount=5,filesize=1024000 -Xlog:gc+jni=debug -Xlog:gc*:file=/data/java-logs/gc_humio.log:time,tags:filecount=5,filesize=102400"
   {{- range .Values.humio.extraENV }}
@@ -303,8 +301,6 @@ spec:
           - name: ENABLE_{{ . | upper}}
             value: "true"
           {{- end }}
-          - name: HUMIO_LOG4J_CONFIGURATION
-            value: "/var/lib/humio/config/logging/log4j2-json-k8s.xml"
           - name:  HUMIO_JVM_LOG_OPTS
             value: "-Xlog:jit*=debug:file=/data/java-logs/jit_humio.log:time,tags:filecount=5,filesize=1024000 -Xlog:gc+jni=debug -Xlog:gc*:file=/data/java-logs/gc_humio.log:time,tags:filecount=5,filesize=102400"            
           - name: NODE_ROLES
@@ -487,8 +483,6 @@ spec:
           - name: ENABLE_{{ . | upper}}
             value: "true"
           {{- end }}
-          - name: HUMIO_LOG4J_CONFIGURATION
-            value: "/var/lib/humio/config/logging/log4j2-json-k8s.xml"
           - name:  HUMIO_JVM_LOG_OPTS
             value: "-Xlog:jit*=debug:file=/data/java-logs/jit_humio.log:time,tags:filecount=5,filesize=1024000 -Xlog:gc+jni=debug -Xlog:gc*:file=/data/java-logs/gc_humio.log:time,tags:filecount=5,filesize=102400"            
           - name: NODE_ROLES
