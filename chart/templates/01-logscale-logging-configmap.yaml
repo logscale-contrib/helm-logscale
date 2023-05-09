@@ -36,9 +36,6 @@ data:
 
             <Console name="humio-stdout-logs">
                 <JsonTemplateLayout eventTemplateUri="classpath:json-template-layout-humio.json"/>
-            </Console>
-            <Console name="humio-stdout">
-                <JsonTemplateLayout eventTemplateUri="classpath:json-template-layout-humio.json"/>
                 <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
             </Console>
         </Appenders>
@@ -76,7 +73,7 @@ data:
                 <AppenderRef ref="Short"/>
                 <AppenderRef ref="short-humio-internal"/>
             </Logger>
-            
+
             <Root level="info">
                 <AppenderRef ref="humio-stdout-logs"/>
                 <AppenderRef ref="log-humio-internal"/>

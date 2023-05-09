@@ -177,18 +177,14 @@ spec:
   - name: {{ .name }}
     value: {{ .value | quote }}
   {{- end }}  
+  - name: HUMIO_LOG4J_CONFIGURATION
+    value: log4j2-json-stdout.xml
   extraHumioVolumeMounts:
-    - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
-      mountPath: /var/lib/humio/config/logging
-      readOnly: true
     - name: java-logs
       mountPath: /data/java-logs
     - name: logs
       mountPath: /data/logs
   extraVolumes:
-    - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
-      configMap:
-        name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
     - name: java-logs
       emptyDir: {}      
     - name: logs
@@ -237,17 +233,11 @@ spec:
         {{- end }}
 
         extraHumioVolumeMounts:
-          - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
-            mountPath: /var/lib/humio/config/logging
-            readOnly: true
           - name: java-logs
             mountPath: /data/java-logs
           - name: logs
             mountPath: /data/logs             
         extraVolumes:
-          - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
-            configMap:
-              name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
           - name: java-logs
             emptyDir: {}      
           - name: logs
@@ -399,6 +389,9 @@ spec:
           - name: {{ .name }}
             value: {{ .value | quote }}
         {{- end }}  
+          - name: HUMIO_LOG4J_CONFIGURATION
+            value: log4j2-json-stdout.xml
+
     - name: http-only
       spec:
         image: "{{ .Values.humio.image.repository }}:{{ .Values.humio.image.tag }}"
@@ -417,17 +410,11 @@ spec:
         {{- end }}
 
         extraHumioVolumeMounts:
-          - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
-            mountPath: /var/lib/humio/config/logging
-            readOnly: true
           - name: java-logs
             mountPath: /data/java-logs
           - name: logs
             mountPath: /data/logs              
         extraVolumes:
-          - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
-            configMap:
-              name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
           - name: java-logs
             emptyDir: {}      
           - name: logs
@@ -585,3 +572,5 @@ spec:
           - name: {{ .name }}
             value: {{ .value | quote }}
         {{- end }}  
+          - name: HUMIO_LOG4J_CONFIGURATION
+            value: log4j2-json-stdout.xml
