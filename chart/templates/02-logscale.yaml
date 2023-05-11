@@ -178,7 +178,7 @@ spec:
   - name: HUMIO_LOG4J_CONFIGURATION
     value: log4j2-json-stdout.xml
   - name: ENABLEINTERNALLOGGER
-    value: "true"
+    value: "false"
   - name: SEARCH_PIPELINE_MONITOR_JOB_ENABLE
     value: "false"  
   extraHumioVolumeMounts:
@@ -392,7 +392,7 @@ spec:
           - name: HUMIO_LOG4J_CONFIGURATION
             value: log4j2-json-stdout.xml
           - name: ENABLEINTERNALLOGGER
-            value: "true"
+            value: "false"
           - name: SEARCH_PIPELINE_MONITOR_JOB_ENABLE
             value: "false"
     - name: http-only
@@ -576,6 +576,6 @@ spec:
           - name: HUMIO_LOG4J_CONFIGURATION
             value: log4j2-json-stdout.xml
           - name: ENABLEINTERNALLOGGER
-            value: "true"
+            value: "false"
           - name: SEARCH_PIPELINE_MONITOR_JOB_ENABLE
             value: "false"
