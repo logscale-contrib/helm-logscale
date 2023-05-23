@@ -6,4 +6,4 @@ metadata:
     {{- include "humio-instance.labels" . | nindent 4 }}    
 type: Opaque
 data:
-  idp-certificate.pem: {{ .Values.humio.sso.idpCertificate }}
+  idp-certificate.pem: {{ .Values.humio.auth.saml.idpCertificate }}
