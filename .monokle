@@ -13,17 +13,6 @@
     ],
     "folderReadsMaxDepth": 10,
     "k8sVersion": "1.26.2",
-    "settings": {
-        "helmPreviewMode": "template",
-        "kustomizeCommand": "kubectl",
-        "createDefaultObjects": false,
-        "setDefaultPrimitiveValues": true,
-        "allowEditInClusterMode": true
-    },
-    "kubeConfig": {
-        "path": "/Users/rfaircloth/.kube/config",
-        "currentContext": "gke_logsr-life-production_us-central1_logscale-prod-ops"
-    },
     "helm": {
         "previewConfigurationMap": {
             "c2fa911e-02ac-490e-a890-d390540bbe83": {
@@ -261,5 +250,16 @@
                 }
             }
         }
+    },
+    "settings": {
+        "helmPreviewMode": "template",
+        "kustomizeCommand": "kubectl",
+        "createDefaultObjects": false,
+        "setDefaultPrimitiveValues": true,
+        "allowEditInClusterMode": true
+    },
+    "kubeConfig": {
+        "path": "/Users/rfaircloth/.kube/config",
+        "currentContext": "gke_logsr-life-production_us-central1_logscale-prod-ops"
     }
 }
