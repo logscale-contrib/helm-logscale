@@ -158,8 +158,12 @@ spec:
   - name: OIDC_GROUPS_CLAIM 
     value: {{ .Values.humio.auth.oauth.groups_claim | default "groups" }}
   - name: OIDC_OAUTH_CLIENT_ID
-    value: {{ .Values.humio.auth.oauth.groups_claim | default "groups" }}
+    value: {{ .Values.humio.auth.oauth.client_id }}
   - name: OIDC_OAUTH_CLIENT_SECRET
+    valueFrom:
+      secretKeyRef:
+        key: {{ .Values.humio.auth.oauth.client_secret_key | default "secret" }}  
+        name: {{ .Values.humio.auth.oauth.client_secret_name }}  
   - name: OIDC_SERVICE_NAME
     value: {{ .Values.humio.auth.oauth.serviceName | default "SSO" }}
   - name: OIDC_SCOPES
@@ -513,8 +517,12 @@ spec:
           - name: OIDC_GROUPS_CLAIM 
             value: {{ .Values.humio.auth.oauth.groups_claim | default "groups" }}
           - name: OIDC_OAUTH_CLIENT_ID
-            value: {{ .Values.humio.auth.oauth.groups_claim | default "groups" }}
+            value: {{ .Values.humio.auth.oauth.client_id }}
           - name: OIDC_OAUTH_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: {{ .Values.humio.auth.oauth.client_secret_key | default "secret" }}  
+                name: {{ .Values.humio.auth.oauth.client_secret_name }}  
           - name: OIDC_SERVICE_NAME
             value: {{ .Values.humio.auth.oauth.serviceName | default "SSO" }}
           - name: OIDC_SCOPES
