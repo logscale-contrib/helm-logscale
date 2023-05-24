@@ -167,7 +167,7 @@ spec:
   - name: OIDC_SERVICE_NAME
     value: {{ .Values.humio.auth.oauth.serviceName | default "SSO" }}
   - name: OIDC_SCOPES
-    value: {{ .Values.humio.auth.oauth.claims | default "openid,email,profile" }}
+    value: {{ .Values.humio.auth.oauth.scopes | default "openid,email,profile" }}
 {{- else }}
 {{- end }}
 
