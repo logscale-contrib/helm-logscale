@@ -155,8 +155,10 @@ spec:
     value: {{ .Values.humio.auth.oauth.provider }}
   - name: OIDC_USERNAME_CLAIM
     value: {{ .Values.humio.auth.oauth.username_claim | default "email" }}
+{{ - if .Values.humio.auth.oauth.groups_claim }}
   - name: OIDC_GROUPS_CLAIM 
-    value: {{ .Values.humio.auth.oauth.groups_claim | default "groups" }}
+    value: {{ .Values.humio.auth.oauth.groups_claim }}
+{{- end }}     
   - name: OIDC_OAUTH_CLIENT_ID
     value: {{ .Values.humio.auth.oauth.client_id }}
   - name: OIDC_OAUTH_CLIENT_SECRET
@@ -320,9 +322,37 @@ spec:
             value: {{ .Values.humio.kafka.topicPrefix | default .Release.Name }}-
         {{- end }}
           - name: AUTHENTICATION_METHOD
-            value: "single-user"
-          - name: SINGLE_USER_PASSWORD
-            value: "password"
+            value: {{ .Values.humio.auth.method }}
+        {{- if eq  .Values.humio.auth.method  "single-user" }}
+        {{- else if eq  .Values.humio.auth.method  "saml" }}
+          - name: SAML_IDP_SIGN_ON_URL
+            value: {{ .Values.humio.auth.saml.signOnUrl }}
+          - name: SAML_IDP_ENTITY_ID
+            value: {{ .Values.humio.auth.saml.entityID }}
+          - name: SAML_GROUP_MEMBERSHIP_ATTRIBUTE
+            value: {{ .Values.humio.auth.saml.groupMembershipAttribute | default "memberOf" }}
+        {{- else if eq  .Values.humio.auth.method  "oauth" }}
+          - name: OIDC_PROVIDER
+            value: {{ .Values.humio.auth.oauth.provider }}
+          - name: OIDC_USERNAME_CLAIM
+            value: {{ .Values.humio.auth.oauth.username_claim | default "email" }}
+        {{ - if .Values.humio.auth.oauth.groups_claim }}
+          - name: OIDC_GROUPS_CLAIM 
+            value: {{ .Values.humio.auth.oauth.groups_claim }}
+        {{- end }}     
+          - name: OIDC_OAUTH_CLIENT_ID
+            value: {{ .Values.humio.auth.oauth.client_id }}
+          - name: OIDC_OAUTH_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: {{ .Values.humio.auth.oauth.client_secret_key | default "secret" }}  
+                name: {{ .Values.humio.auth.oauth.client_secret_name }}  
+          - name: OIDC_SERVICE_NAME
+            value: {{ .Values.humio.auth.oauth.serviceName | default "SSO" }}
+          - name: OIDC_SCOPES
+            value: {{ .Values.humio.auth.oauth.scopes | default "openid,email,profile" }}
+        {{- else }}
+        {{- end }}
           - name: HUMIO_JVM_ARGS
             value: {{ .Values.humio.jvmARGS | quote }}
           {{- range .Values.humio.enableFeatures }}
@@ -515,8 +545,10 @@ spec:
             value: {{ .Values.humio.auth.oauth.provider }}
           - name: OIDC_USERNAME_CLAIM
             value: {{ .Values.humio.auth.oauth.username_claim | default "email" }}
+        {{ - if .Values.humio.auth.oauth.groups_claim }}
           - name: OIDC_GROUPS_CLAIM 
-            value: {{ .Values.humio.auth.oauth.groups_claim | default "groups" }}
+            value: {{ .Values.humio.auth.oauth.groups_claim }}
+        {{- end }}     
           - name: OIDC_OAUTH_CLIENT_ID
             value: {{ .Values.humio.auth.oauth.client_id }}
           - name: OIDC_OAUTH_CLIENT_SECRET
@@ -527,7 +559,7 @@ spec:
           - name: OIDC_SERVICE_NAME
             value: {{ .Values.humio.auth.oauth.serviceName | default "SSO" }}
           - name: OIDC_SCOPES
-            value: {{ .Values.humio.auth.oauth.groups_claim | default "openid,email,profile" }}
+            value: {{ .Values.humio.auth.oauth.scopes | default "openid,email,profile" }}
         {{- else }}
         {{- end }}
           - name: HUMIO_JVM_ARGS
