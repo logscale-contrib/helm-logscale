@@ -155,7 +155,7 @@ spec:
     value: {{ .Values.humio.auth.oauth.provider }}
   - name: OIDC_USERNAME_CLAIM
     value: {{ .Values.humio.auth.oauth.username_claim | default "email" }}
-{{ - if .Values.humio.auth.oauth.groups_claim }}
+{{- if .Values.humio.auth.oauth.groups_claim }}
   - name: OIDC_GROUPS_CLAIM 
     value: {{ .Values.humio.auth.oauth.groups_claim }}
 {{- end }}     
@@ -336,7 +336,7 @@ spec:
             value: {{ .Values.humio.auth.oauth.provider }}
           - name: OIDC_USERNAME_CLAIM
             value: {{ .Values.humio.auth.oauth.username_claim | default "email" }}
-        {{ - if .Values.humio.auth.oauth.groups_claim }}
+        {{- if .Values.humio.auth.oauth.groups_claim }}
           - name: OIDC_GROUPS_CLAIM 
             value: {{ .Values.humio.auth.oauth.groups_claim }}
         {{- end }}     
@@ -545,7 +545,7 @@ spec:
             value: {{ .Values.humio.auth.oauth.provider }}
           - name: OIDC_USERNAME_CLAIM
             value: {{ .Values.humio.auth.oauth.username_claim | default "email" }}
-        {{ - if .Values.humio.auth.oauth.groups_claim }}
+        {{- if .Values.humio.auth.oauth.groups_claim }}
           - name: OIDC_GROUPS_CLAIM 
             value: {{ .Values.humio.auth.oauth.groups_claim }}
         {{- end }}     
