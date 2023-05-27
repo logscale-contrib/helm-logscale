@@ -10,6 +10,12 @@ humio:
     manager: "humio"
     prefixEnable: false
     extraConfig: security.protocol=PLAINTEXT
+    topics:
+      ingest:
+        minisr: 2
+        retention:
+          ms: -1
+          bytes: -1
   #kafkaPrefix
   buckets:
     type: none
