@@ -143,6 +143,10 @@ spec:
     value: "off"
   - name: GCP_EXPORT_OBJECT_KEY_PREFIX
     value : "export/"     
+  {{- if .Values.humio.buckets.downloadConcurrency }}
+  - name: GCP_STORAGE_DOWNLOAD_CONCURRENCY
+    value : {{ .Values.humio.buckets.downloadConcurrency | quote }}
+  {{- end }}
 {{- else if eq  .Values.humio.buckets.type "none" }}
 {{- else }}
 {{- end }}
@@ -460,6 +464,10 @@ spec:
             value: "off"
           - name: GCP_EXPORT_OBJECT_KEY_PREFIX
             value : "export/"             
+          {{- if .Values.humio.buckets.downloadConcurrency }}
+          - name: GCP_STORAGE_DOWNLOAD_CONCURRENCY
+            value : {{ .Values.humio.buckets.downloadConcurrency | quote }}
+          {{- end }}            
         {{- else if eq  .Values.humio.buckets.type "none" }}
         {{- else }}
         {{- end }}
@@ -680,6 +688,10 @@ spec:
             value: "off"
           - name: GCP_EXPORT_OBJECT_KEY_PREFIX
             value : "export/"                            
+          {{- if .Values.humio.buckets.downloadConcurrency }}
+          - name: GCP_STORAGE_DOWNLOAD_CONCURRENCY
+            value : {{ .Values.humio.buckets.downloadConcurrency | quote }}
+          {{- end }}                        
         {{- else if eq  .Values.humio.buckets.type "none" }}
         {{- else }}
         {{- end }}        
