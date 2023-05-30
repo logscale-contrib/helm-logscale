@@ -64,6 +64,8 @@ spec:
 {{- if eq  .Values.humio.buckets.type "aws" }}
   - name: USING_EPHEMERAL_DISKS
     value: "true"
+  - name: LOCAL_STORAGE_MIN_AGE_DAYS
+    value: {{ .Values.humio.buckets.localStorageMinAgeDays | default "3" | quote }}
   - name: S3_STORAGE_PREFERRED_COPY_SOURCE
     value: "true"
   - name: S3_STORAGE_ENCRYPTION_KEY
@@ -77,6 +79,8 @@ spec:
 {{- else if eq  .Values.humio.buckets.type "s3proxy" }}
   - name: USING_EPHEMERAL_DISKS
     value: "true"
+  - name: LOCAL_STORAGE_MIN_AGE_DAYS
+    value: {{ .Values.humio.buckets.localStorageMinAgeDays | default "3" | quote }}
   - name: S3_STORAGE_PREFERRED_COPY_SOURCE
     value: "true"
   - name: S3_STORAGE_PATH_STYLE_ACCESS
@@ -113,6 +117,8 @@ spec:
 {{- else if eq  .Values.humio.buckets.type "gcp" }} 
   - name: USING_EPHEMERAL_DISKS
     value: "true"
+  - name: LOCAL_STORAGE_MIN_AGE_DAYS
+    value: {{ .Values.humio.buckets.localStorageMinAgeDays | default "3" | quote }}
   - name: GCP_STORAGE_PREFERRED_COPY_SOURCE
     value: "true"      
   - name: GCP_STORAGE_WORKLOAD_IDENTITY
@@ -368,6 +374,8 @@ spec:
         {{- if eq .Values.humio.buckets.type "aws" }}
           - name: USING_EPHEMERAL_DISKS
             value: "true"
+          - name: LOCAL_STORAGE_MIN_AGE_DAYS
+            value: {{ .Values.humio.buckets.localStorageMinAgeDays | default "3" | quote }}
           - name: S3_STORAGE_PREFERRED_COPY_SOURCE
             value: "true"
           - name: S3_STORAGE_ENCRYPTION_KEY
@@ -381,6 +389,8 @@ spec:
         {{- else if eq  .Values.humio.buckets.type "s3proxy" }}
           - name: USING_EPHEMERAL_DISKS
             value: "true"
+          - name: LOCAL_STORAGE_MIN_AGE_DAYS
+            value: {{ .Values.humio.buckets.localStorageMinAgeDays | default "3" | quote }}
           - name: S3_STORAGE_PREFERRED_COPY_SOURCE
             value: "true"
           - name: S3_STORAGE_PATH_STYLE_ACCESS
@@ -418,6 +428,8 @@ spec:
         {{- else if eq  .Values.humio.buckets.type "gcp" }}
           - name: USING_EPHEMERAL_DISKS
             value: "true"
+          - name: LOCAL_STORAGE_MIN_AGE_DAYS
+            value: {{ .Values.humio.buckets.localStorageMinAgeDays | default "3" | quote }}
           - name: GCP_STORAGE_PREFERRED_COPY_SOURCE
             value: "true"                  
           - name: GCP_STORAGE_WORKLOAD_IDENTITY
@@ -577,6 +589,8 @@ spec:
         {{- if eq  .Values.humio.buckets.type "aws" }}
           - name: USING_EPHEMERAL_DISKS
             value: "true"
+          - name: LOCAL_STORAGE_MIN_AGE_DAYS
+            value: {{ .Values.humio.buckets.localStorageMinAgeDays | default "3" | quote }}
           - name: S3_STORAGE_PREFERRED_COPY_SOURCE
             value: "true"
           - name: S3_STORAGE_ENCRYPTION_KEY
@@ -590,6 +604,8 @@ spec:
         {{- else if eq  .Values.humio.buckets.type "s3proxy" }}
           - name: USING_EPHEMERAL_DISKS
             value: "true"
+          - name: LOCAL_STORAGE_MIN_AGE_DAYS
+            value: {{ .Values.humio.buckets.localStorageMinAgeDays | default "3" | quote }}
           - name: S3_STORAGE_PREFERRED_COPY_SOURCE
             value: "true"
           - name: S3_STORAGE_PATH_STYLE_ACCESS
@@ -626,6 +642,8 @@ spec:
         {{- else if eq  .Values.humio.buckets.type "gcp" }}
           - name: USING_EPHEMERAL_DISKS
             value: "true"
+          - name: LOCAL_STORAGE_MIN_AGE_DAYS
+            value: {{ .Values.humio.buckets.localStorageMinAgeDays | default "3" | quote }}
           - name: GCP_STORAGE_PREFERRED_COPY_SOURCE
             value: "true"                  
           - name: GCP_STORAGE_WORKLOAD_IDENTITY
