@@ -28,9 +28,9 @@ spec:
     {{- toYaml . | nindent 4 }}
   {{- end }} 
   {{- if eq .Values.humio.drMode "bootstrap" }} 
-    nodeCount: 1
+  nodeCount: 1
   {{- else }}
-    nodeCount: {{ .Values.humio.nodeCount }}
+  nodeCount: {{ .Values.humio.nodeCount }}
   {{- end }}
   {{- with .Values.humio.tolerations }}
   tolerations:
