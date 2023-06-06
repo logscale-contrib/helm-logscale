@@ -21,6 +21,7 @@ kind: FrontendConfig
 metadata:
   name: {{ $fullName }}-ui
 spec:
+  sslPolicy: MODERN
   redirectToHttps:
     enabled: true
     responseCodeName: MOVED_PERMANENTLY_DEFAULT

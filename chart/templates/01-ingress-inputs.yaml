@@ -16,6 +16,16 @@ spec:
     requestPath: /api/v1/status
     port: 8080
 ---  
+apiVersion: networking.gke.io/v1beta1
+kind: FrontendConfig
+metadata:
+  name: {{ $fullName }}-inputs
+spec:
+  sslPolicy: MODERN
+  redirectToHttps:
+    enabled: true
+    responseCodeName: MOVED_PERMANENTLY_DEFAULT  
+---
 {{- end }}
 {{- if and .Values.humio.ingress.inputs.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
   {{- if not (hasKey .Values.humio.ingress.inputs.annotations "kubernetes.io/humio.ingress.inputs.class") }}
@@ -36,6 +46,9 @@ metadata:
     {{- include "humio-instance.labels" . | nindent 4 }}
   annotations:
     "helm.sh/resource-policy": "keep"
+  {{- if eq .Values.platform "gcp" }}
+    networking.gke.io/v1beta1.FrontendConfig: {{ $fullName }}-inputs
+  {{- end }}    
   {{- with .Values.humio.ingress.inputs.annotations }}
     {{- toYaml . | nindent 4 }}    
   {{- end }}
