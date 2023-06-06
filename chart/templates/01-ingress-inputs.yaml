@@ -21,7 +21,7 @@ kind: FrontendConfig
 metadata:
   name: {{ $fullName }}-inputs
 spec:
-  sslPolicy: MODERN
+  sslPolicy: logscale-inputs
   redirectToHttps:
     enabled: true
     responseCodeName: MOVED_PERMANENTLY_DEFAULT  
