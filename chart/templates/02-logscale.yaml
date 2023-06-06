@@ -280,7 +280,7 @@ spec:
     {{- end }}
 {{- if ne .Values.humio.drMode "bootstrap" }}     
   nodePools:
-{{- if eq .Values.humio.drMode "input" }}       
+{{- if or (eq .Values.humio.drMode "none") (eq .Values.humio.drMode "inputs") }}       
     - name: ingest-only
       spec:
         image: "{{ .Values.humio.image.repository }}:{{ .Values.humio.image.tag }}"
@@ -514,7 +514,7 @@ spec:
             value: "false"  
 {{- end }}
 {{- end }}
-{{- if or (eq .Values.humio.drMode "input") (eq .Values.humio.drMode "ui") }}
+{{- if or (eq .Values.humio.drMode "none") (or (eq .Values.humio.drMode "inputs") (eq .Values.humio.drMode "ui")) }}       
     - name: http-only
       spec:
         image: "{{ .Values.humio.image.repository }}:{{ .Values.humio.image.tag }}"

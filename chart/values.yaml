@@ -5,10 +5,11 @@ nameOverride: ""
 fullnameOverride: ""
 
 humio:
+  #values are "none",bootstrap,ui,inputs
   drMode: "none"
   #One of humio,strimzi,external
   kafka:
-    manager: "humio"
+    manager: "inputs"
     prefixEnable: false
     extraConfig: security.protocol=PLAINTEXT
     topics:
