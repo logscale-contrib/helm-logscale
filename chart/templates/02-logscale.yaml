@@ -26,9 +26,12 @@ spec:
   {{- with .Values.humio.affinity }}
   affinity:
     {{- toYaml . | nindent 4 }}
-  {{- end }}  
-  nodeCount: {{ .Values.humio.nodeCount }}
-
+  {{- end }} 
+  {{- if eq .Values.humio.drMode "bootstrap" }} 
+    nodeCount: 1
+  {{- else }}
+    nodeCount: {{ .Values.humio.nodeCount }}
+  {{- end }}
   {{- with .Values.humio.tolerations }}
   tolerations:
     {{- toYaml . | nindent 4 }}
@@ -131,8 +134,15 @@ spec:
     value: "true"      
   - name: GCP_STORAGE_WORKLOAD_IDENTITY
     value: "true"            
+{{- if eq .Values.humio.drMode "bootstrap" }}
+  - name: GCP_RECOVER_FROM_BUCKET
+    value:  {{ .Values.humio.buckets.recover_name }}
   - name: GCP_STORAGE_BUCKET
     value:  {{ .Values.humio.buckets.name }}
+{{- else }}
+  - name: GCP_STORAGE_BUCKET
+    value:  {{ .Values.humio.buckets.name }}
+{{- end }}
   - name: GCP_STORAGE_ENCRYPTION_KEY
     value: "off"
   - name: GCP_STORAGE_OBJECT_KEY_PREFIX
@@ -224,6 +234,15 @@ spec:
     value: "false"
   - name: SEARCH_PIPELINE_MONITOR_JOB_ENABLE
     value: "false"  
+{{- if ne .Values.humio.drMode "none" }} 
+  - name: ENABLE_ALERTS
+    value: "false"  
+  - name: ENABLE_EVENT_FORWARDING
+    value: "false"  
+  - name: ENABLE_SCHEDULED_SEARCHES
+    value: "false"  
+{{- end }}
+      
   extraHumioVolumeMounts:
     - name: java-logs
       mountPath: /data/java-logs
@@ -251,7 +270,7 @@ spec:
   autoRebalancePartitions: {{ .Values.humio.autoRebalancePartitions }}
   digestPartitionsCount: {{ .Values.humio.digestPartitionsCount }}
   storagePartitionsCount: {{ .Values.humio.storagePartitionsCount }}
-  targetReplicationFactor: {{ .Values.humio.targetReplicationFactor }}
+  targetReplicationFactor: 1
   tls:
     enabled: false
   humioServiceAnnotations:
@@ -259,8 +278,9 @@ spec:
     {{- with .Values.humio.service.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
-    
+{{- if ne .Values.humio.drMode "bootstrap" }}     
   nodePools:
+{{- if eq .Values.humio.drMode "input" }}       
     - name: ingest-only
       spec:
         image: "{{ .Values.humio.image.repository }}:{{ .Values.humio.image.tag }}"
@@ -485,6 +505,16 @@ spec:
             value: "false"
           - name: SEARCH_PIPELINE_MONITOR_JOB_ENABLE
             value: "false"
+{{- if ne .Values.humio.drMode "none" }} 
+          - name: ENABLE_ALERTS
+            value: "false"  
+          - name: ENABLE_EVENT_FORWARDING
+            value: "false"  
+          - name: ENABLE_SCHEDULED_SEARCHES
+            value: "false"  
+{{- end }}
+{{- end }}
+{{- if or (eq .Values.humio.drMode "input") (eq .Values.humio.drMode "ui") }}
     - name: http-only
       spec:
         image: "{{ .Values.humio.image.repository }}:{{ .Values.humio.image.tag }}"
@@ -712,3 +742,13 @@ spec:
             value: "false"
           - name: SEARCH_PIPELINE_MONITOR_JOB_ENABLE
             value: "false"
+{{- if ne .Values.humio.drMode "none" }} 
+          - name: ENABLE_ALERTS
+            value: "false"  
+          - name: ENABLE_EVENT_FORWARDING
+            value: "false"  
+          - name: ENABLE_SCHEDULED_SEARCHES
+            value: "false"  
+{{- end }}            
+{{- end }}
+{{- end }}            

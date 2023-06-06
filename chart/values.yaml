@@ -5,6 +5,7 @@ nameOverride: ""
 fullnameOverride: ""
 
 humio:
+  drMode: "none"
   #One of humio,strimzi,external
   kafka:
     manager: "humio"
