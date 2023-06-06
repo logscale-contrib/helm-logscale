@@ -288,8 +288,8 @@ spec:
             emptyDir: {}      
           - name: logs
             emptyDir: {}                      
-        {{- if .Values.humio.priorityClassName }}
-        priorityClassName: {{ .Values.humio.priorityClassName }}
+        {{- if .Values.humio.nodepools.ingest.priorityClassName }}
+        priorityClassName: {{ .Values.humio.nodepools.ingest.priorityClassName }}
         {{- end }}  
         resources:
           {{- toYaml .Values.humio.nodepools.ingest.resources | nindent 14 }}
@@ -512,8 +512,8 @@ spec:
             emptyDir: {}      
           - name: logs
             emptyDir: {}              
-        {{- if .Values.humio.priorityClassName }}
-        priorityClassName: {{ .Values.humio.priorityClassName }}
+        {{- if .Values.humio.nodepools.ui.priorityClassName }}
+        priorityClassName: {{ .Values.humio.nodepools.ui.priorityClassName }}
         {{- end }}  
         resources:
           {{- toYaml .Values.humio.nodepools.ui.resources | nindent 14 }}
