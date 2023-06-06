@@ -137,12 +137,11 @@ spec:
 {{- if eq .Values.humio.drMode "bootstrap" }}
   - name: GCP_RECOVER_FROM_BUCKET
     value:  {{ .Values.humio.buckets.recover_name }}
-  - name: GCP_STORAGE_BUCKET
-    value:  {{ .Values.humio.buckets.name }}
-{{- else }}
-  - name: GCP_STORAGE_BUCKET
-    value:  {{ .Values.humio.buckets.name }}
+  - name: GCP_RECOVER_FROM_ENCRYPTION_KEY
+    value:  "off"
 {{- end }}
+  - name: GCP_STORAGE_BUCKET
+    value:  {{ .Values.humio.buckets.name }}
   - name: GCP_STORAGE_ENCRYPTION_KEY
     value: "off"
   - name: GCP_STORAGE_OBJECT_KEY_PREFIX
