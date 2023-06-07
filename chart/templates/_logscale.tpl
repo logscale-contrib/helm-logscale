@@ -105,7 +105,7 @@
 - name: GCP_RECOVER_FROM_OBJECT_KEY_PREFIX
   value : "storage/"
 - name: GCP_RECOVER_FROM_REPLACE_BUCKET
-  value : "{{ .Values.humio.buckets.recoverFromBucket }}/{{ .Values.humio.buckets.name }}"
+  value : {{ .Values.humio.buckets.recoverFromReplace | quote }}
 {{- end }}
 - name: GCP_EXPORT_WORKLOAD_IDENTITY
   value: "true"
