@@ -5,7 +5,7 @@ humio:
   buckets:
     type: gcp
     name: current
-    recoverFromBucket: old
+    # recoverFromBucket: old
   #Kafka
   kafka:
     manager: strimzi
