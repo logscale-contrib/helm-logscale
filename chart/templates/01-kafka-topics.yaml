@@ -7,6 +7,8 @@ metadata:
 {{ else }}
   name: global-events
 {{- end }}
+  annotations:
+    "helm.sh/resource-policy": "keep"
   labels:
     strimzi.io/cluster: {{ include "humio-instance.fullname" . }}
     {{- include "humio-instance.labels" . | nindent 4 }}
@@ -34,6 +36,8 @@ metadata:
 {{ else }}
   name: transientchatter-events
 {{- end }}
+  annotations:
+    "helm.sh/resource-policy": "keep"
   labels:
     strimzi.io/cluster: {{ include "humio-instance.fullname" . }}
 spec:
@@ -59,6 +63,8 @@ metadata:
 {{ else }}
   name: humio-ingest
 {{- end }}
+  annotations:
+    "helm.sh/resource-policy": "keep"
   labels:
     strimzi.io/cluster: {{ include "humio-instance.fullname" . }}
 spec:

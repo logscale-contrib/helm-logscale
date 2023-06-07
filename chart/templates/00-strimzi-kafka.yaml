@@ -18,6 +18,8 @@ apiVersion: kafka.strimzi.io/v1beta2
 kind: Kafka
 metadata:
   name: {{ include "humio-instance.fullname" . }}
+  annotations:
+    "helm.sh/resource-policy": "keep"
   labels:
     {{- include "humio-instance.labels" . | nindent 4 }}
 spec:
@@ -112,6 +114,8 @@ apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaRebalance
 metadata:
   name: {{ include "humio-instance.fullname" . }}
+  annotations:
+    "helm.sh/resource-policy": "keep"
   labels:
     strimzi.io/cluster: {{ include "humio-instance.fullname" . }}
     {{- include "humio-instance.labels" . | nindent 4 }}
