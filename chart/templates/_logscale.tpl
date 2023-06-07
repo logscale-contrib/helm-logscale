@@ -4,9 +4,9 @@
   value: log4j2-json-stdout.xml
 #  These can be turned back on
 - name: ENABLEINTERNALLOGGER
-  value: {{ .Values.humio.config.enableInternalLogger }}
+  value: {{ .Values.humio.config.enableInternalLogger | default "false" | quote }}
 - name: SEARCH_PIPELINE_MONITOR_JOB_ENABLE
-  value: {{ .Values.humio.config.searchPipelineMonitorJob }}
+  value: {{ .Values.humio.config.searchPipelineMonitorJob | default "false" | quote }}
 - name: USING_EPHEMERAL_DISKS
   value: "true"
 {{- if eq .Values.humio.kafka.manager "strimzi" }}
