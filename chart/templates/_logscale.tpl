@@ -67,13 +67,13 @@
 - name: S3_STORAGE_ACCESSKEY
   valueFrom:
     secretKeyRef:
-    key: AWS_ACCESS_KEY_ID
-    name: {{ .Values.humio.buckets.s3proxy.secret }}
+        key: AWS_ACCESS_KEY_ID
+        name: {{ .Values.humio.buckets.s3proxy.secret }}
 - name: S3_STORAGE_SECRETKEY
   valueFrom:
     secretKeyRef:
-    key: AWS_SECRET_ACCESS_KEY
-    name: {{ .Values.humio.buckets.s3proxy.secret }}
+        key: AWS_SECRET_ACCESS_KEY
+        name: {{ .Values.humio.buckets.s3proxy.secret }}
 - name: S3_STORAGE_BUCKET
   value: {{ .Values.humio.buckets.storage }}
 - name: S3_ARCHIVING_PATH_STYLE_ACCESS
@@ -148,8 +148,8 @@
 - name: OIDC_OAUTH_CLIENT_SECRET
   valueFrom:
     secretKeyRef:
-    key: {{ .Values.humio.auth.oauth.client_secret_key | default "secret" }}
-    name: {{ .Values.humio.auth.oauth.client_secret_name }}
+        key: {{ .Values.humio.auth.oauth.client_secret_key | default "secret" }}
+        name: {{ .Values.humio.auth.oauth.client_secret_name }}
 - name: OIDC_SERVICE_NAME
   value: {{ .Values.humio.auth.oauth.serviceName | default "SSO" }}
 - name: OIDC_SCOPES
