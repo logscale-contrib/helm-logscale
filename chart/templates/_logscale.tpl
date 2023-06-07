@@ -87,8 +87,14 @@
   value: {{ .Values.humio.buckets.localStoragePercentage | default "95" | quote }}
 - name: GCP_STORAGE_PREFERRED_COPY_SOURCE
   value: "true"
+- name: GCP_STORAGE_BUCKET
+  value: {{ .Values.humio.buckets.name }}
 - name: GCP_STORAGE_WORKLOAD_IDENTITY
   value: "true"
+- name: GCP_STORAGE_ENCRYPTION_KEY
+  value: "off"
+- name: GCP_STORAGE_OBJECT_KEY_PREFIX
+  value : "storage/"
 {{- if eq .Values.humio.drMode "bootstrap" }}
 - name: GCP_RECOVER_FROM_BUCKET
   value: {{ .Values.humio.buckets.recoverFromBucket }}
@@ -96,13 +102,9 @@
   value: "true"
 - name: GCP_RECOVER_FROM_ENCRYPTION_KEY
   value: "off"
+- name: GCP_RECOVER_FROM_OBJECT_KEY_PREFIX
+  value : "storage/"  
 {{- end }}
-- name: GCP_STORAGE_BUCKET
-  value: {{ .Values.humio.buckets.name }}
-- name: GCP_STORAGE_ENCRYPTION_KEY
-  value: "off"
-- name: GCP_STORAGE_OBJECT_KEY_PREFIX
-  value : "storage/"
 - name: GCP_EXPORT_WORKLOAD_IDENTITY
   value: "true"
 - name: GCP_EXPORT_BUCKET
