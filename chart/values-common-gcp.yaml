@@ -3,8 +3,9 @@ platform:
 humio:
   # Object Storage Settings
   buckets:
-    type: none
-
+    type: gcp
+    name: current
+    recoverFromBucket: old
   #Kafka
   kafka:
     manager: strimzi

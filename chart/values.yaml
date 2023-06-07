@@ -6,7 +6,7 @@ fullnameOverride: ""
 
 humio:
   #values are "none",bootstrap,ui,inputs
-  drMode: "none"
+  drMode: "bootstrap"
   config:
     enableInternalLogger: "false"
     searchPipelineMonitorJob: "false"

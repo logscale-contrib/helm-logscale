@@ -11,10 +11,10 @@
   value: "true"
 {{- if eq .Values.humio.kafka.manager "strimzi" }}
 - name: KAFKA_SERVERS
-  value:  {{ include "humio-instance.fullname" . }}-kafka-bootstrap:9092
+  value: {{ include "humio-instance.fullname" . }}-kafka-bootstrap:9092
 {{- else }}
 - name: KAFKA_SERVERS
-  value:  {{ include "humio-instance.externalService.kafka" . | quote }}
+  value: {{ include "humio-instance.externalService.kafka" . | quote }}
 {{- end }}
 {{- if or (eq .Values.humio.kafka.manager "strimzi") (eq .Values.humio.kafka.manager "external") }}
 - name: KAFKA_MANAGED_BY_HUMIO
@@ -54,9 +54,9 @@
   value: "true"
 - name: S3_STORAGE_IBM_COMPAT
   value: "true"
-- name:  BUCKET_STORAGE_IGNORE_ETAG_UPLOAD
+- name: BUCKET_STORAGE_IGNORE_ETAG_UPLOAD
   value: "true"
-- name:  BUCKET_STORAGE_IGNORE_ETAG_AFTER_UPLOAD
+- name: BUCKET_STORAGE_IGNORE_ETAG_AFTER_UPLOAD
   value: "true"
 - name: BUCKET_STORAGE_SSE_COMPATIBLE
   value: "true"
@@ -91,14 +91,14 @@
   value: "true"
 {{- if eq .Values.humio.drMode "bootstrap" }}
 - name: GCP_RECOVER_FROM_BUCKET
-  value:  {{ .Values.humio.buckets.recover_name }}
+  value: {{ .Values.humio.buckets.recoverFromBucket }}
 - name: GCP_RECOVER_FROM_STORAGE_WORKLOAD_IDENTITY
   value: "true"
 - name: GCP_RECOVER_FROM_ENCRYPTION_KEY
-  value:  "off"
+  value: "off"
 {{- end }}
 - name: GCP_STORAGE_BUCKET
-  value:  {{ .Values.humio.buckets.name }}
+  value: {{ .Values.humio.buckets.name }}
 - name: GCP_STORAGE_ENCRYPTION_KEY
   value: "off"
 - name: GCP_STORAGE_OBJECT_KEY_PREFIX
@@ -106,7 +106,7 @@
 - name: GCP_EXPORT_WORKLOAD_IDENTITY
   value: "true"
 - name: GCP_EXPORT_BUCKET
-  value:  {{ .Values.humio.buckets.name }}
+  value: {{ .Values.humio.buckets.name }}
 - name: GCP_EXPORT_ENCRYPTION_KEY
   value: "off"
 - name: GCP_EXPORT_OBJECT_KEY_PREFIX
@@ -176,7 +176,7 @@
 - name: ENABLE_{{ . | upper}}
   value: "true"
 {{- end }}
-- name:  HUMIO_JVM_LOG_OPTS
+- name: HUMIO_JVM_LOG_OPTS
   value: "-Xlog:jit*=debug:file=/data/java-logs/jit_humio.log:time,tags:filecount=5,filesize=1024000 -Xlog:gc+jni=debug -Xlog:gc*:file=/data/java-logs/gc_humio.log:time,tags:filecount=5,filesize=102400"
 {{- range .Values.humio.extraENV }}
 - name: {{ .name }}
