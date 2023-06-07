@@ -97,7 +97,7 @@
   value : "storage/"
 {{- if eq .Values.humio.drMode "bootstrap" }}
 - name: GCP_RECOVER_FROM_BUCKET
-  value: {{ .Values.humio.buckets.recoverFromBucket }}
+  value: {{ .Values.humio.buckets.recoverFromBucketID }}
 - name: GCP_RECOVER_FROM_WORKLOAD_IDENTITY
   value: "true"
 - name: GCP_RECOVER_FROM_ENCRYPTION_KEY
