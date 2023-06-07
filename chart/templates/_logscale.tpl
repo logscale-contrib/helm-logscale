@@ -98,7 +98,7 @@
 {{- if eq .Values.humio.drMode "bootstrap" }}
 - name: GCP_RECOVER_FROM_BUCKET
   value: {{ .Values.humio.buckets.recoverFromBucket }}
-- name: GCP_RECOVER_FROM_STORAGE_WORKLOAD_IDENTITY
+- name: GCP_RECOVER_FROM_WORKLOAD_IDENTITY
   value: "true"
 - name: GCP_RECOVER_FROM_ENCRYPTION_KEY
   value: "off"
