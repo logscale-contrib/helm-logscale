@@ -7,6 +7,9 @@ fullnameOverride: ""
 humio:
   #values are "none",bootstrap,ui,inputs
   drMode: "none"
+  config:
+    enableInternalLogger: "false"
+    searchPipelineMonitorJob: "false"
   #One of humio,strimzi,external
   kafka:
     manager: "inputs"
@@ -26,10 +29,8 @@ humio:
   image:
     repository: humio/humio-core
     tag: "1.70.0--SNAPSHOT--build-323434--SHA-dfa77220c22755bc0f8dee124ef548e8c0d740b1"
-  autoRebalancePartitions: true
   digestPartitionsCount: 24
   storagePartitionsCount: 24
-  targetReplicationFactor: 3
   smtp:
     enabled: false
     host: ""

@@ -83,8 +83,8 @@ jobs:
 
       # - name: Lint Azure
       #   run: |
-      #     helm lint chart -f tests/common/host.yaml -f tests/common/humio.yaml -f tests/common/sso.yaml -f tests/azure/basic.yaml 
-      
+      #     helm lint chart -f tests/common/host.yaml -f tests/common/humio.yaml -f tests/common/sso.yaml -f tests/azure/basic.yaml
+
 
   Containerize:
     runs-on: ubuntu-latest

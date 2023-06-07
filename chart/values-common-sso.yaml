@@ -1,6 +1,6 @@
 humio:
   auth:
-    rootUser: user@example.com  
+    rootUser: user@example.com
     # method: saml
     # saml:
     #   signOnUrl: https://test.qa.logsr.life

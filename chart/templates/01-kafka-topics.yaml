@@ -21,7 +21,7 @@ spec:
   config:
     cleanup.policy: "delete"
     compression.type: producer
-    min.insync.replicas: 2    
+    min.insync.replicas: 2
     max.message.bytes: 2097152
     retention.bytes: 1073741824
     retention.ms: -1
@@ -47,7 +47,7 @@ spec:
   config:
     cleanup.policy: "delete"
     compression.type: producer
-    min.insync.replicas: 2    
+    min.insync.replicas: 2
     retention.ms: 3600000
     retention.bytes: -1
 ---
@@ -73,8 +73,8 @@ spec:
     cleanup.policy: "delete"
     compression.type: producer
     min.insync.replicas: {{ .Values.humio.kafka.topics.ingest.minisr }}
-    retention.ms: {{ .Values.humio.kafka.topics.ingest.retention.ms }}   
+    retention.ms: {{ .Values.humio.kafka.topics.ingest.retention.ms }}
     retention.bytes: {{ .Values.humio.kafka.topics.ingest.retention.bytes }}
     max.message.bytes: 10485760
-       
+
 {{- end }}

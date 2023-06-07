@@ -4,7 +4,7 @@ kind: Instrumentation
 metadata:
   name: {{ include "humio-instance.fullname" . }}-java
   labels:
-    {{- include "humio-instance.labels" . | nindent 4 }}  
+    {{- include "humio-instance.labels" . | nindent 4 }}
 spec:
   env:
     - name: OTEL_TRACES_EXPORTER
@@ -39,4 +39,4 @@ spec:
         value: "true"
       - name: OTEL_INSTRUMENTATION_OSHIENABLED
         value: "true"
-{{- end }}                      
+{{- end }}

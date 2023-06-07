@@ -1,4 +1,5 @@
-platform: aws
+platform:
+  provider: aws
 humio:
   # Object Storage Settings
   buckets:

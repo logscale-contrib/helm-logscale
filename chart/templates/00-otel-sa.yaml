@@ -16,7 +16,7 @@ kind: ClusterRole
 metadata:
   name: {{ include "humio-instance.humio.serviceAccountName" . }}-otel
   labels:
-    {{- include "humio-instance.labels" . | nindent 4 }}  
+    {{- include "humio-instance.labels" . | nindent 4 }}
 rules:
   - apiGroups:
       - ""
@@ -110,7 +110,7 @@ kind: ClusterRoleBinding
 metadata:
   name: {{ include "humio-instance.humio.serviceAccountName" . }}-otel
   labels:
-    {{- include "humio-instance.labels" . | nindent 4 }}  
+    {{- include "humio-instance.labels" . | nindent 4 }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole

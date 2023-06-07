@@ -1,4 +1,5 @@
-platform: gcp
+platform:
+  provider: gcp
 humio:
   # Object Storage Settings
   buckets:

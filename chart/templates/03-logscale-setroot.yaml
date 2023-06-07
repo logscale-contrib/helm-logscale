@@ -3,7 +3,7 @@ kind: Job
 metadata:
   name: {{ include "humio-instance.fullname" . }}-setroot
   labels:
-    {{- include "humio-instance.labels" . | nindent 4 }}  
+    {{- include "humio-instance.labels" . | nindent 4 }}
 
 spec:
   ttlSecondsAfterFinished: 300
@@ -22,7 +22,7 @@ spec:
             - name: EMAIL
               value: {{ .Values.humio.auth.rootUser }}
             - name: HUMIOSVC
-              value: {{ include "humio-instance.fullname" . }}-http-only   
+              value: {{ include "humio-instance.fullname" . }}-http-only
             - name: TOKEN
               valueFrom:
                 secretKeyRef:

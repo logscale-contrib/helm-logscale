@@ -9,7 +9,7 @@ metadata:
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-    
+
 spec:
   serviceAccount: {{ include "humio-instance.humio.serviceAccountName" . }}-otel
   image: otel/opentelemetry-collector-contrib:0.56.0
@@ -24,12 +24,12 @@ spec:
         - name: HUMIO_TOKEN_OTEL_LOGS
           valueFrom:
             secretKeyRef:
-                name: {{ include "humio-instance.fullname" . }}-all-humio-infra-otel-logs  
+                name: {{ include "humio-instance.fullname" . }}-all-humio-infra-otel-logs
                 key: token
         - name: HUMIO_TOKEN_OTEL_METRICS
           valueFrom:
             secretKeyRef:
-                name: {{ include "humio-instance.fullname" . }}-all-humio-infra-otel-metrics  
+                name: {{ include "humio-instance.fullname" . }}-all-humio-infra-otel-metrics
                 key: token
         - name: HUMIO_TOKEN_OTEL_TRACE
           valueFrom:
@@ -56,7 +56,7 @@ spec:
           grpc:
           http:
     processors:
-      batch:     
+      batch:
 
     extensions:
       health_check:
@@ -81,4 +81,4 @@ spec:
           receivers: [otlp]
           processors: [batch]
           exporters: [otlphttp/otel_trace]
-  {{- end }}              
+  {{- end }}

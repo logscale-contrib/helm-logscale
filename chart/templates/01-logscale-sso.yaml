@@ -4,8 +4,8 @@ kind: Secret
 metadata:
   name: "{{ include "humio-instance.fullname" . }}-idp-certificate"
   labels:
-    {{- include "humio-instance.labels" . | nindent 4 }}    
+    {{- include "humio-instance.labels" . | nindent 4 }}
 type: Opaque
 data:
   idp-certificate.pem: {{ .Values.humio.auth.saml.idpCertificate }}
-{{- end }}  
+{{- end }}

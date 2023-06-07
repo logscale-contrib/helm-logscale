@@ -31,24 +31,24 @@ spec:
         {{- with .Values.kafka.affinity }}
         affinity:
           {{- toYaml . | nindent 10 }}
-        {{- end }}  
+        {{- end }}
         {{- if .Values.kafka.priorityClassName }}
         priorityClassName: {{ .Values.kafka.priorityClassName }}
-        {{- end }}          
+        {{- end }}
         {{- with .Values.kafka.tolerations }}
         tolerations:
           {{- toYaml . | nindent 10 }}
-        {{- end }}          
+        {{- end }}
         {{- with .Values.kafka.topologySpreadConstraints }}
         topologySpreadConstraints:
           {{- toYaml . | nindent 10 }}
-        {{- end }}             
+        {{- end }}
     resources:
-      {{- toYaml .Values.kafka.resources | nindent 6 }}   
+      {{- toYaml .Values.kafka.resources | nindent 6 }}
     # authorization:
-    #   type: simple  
+    #   type: simple
     #   superUsers:
-    #     - lsadmin     
+    #     - lsadmin
     config:
       #set to 128mb
       segment.bytes: 134217728
@@ -82,7 +82,7 @@ spec:
 
     replicas: {{ .Values.kafka.replicas }}
     storage:
-      {{- toYaml .Values.kafka.storage | nindent 6 }}    
+      {{- toYaml .Values.kafka.storage | nindent 6 }}
 
   zookeeper:
     template:
@@ -90,10 +90,10 @@ spec:
         {{- with .Values.zookeeper.affinity }}
         affinity:
           {{- toYaml . | nindent 10 }}
-        {{- end }}  
+        {{- end }}
         {{- if .Values.zookeeper.priorityClassName }}
         priorityClassName: {{ .Values.zookeeper.priorityClassName }}
-        {{- end }}          
+        {{- end }}
         {{- with .Values.zookeeper.tolerations }}
         tolerations:
           {{- toYaml . | nindent 10 }}
@@ -101,12 +101,12 @@ spec:
         {{- with .Values.zookeeper.topologySpreadConstraints }}
         topologySpreadConstraints:
           {{- toYaml . | nindent 10 }}
-        {{- end }}        
+        {{- end }}
     resources:
-      {{- toYaml .Values.zookeeper.resources | nindent 6 }}    
+      {{- toYaml .Values.zookeeper.resources | nindent 6 }}
     replicas: {{ .Values.zookeeper.replicas }}
     storage:
-      {{- toYaml .Values.zookeeper.storage | nindent 6 }}    
+      {{- toYaml .Values.zookeeper.storage | nindent 6 }}
 ---
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaRebalance
@@ -115,7 +115,7 @@ metadata:
   labels:
     strimzi.io/cluster: {{ include "humio-instance.fullname" . }}
     {{- include "humio-instance.labels" . | nindent 4 }}
-spec: 
+spec:
   goals:
     - NetworkInboundCapacityGoal
     - DiskCapacityGoal

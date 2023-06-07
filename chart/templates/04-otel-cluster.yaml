@@ -10,7 +10,7 @@ metadata:
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-    
+
 spec:
   serviceAccount: {{ include "humio-instance.humio.serviceAccountName" . }}-otel
   image: otel/opentelemetry-collector-contrib:0.56.0
@@ -23,12 +23,12 @@ spec:
         - name: HUMIO_TOKEN_K8S_LOGS
           valueFrom:
             secretKeyRef:
-                name: {{ include "humio-instance.fullname" . }}-all-humio-infra-k8s-logs  
+                name: {{ include "humio-instance.fullname" . }}-all-humio-infra-k8s-logs
                 key: token
         - name: HUMIO_TOKEN_K8S_METRICS
           valueFrom:
             secretKeyRef:
-                name: {{ include "humio-instance.fullname" . }}-all-humio-infra-k8s-metrics  
+                name: {{ include "humio-instance.fullname" . }}-all-humio-infra-k8s-metrics
                 key: token
   config: |
     exporters:
@@ -56,7 +56,7 @@ spec:
     processors:
       batch:
       resourcedetection:
-        detectors: 
+        detectors:
 {{- range .Values.otel.resourcedetectors }}
           - {{.}}
 {{- end }}
@@ -97,4 +97,4 @@ spec:
           receivers: [k8s_events]
           processors: [batch]
           exporters: [otlphttp/k8s_logs]
-  {{- end }}              
+  {{- end }}
