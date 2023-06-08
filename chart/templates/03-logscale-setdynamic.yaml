@@ -50,7 +50,7 @@ spec:
                 http://$HUMIOSVC:8080/graphql
           env:
             - name: HUMIOSVC
-              value: {{ include "humio-instance.fullname" . }}-http-only
+              value: {{ include "humio-instance.fullname" . }}
             - name: TOKEN
               valueFrom:
                 secretKeyRef:
