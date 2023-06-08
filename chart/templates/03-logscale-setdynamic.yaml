@@ -73,7 +73,7 @@ spec:
               runAsUser: 10001
               runAsGroup:  10001
       restartPolicy: Never
-        volumes:
+      volumes:
         - name: config
           configMap:
             # Provide the name of the ConfigMap you want to mount.
