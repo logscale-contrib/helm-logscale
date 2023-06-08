@@ -30,7 +30,6 @@ spec:
                 args:
                     - >
                         sleep infinite
-                priorityClassName: {{ .Values.humio.priorityClassName }}
                 resources:
                     requests:
                         memory: 1Mi
@@ -46,6 +45,7 @@ spec:
                     readOnlyRootFilesystem: true
                     runAsUser: 10001
                     runAsGroup:  10001
+            priorityClassName: {{ .Values.humio.priorityClassName }}                
             {{- with .Values.humio.affinity }}
             affinity:                    
                 {{- toYaml . | nindent 18 }}
