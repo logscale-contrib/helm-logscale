@@ -1,3 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "humio-instance.fullname" . }}-setdynamic
+  labels:
+    {{- include "humio-instance.labels" . | nindent 4 }}
+    app.kubernetes.io/component: "setdynamic"
+data:
+  # property-like keys; each key maps to a simple value
+  config.json: |
+{{- if eq .Values.humio.drMode "pre" }}            
+    {
+      "query": "mutation {  setDynamicConfig(    input: {config: FlushSegmentsAndGlobalOnShutdown, value: \"true\"}  )"
+    }
+{{- else }}              
+    {
+      "query": "mutation {  setDynamicConfig(    input: {config: FlushSegmentsAndGlobalOnShutdown, value: \"false\"}  )"
+    }
+{{- end }}  
+---
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -20,14 +40,12 @@ spec:
             - curl
           args:
             - >-
-              curl "http://$HUMIOSVC:8080/graphql" -v -H 'accept: application/json, multipart/mixed' -H 'content-type: application/json' --data-raw '{"query":"mutation {  setDynamicConfig(    input: {config: FlushSegmentsAndGlobalOnShutdown, value: "'$FLUSHONSHUTDOWN'"}  )}"}' --compressed
+                curl "http://$HUMIOSVC:8080/graphql" 
+                -v
+                -H "accept: application/json, multipart/mixed" 
+                -H "content-type: application/json" 
+                -d @/config/config.json --compressed
           env:
-            - name: FLUSHONSHUTDOWN
-{{- if eq .Values.humio.drMode "pre" }}            
-              value: "true"
-{{- else }}              
-              value: "false"
-{{- end }}
             - name: HUMIOSVC
               value: {{ include "humio-instance.fullname" . }}-http-only
             - name: TOKEN
@@ -35,6 +53,10 @@ spec:
                 secretKeyRef:
                   name: {{ include "humio-instance.fullname" . }}-admin-token
                   key: token
+          volumeMounts:
+            - name: config
+              mountPath: "/config"
+              readOnly: true                  
           resources:
               requests:
                   memory: 1Mi
@@ -51,4 +73,13 @@ spec:
               runAsUser: 10001
               runAsGroup:  10001
       restartPolicy: Never
+        volumes:
+        - name: config
+          configMap:
+            # Provide the name of the ConfigMap you want to mount.
+            name: {{ include "humio-instance.fullname" . }}-setdynamic
+            # An array of keys from the ConfigMap to create as files
+            items:
+            - key: "config.json"
+              path: "config.json"
   backoffLimit: 4
