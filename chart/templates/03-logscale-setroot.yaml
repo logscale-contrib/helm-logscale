@@ -4,10 +4,14 @@ metadata:
   name: {{ include "humio-instance.fullname" . }}-setroot
   labels:
     {{- include "humio-instance.labels" . | nindent 4 }}
-
+    app.kubernetes.io/component: "setroot-user"
 spec:
   ttlSecondsAfterFinished: 300
   template:
+    metadata:
+      labels:
+        {{- include "humio-instance.labels" . | nindent 8 }}    
+        app.kubernetes.io/component: "setroot-user"
     spec:
       containers:
         - name: humio-set-root
