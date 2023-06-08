@@ -37,9 +37,11 @@ spec:
         - name: humio-setdynamic
           image: "{{ .Values.setroot.image.repository }}:{{ .Values.setroot.image.tag }}"
           command:
-            - curl
+            - sh
+            - -c
           args:
-            - >-
+            - >
+                curl -v --connect-timeout 5 --max-time 10 --retry 30 --retry-delay 0 --retry-max-time 600 --retry-connrefused
                 -v
                 -H "accept: application/json, multipart/mixed" 
                 -H "content-type: application/json" 
