@@ -40,7 +40,6 @@ spec:
             - curl
           args:
             - >-
-                curl
                 -v
                 -H "accept: application/json, multipart/mixed" 
                 -H "content-type: application/json" 
