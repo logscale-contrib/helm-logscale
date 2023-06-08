@@ -43,6 +43,7 @@ spec:
             - >
                 curl -v --connect-timeout 5 --max-time 10 --retry 30 --retry-delay 0 --retry-max-time 600 --retry-connrefused
                 -v
+                -H "Authorization: Bearer $TOKEN"
                 -H "accept: application/json, multipart/mixed" 
                 -H "content-type: application/json" 
                 -d @/config/config.json 
