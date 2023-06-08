@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: {{ include "humio-instance.fullname" . }}-preload
+    labels:
+        {{- include "humio-instance.labels" . | nindent 8 }}
+        app.kubernetes.io/component: "preload"
+spec:
+    {{- if eq .Values.humio.drMode "bootstrap" }}
+    replicas: 1
+    {{- else }}
+    replicas: {{ .Values.humio.nodeCount }}
+    {{- end }}
+    selector:
+        matchLabels:
+            {{- include "humio-instance.selectorLabels" . | nindent 12 }}
+            app.kubernetes.io/component: "preload"
+    template:
+        metadata:
+        labels:
+            {{- include "humio-instance.selectorLabels" . | nindent 12 }}
+            app.kubernetes.io/component: "preload"
+        spec:
+            containers:
+              - name: humio-set-root
+                image: "{{ .Values.preload.image.repository }}:{{ .Values.preload.image.tag }}"
+                command:
+                - sh
+                - -c
+                args:
+                - >
+                    sleep infinite
+                priorityClassName: {{ .Values.humio.priorityClassName }}
+                resources:
+                    requests:
+                        memory: 1Mi
+                        cpu: 10m
+                    limits:
+                        memory: 10Mi
+                        cpu: 20m
+                {{- with .Values.humio.affinity }}
+                affinity:
+                    {{- toYaml . | nindent 20 }}
+                {{- end }}
+                {{- with .Values.humio.tolerations }}
+                tolerations:
+                    {{- toYaml . | nindent 20 }}
+                {{- end }}
+                {{- with .Values.humio.topologySpreadConstraints }}
+                topologySpreadConstraints:
+                    {{- toYaml . | nindent 20 }}
+                {{- end }}            

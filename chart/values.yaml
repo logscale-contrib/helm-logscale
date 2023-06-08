@@ -103,6 +103,10 @@ humio:
 
   affinity: {}
 
+preload:
+  image:
+    repository: alpine
+    tag: 3.18.0
 setroot:
   image:
     repository: curlimages/curl
