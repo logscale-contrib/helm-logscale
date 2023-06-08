@@ -38,15 +38,23 @@ spec:
                     limits:
                         memory: 10Mi
                         cpu: 20m
-                {{- with .Values.humio.affinity }}
-                affinity:                    
-                    {{- toYaml . | nindent 20 }}
-                {{- end }}
-                {{- with .Values.humio.tolerations }}
-                tolerations:
-                    {{- toYaml . | nindent 20 }}
-                {{- end }}
-                {{- with .Values.humio.topologySpreadConstraints }}
-                topologySpreadConstraints:
-                    {{- toYaml . | nindent 20 }}
-                {{- end }}            
+                securityContext:
+                    allowPrivilegeEscalation: false
+                    capabilities:
+                        drop: ["ALL"]
+                    runAsNonRoot: true
+                    readOnlyRootFilesystem: true
+                    runAsUser: 10001
+                    runAsGroup:  10001
+            {{- with .Values.humio.affinity }}
+            affinity:                    
+                {{- toYaml . | nindent 18 }}
+            {{- end }}
+            {{- with .Values.humio.tolerations }}
+            tolerations:
+                {{- toYaml . | nindent 18 }}
+            {{- end }}
+            {{- with .Values.humio.topologySpreadConstraints }}
+            topologySpreadConstraints:
+                {{- toYaml . | nindent 18 }}
+            {{- end }}            
