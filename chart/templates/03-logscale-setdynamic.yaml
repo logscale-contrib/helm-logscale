@@ -21,13 +21,7 @@ spec:
             - -c
           args:
             - >
-              curl -v -XPOST --max-time 10 --retry 30 --retry-delay 0 --retry-max-time 600 --retry-connrefused 
-              -H "Content-Type: application/json"              
-              -H "Authorization: Bearer $TOKEN" 
-              -d "mutation{
-                    setDynamicConfig(input:{config: FlushSegmentsAndGlobalOnShutdown, value: \"$FLUSHONSHUTDOWN\"})
-                  }" 
-              http://$HUMIOSVC:8080/graphql
+              curl -v -XPOST --max-time 10 --retry 30 --retry-delay 0 --retry-max-time 600 --retry-connrefused -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN" -d "mutation{setDynamicConfig(input:{config: FlushSegmentsAndGlobalOnShutdown, value: \"$FLUSHONSHUTDOWN\"})}" http://$HUMIOSVC:8080/graphql
           env:
             - name: FLUSHONSHUTDOWN
 {{- if eq .Values.humio.drMode "pre" }}            
