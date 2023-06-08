@@ -10,11 +10,11 @@ data:
   config.json: |
 {{- if eq .Values.humio.drMode "pre" }}            
     {
-      "query": "mutation {  setDynamicConfig(    input: {config: FlushSegmentsAndGlobalOnShutdown, value: \"true\"}  )"
+      "query": "mutation {  setDynamicConfig(    input: {config: FlushSegmentsAndGlobalOnShutdown, value: \"true\"}  )}"
     }
 {{- else }}              
     {
-      "query": "mutation {  setDynamicConfig(    input: {config: FlushSegmentsAndGlobalOnShutdown, value: \"false\"}  )"
+      "query": "mutation {  setDynamicConfig(    input: {config: FlushSegmentsAndGlobalOnShutdown, value: \"false\"}  )}"
     }
 {{- end }}  
 ---
