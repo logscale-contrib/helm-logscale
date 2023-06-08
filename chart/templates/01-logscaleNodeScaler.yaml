@@ -17,9 +17,9 @@ spec:
             app.kubernetes.io/component: "preload"
     template:
         metadata:
-        labels:
-            {{- include "humio-instance.selectorLabels" . | nindent 12 }}
-            app.kubernetes.io/component: "preload"
+            labels:
+                {{- include "humio-instance.selectorLabels" . | nindent 16 }}
+                app.kubernetes.io/component: "preload"
         spec:
             containers:
               - name: humio-set-root
