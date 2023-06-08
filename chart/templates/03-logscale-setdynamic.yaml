@@ -21,10 +21,10 @@ spec:
             - -c
           args:
             - >
-            curl "http://$HUMIOSVC:8080/graphql" \
+              curl "http://$HUMIOSVC:8080/graphql" \
               -H 'accept: application/json, multipart/mixed' \
               -H 'content-type: application/json' \
-              --data-raw '{"query":"mutation {\n  setDynamicConfig(\n    input: {config: FlushSegmentsAndGlobalOnShutdown, value: \"$TOKEN\"}\n  )\n}\n"}' \
+              --data-raw "{\"query\":\"mutation {  setDynamicConfig(    input: {config: FlushSegmentsAndGlobalOnShutdown, value: \"$FLUSHONSHUTDOWN\"}  )}\"}" \
               --compressed              
           env:
             - name: FLUSHONSHUTDOWN
