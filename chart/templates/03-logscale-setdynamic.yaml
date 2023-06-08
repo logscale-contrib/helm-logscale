@@ -27,7 +27,7 @@ spec:
               -d "mutation{
                     setDynamicConfig(input:{config: FlushSegmentsAndGlobalOnShutdown, value: \"$FLUSHONSHUTDOWN\"})
                   }" 
-              http://$HUMIOSVC:8080/api/v1/users
+              http://$HUMIOSVC:8080/graphql
           env:
             - name: FLUSHONSHUTDOWN
 {{- if eq .Values.humio.drMode "pre" }}            
