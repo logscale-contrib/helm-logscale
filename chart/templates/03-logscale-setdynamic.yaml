@@ -24,7 +24,7 @@ spec:
               curl "http://$HUMIOSVC:8080/graphql" \
               -H 'accept: application/json, multipart/mixed' \
               -H 'content-type: application/json' \
-              --data-raw '{"query":"mutation {\n  setDynamicConfig(\n    input: {config: FlushSegmentsAndGlobalOnShutdown, value: \"'$FLUSHONSHUTDOWN'\"}\n  )\n}\n"}' \
+              --data-raw '{"query":"mutation {\n  setDynamicConfig(\n    input: {config: FlushSegmentsAndGlobalOnShutdown, value: "'$FLUSHONSHUTDOWN'"}\n  )\n}\n"}' \
               --compressed              
           env:
             - name: FLUSHONSHUTDOWN
