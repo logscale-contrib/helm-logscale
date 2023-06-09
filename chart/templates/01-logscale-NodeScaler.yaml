@@ -51,6 +51,14 @@ spec:
                 {{- with .Values.humio.affinity.nodeAffinity }}
                     {{- toYaml . | nindent 18 }}
                 {{- end }}                 
+                podAntiAffinity:
+                    requiredDuringSchedulingIgnoredDuringExecution:
+                        - labelSelector:
+                            matchExpressions:
+                            - key: app.kubernetes.io/component
+                                operator: In
+                                values: ["preload"]
+                          topologyKey: "kubernetes.io/hostname"                
             {{- with .Values.humio.tolerations }}
             tolerations:
                 {{- toYaml . | nindent 18 }}
