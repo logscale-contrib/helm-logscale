@@ -46,15 +46,29 @@ spec:
                     runAsUser: 10001
                     runAsGroup:  10001
             priorityClassName: {{ .Values.humio.priorityClassName }}                
-            {{- with .Values.humio.affinity }}
-            affinity:                    
-                {{- toYaml . | nindent 18 }}
-            {{- end }}
+            affinity:
+                nodeAffinity:                
+                {{- with .Values.humio.affinity.nodeAffinity }}
+                    {{- toYaml . | nindent 18 }}
+                {{- end }}                 
             {{- with .Values.humio.tolerations }}
             tolerations:
                 {{- toYaml . | nindent 18 }}
             {{- end }}
-            {{- with .Values.humio.topologySpreadConstraints }}
             topologySpreadConstraints:
-                {{- toYaml . | nindent 18 }}
-            {{- end }}            
+                - maxSkew: 1
+                  topologyKey: topology.kubernetes.io/zone
+                  whenUnsatisfiable: DoNotSchedule
+                  labelSelector:
+                    {{- include "humio-instance.selectorLabels" . | nindent 20 }}
+                    app.kubernetes.io/component: "preload"
+                  matchLabelKeys:
+                    - pod-template-hash
+                - maxSkew: 1
+                  topologyKey: kubernetes.io/hostname
+                  whenUnsatisfiable: DoNotSchedule
+                  labelSelector:
+                    {{- include "humio-instance.selectorLabels" . | nindent 20 }}
+                    app.kubernetes.io/component: "preload"
+                  matchLabelKeys:
+                  - pod-template-hash
