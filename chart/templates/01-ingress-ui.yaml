@@ -1,7 +1,7 @@
 {{- if .Values.humio.ingress.ui.enabled -}}
 {{- $fullName := include "humio-instance.fullname" . -}}
 {{- $svcPort := 8080 -}}
-{{- if eq  .Values.platform.provider "gcp" }}
+{{- if eq .Values.platform.provider "gcp" }}
 apiVersion: cloud.google.com/v1
 kind: BackendConfig
 metadata:

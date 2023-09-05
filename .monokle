@@ -20,6 +20,7 @@
                 "name": "Azure",
                 "helmChartFilePath": "/chart/Chart.yaml",
                 "command": "template",
+                "options": {},
                 "valuesFileItemMap": {
                     "/chart/values": {
                         "id": "/chart/values",
@@ -62,9 +63,26 @@
                         "filePath": "/chart/values-common-azure-istio.yaml",
                         "isChecked": false,
                         "order": 6
+                    },
+                    "/chart/values-common-gcp": {
+                        "id": "/chart/values-common-gcp",
+                        "filePath": "/chart/values-common-gcp.yaml",
+                        "isChecked": false,
+                        "order": 7
+                    },
+                    "/chart/values-otel-self": {
+                        "id": "/chart/values-otel-self",
+                        "filePath": "/chart/values-otel-self.yaml",
+                        "isChecked": false,
+                        "order": 8
+                    },
+                    "/chart/values-strimzi": {
+                        "id": "/chart/values-strimzi",
+                        "filePath": "/chart/values-strimzi.yaml",
+                        "isChecked": true,
+                        "order": 9
                     }
-                },
-                "options": {}
+                }
             },
             "b8457200-a867-48f9-a8bf-68aaf2fbac14": {
                 "id": "b8457200-a867-48f9-a8bf-68aaf2fbac14",
@@ -260,6 +278,6 @@
     },
     "kubeConfig": {
         "path": "/Users/rfaircloth/.kube/config",
-        "currentContext": "gke_logsr-life-production_us-central1_logscale-prod-ops"
+        "currentContext": "segway-ps-prod"
     }
 }
