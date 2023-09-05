@@ -1,5 +1,5 @@
 platform:
-  provider: azure
+   provider: azure
 humio:
   # Object Storage Settings
   buckets:
