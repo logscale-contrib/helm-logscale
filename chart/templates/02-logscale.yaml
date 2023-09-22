@@ -67,7 +67,7 @@ spec:
   hostname: {{ .Values.humio.fqdn }}
   hostnameSource: {}
   image: "{{ .Values.humio.image.repository }}:{{ .Values.humio.image.tag }}"
-{{- if eq  .Values.humio.helperImage }}  
+{{- if .Values.humio.helperImage }}  
   helperImage: {{ .Values.humio.helperImage }}
 {{- end }}
   #We use helm to produce ingress so we prevent operator from doing it
