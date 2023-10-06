@@ -10,13 +10,15 @@ spec:
   authServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
   humioServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
 
+  {{- if or .Values.otel.components.inject .Values.humio.podAnnotations }}                
   podAnnotations:
-  {{- if .Values.otel.components.inject }}                        
+  {{- if .Values.otel.components.inject }}                
     "instrumentation.opentelemetry.io/inject-java": {{ include "humio-instance.fullname" . }}-java
     "instrumentation.opentelemetry.io/container-names": "humio"
   {{- end }}
   {{- with .Values.humio.podAnnotations }}
-    #{{- toYaml . | nindent 4 }}
+    {{- toYaml . | nindent 6 }}
+  {{- end }}
   {{- end }}
 
   resources:
@@ -201,10 +203,12 @@ spec:
         authServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
         humioServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
 
+        {{- if or .Values.otel.components.inject .Values.humio.podAnnotations }}                
         podAnnotations:
-        {{- if .Values.otel.components.inject }}
+        {{- if .Values.otel.components.inject }}                
           "instrumentation.opentelemetry.io/inject-java": {{ include "humio-instance.fullname" . }}-java
           "instrumentation.opentelemetry.io/container-names": "humio"
+        {{- end }}
         {{- with .Values.humio.podAnnotations }}
           {{- toYaml . | nindent 10 }}
         {{- end }}
@@ -344,6 +348,7 @@ spec:
         authServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
         humioServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
 
+        {{- if or .Values.otel.components.inject .Values.humio.podAnnotations }}                
         podAnnotations:
         {{- if .Values.otel.components.inject }}                
           "instrumentation.opentelemetry.io/inject-java": {{ include "humio-instance.fullname" . }}-java
@@ -351,6 +356,7 @@ spec:
         {{- end }}
         {{- with .Values.humio.podAnnotations }}
           {{- toYaml . | nindent 10 }}
+        {{- end }}
         {{- end }}
 
         extraHumioVolumeMounts:
