@@ -12,7 +12,7 @@
   value: {{ include "humio-instance.fullname" . }}-kafka-bootstrap:9092
 {{- else }}
 - name: KAFKA_SERVERS
-  value: {{ include "humio-instance.externalService.kafka" . | quote }}
+  value: {{ .Values.humio.kafka.bootstrap | quote }}
 {{- end }}
 {{- if or (eq .Values.humio.kafka.manager "strimzi") (eq .Values.humio.kafka.manager "external") }}
 - name: KAFKA_MANAGED_BY_HUMIO
