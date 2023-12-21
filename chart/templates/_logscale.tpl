@@ -7,8 +7,6 @@
   value: {{ .Values.humio.config.enableInternalLogger | default "false" | quote }}
 - name: SEARCH_PIPELINE_MONITOR_JOB_ENABLE
   value: {{ .Values.humio.config.searchPipelineMonitorJob | default "false" | quote }}
-- name: USING_EPHEMERAL_DISKS
-  value: "true"
 {{- if eq .Values.humio.kafka.manager "strimzi" }}
 - name: KAFKA_SERVERS
   value: {{ include "humio-instance.fullname" . }}-kafka-bootstrap:9092
@@ -28,6 +26,13 @@
   value: {{ .Values.humio.kafka.topicPrefix | default .Release.Name }}-
 {{- end }}
   #Object Storage config
+{{- if eq  .Values.humio.buckets.type "none" }}  
+- name: USING_EPHEMERAL_DISKS
+  value: "false"
+{{- else }}
+- name: USING_EPHEMERAL_DISKS
+  value: "true"
+{{- end }}
 {{- if eq  .Values.humio.buckets.type "aws" }}
 - name: LOCAL_STORAGE_MIN_AGE_DAYS
   value: {{ .Values.humio.buckets.localStorageMinAgeDays | default "3" | quote }}
