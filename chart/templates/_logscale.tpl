@@ -214,8 +214,8 @@
 - name: {{ .name }}
   value: {{ .value | quote }}
 {{- end }}
-{{- end }}
 {{- if .Values.humio.trustManagerConfigMap }}
 - name: TLS_TRUSTSTORE_LOCATION
   value: /data/truststore/bundle.jks
+{{- end }}
 {{- end }}
