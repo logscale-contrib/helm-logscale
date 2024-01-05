@@ -70,6 +70,7 @@ spec:
         # to add to the container
         name: {{ .Values.humio.trustManagerConfigMap }}
 {{- end }}
+
   esHostnameSource: {}
   extraKafkaConfigs: {{ .Values.humio.kafka.extraConfig | quote }}
 {{- if eq  .Values.humio.auth.method  "saml" }}
