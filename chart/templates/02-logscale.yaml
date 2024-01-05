@@ -123,11 +123,22 @@ spec:
             mountPath: /data/java-logs
           - name: logs
             mountPath: /data/logs
+      {{- if .Values.humio.trustManagerConfigMap }}
+          - name: truststore
+            mountPath: /data/truststore
+      {{- end }}            
         extraVolumes:
           - name: java-logs
             emptyDir: {}
           - name: logs
             emptyDir: {}
+      {{- if .Values.humio.trustManagerConfigMap }}
+          - name: truststore
+            configMap:
+              # Provide the name of the ConfigMap containing the files you want
+              # to add to the container
+              name: {{ .Values.humio.trustManagerConfigMap }}
+      {{- end }}            
         {{- if .Values.humio.nodepools.ingest.priorityClassName }}
         priorityClassName: {{ .Values.humio.nodepools.ingest.priorityClassName }}
         {{- end }}
@@ -191,11 +202,22 @@ spec:
             mountPath: /data/java-logs
           - name: logs
             mountPath: /data/logs
+      {{- if .Values.humio.trustManagerConfigMap }}
+          - name: truststore
+            mountPath: /data/truststore
+      {{- end }}            
         extraVolumes:
           - name: java-logs
             emptyDir: {}
           - name: logs
             emptyDir: {}
+      {{- if .Values.humio.trustManagerConfigMap }}
+          - name: truststore
+            configMap:
+              # Provide the name of the ConfigMap containing the files you want
+              # to add to the container
+              name: {{ .Values.humio.trustManagerConfigMap }}
+      {{- end }}            
         {{- if .Values.humio.nodepools.ui.priorityClassName }}
         priorityClassName: {{ .Values.humio.nodepools.ui.priorityClassName }}
         {{- end }}
