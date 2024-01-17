@@ -25,6 +25,7 @@ humio:
   #kafkaPrefix
   buckets:
     type: none
+    prefix: ""
 
   replicaCount: 3
   image:

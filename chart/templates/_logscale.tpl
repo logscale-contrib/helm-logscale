@@ -48,6 +48,8 @@
   value: {{ .Values.humio.buckets.storage }}
 - name: S3_STORAGE_REGION
   value: {{ .Values.humio.buckets.region }}
+- name: S3_STORAGE_OBJECT_KEY_PREFIX
+  value: {{ .Values.humio.buckets.prefix }}
 {{- else if eq  .Values.humio.buckets.type "s3proxy" }}
 - name: LOCAL_STORAGE_MIN_AGE_DAYS
   value: {{ .Values.humio.buckets.localStorageMinAgeDays | default "3" | quote }}
@@ -85,6 +87,8 @@
   value: "true"
 - name: S3_EXPORT_PATH_STYLE_ACCESS
   value: "true"
+- name: S3_STORAGE_OBJECT_KEY_PREFIX
+  value: {{ .Values.humio.buckets.prefix }}
 {{- else if eq  .Values.humio.buckets.type "gcp" }}
 - name: LOCAL_STORAGE_MIN_AGE_DAYS
   value: {{ .Values.humio.buckets.localStorageMinAgeDays | default "3" | quote }}
