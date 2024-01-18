@@ -10,6 +10,7 @@ spec:
   authServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
   humioServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
 
+  {{- if or .Values.otel.components.inject .Values.humio.podAnnotations }}
   podAnnotations:
   {{- if .Values.otel.components.inject }}
     "instrumentation.opentelemetry.io/inject-java": {{ include "humio-instance.fullname" . }}-java
@@ -18,6 +19,8 @@ spec:
   {{- with .Values.humio.podAnnotations }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
+  {{- end }}
+
   {{- if .Values.humio.priorityClassName }}
   priorityClassName: {{ .Values.humio.priorityClassName }}
   {{- end }}
@@ -110,6 +113,7 @@ spec:
         authServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
         humioServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
 
+        {{- if or .Values.otel.components.inject .Values.humio.podAnnotations }}  
         podAnnotations:
         {{- if .Values.otel.components.inject }}
           "instrumentation.opentelemetry.io/inject-java": {{ include "humio-instance.fullname" . }}-java
@@ -117,6 +121,7 @@ spec:
         {{- end }}
         {{- with .Values.humio.podAnnotations }}
           {{- toYaml . | nindent 10 }}
+        {{- end }}
         {{- end }}
 
         extraHumioVolumeMounts:
@@ -189,6 +194,7 @@ spec:
         authServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
         humioServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
 
+        {{- if or .Values.otel.components.inject .Values.humio.podAnnotations }}  
         podAnnotations:
         {{- if .Values.otel.components.inject }}
           "instrumentation.opentelemetry.io/inject-java": {{ include "humio-instance.fullname" . }}-java
@@ -196,6 +202,7 @@ spec:
         {{- end }}
         {{- with .Values.humio.podAnnotations }}
           {{- toYaml . | nindent 10 }}
+        {{- end }}
         {{- end }}
 
         extraHumioVolumeMounts:
