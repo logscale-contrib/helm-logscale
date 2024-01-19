@@ -60,7 +60,9 @@ spec:
   tls:
     - hosts:
         - {{ .Values.humio.fqdnInputs }}
-      secretName: {{ $fullName }}-inputs-tls
+      {{- if .Values.humio.ingress.inputs.tlsSecretName }}
+      secretName: {{- .Values.humio.ingress.inputs.tlsSecretName }}
+      {{- end }}
   {{- end }}
   rules:
     - host: {{ .Values.humio.fqdnInputs }}
