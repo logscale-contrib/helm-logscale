@@ -54,7 +54,7 @@ metadata:
   {{- end }}
 spec:
   {{- if and .Values.humio.ingress.inputs.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
-  ingress.inputsClassName: {{ .Values.humio.ingress.inputs.className }}
+  ingressClassName: {{ .Values.humio.ingress.inputs.className }}
   {{- end }}
   {{- if .Values.humio.ingress.inputs.tls }}
   tls:

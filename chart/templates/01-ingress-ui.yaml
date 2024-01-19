@@ -56,7 +56,7 @@ metadata:
   {{- end }}
 spec:
   {{- if and .Values.humio.ingress.ui.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
-  ingress.uiClassName: {{ .Values.humio.ingress.ui.className }}
+  ingressClassName: {{ .Values.humio.ingress.ui.className }}
   {{- end }}
   {{- if .Values.humio.ingress.ui.tls }}
   tls:
