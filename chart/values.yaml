@@ -30,7 +30,7 @@ humio:
   replicaCount: 3
   image:
     repository: humio/humio-core
-    tag: "1.70.0--SNAPSHOT--build-323434--SHA-dfa77220c22755bc0f8dee124ef548e8c0d740b1"
+    tag: "1.118.2"
   digestPartitionsCount: 24
   storagePartitionsCount: 24
   smtp:
