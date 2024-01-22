@@ -8,5 +8,5 @@ metadata:
 type: Opaque
 data:
   idp-certificate.pem: |
-    {{- .Values.humio.auth.saml.idpCertificate  | toYaml | indent 4 }}
+{{ .Values.humio.auth.saml.idpCertificate  | indent 4 }}
 {{- end }}

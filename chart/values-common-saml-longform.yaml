@@ -1,0 +1,44 @@
+humio:
+  auth:
+    rootUser: user@example.com
+    method: saml
+    saml:
+      signOnUrl: https://test.qa.logsr.life
+      entityID: https://test.qa.logsr.life
+      idpCertificate: |
+        -----BEGIN CERTIFICATE-----
+        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
+        qpKN4eInh6kl3RdBfEGbzUFIQs3TJNzx
+        -----END CERTIFICATE-----      
+    oauth:
+      provider: ${dependency.sso.outputs.issuer}
+      client_id: ${dependency.sso.outputs.application_id}
+      client_secret_name: azuread-oidc
+      client_secret_key: "oidc.azure.clientSecret"
