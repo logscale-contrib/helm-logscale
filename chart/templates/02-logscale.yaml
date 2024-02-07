@@ -214,6 +214,10 @@ spec:
           - name: truststore
             mountPath: /data/truststore
       {{- end }}            
+      {{- if .Values.humio.kafka.keystore }}
+          - name: kafka-keystore
+            mountPath: /data/kafka-keystore
+      {{- end }}            
         extraVolumes:
           - name: java-logs
             emptyDir: {}
@@ -226,6 +230,13 @@ spec:
               # to add to the container
               name: {{ .Values.humio.trustManagerConfigMap }}
       {{- end }}            
+      {{- if .Values.humio.kafka.keystore }}
+          - name: kafka-keystore
+            configMap:
+              # Provide the name of the ConfigMap containing the files you want
+              # to add to the container
+              name: {{ .Values.humio.kafka.keystore }}
+      {{- end }}        
         {{- if .Values.humio.nodepools.ui.priorityClassName }}
         priorityClassName: {{ .Values.humio.nodepools.ui.priorityClassName }}
         {{- end }}
