@@ -61,6 +61,10 @@ spec:
     - name: truststore
       mountPath: /data/truststore
 {{- end }}
+{{- if .Values.humio.kafka.keystore }}
+    - name: kafka-keystore
+      mountPath: /data/kafka-keystore
+{{- end }}   
   extraVolumes:
     - name: java-logs
       emptyDir: {}
@@ -73,7 +77,13 @@ spec:
         # to add to the container
         name: {{ .Values.humio.trustManagerConfigMap }}
 {{- end }}
-
+{{- if .Values.humio.kafka.keystore }}
+    - name: kafka-keystore
+      secret:
+        # Provide the name of the ConfigMap containing the files you want
+        # to add to the container
+        name: {{ .Values.humio.kafka.keystore }}
+{{- end }}  
   esHostnameSource: {}
   extraKafkaConfigs: {{ .Values.humio.kafka.extraConfig | quote }}
 {{- if eq  .Values.humio.auth.method  "saml" }}
@@ -133,6 +143,10 @@ spec:
           - name: truststore
             mountPath: /data/truststore
       {{- end }}            
+      {{- if .Values.humio.kafka.keystore }}
+          - name: kafka-keystore
+            mountPath: /data/kafka-keystore
+      {{- end }}         
         extraVolumes:
           - name: java-logs
             emptyDir: {}
@@ -145,6 +159,13 @@ spec:
               # to add to the container
               name: {{ .Values.humio.trustManagerConfigMap }}
       {{- end }}            
+      {{- if .Values.humio.kafka.keystore }}
+          - name: kafka-keystore
+            secret:
+              # Provide the name of the ConfigMap containing the files you want
+              # to add to the container
+              name: {{ .Values.humio.kafka.keystore }}
+      {{- end }}        
         {{- if .Values.humio.nodepools.ingest.priorityClassName }}
         priorityClassName: {{ .Values.humio.nodepools.ingest.priorityClassName }}
         {{- end }}
@@ -232,7 +253,7 @@ spec:
       {{- end }}            
       {{- if .Values.humio.kafka.keystore }}
           - name: kafka-keystore
-            configMap:
+            secret:
               # Provide the name of the ConfigMap containing the files you want
               # to add to the container
               name: {{ .Values.humio.kafka.keystore }}
