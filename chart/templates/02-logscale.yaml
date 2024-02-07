@@ -82,7 +82,7 @@ spec:
       secret:
         # Provide the name of the ConfigMap containing the files you want
         # to add to the container
-        name: {{ .Values.humio.kafka.keystore }}
+        secretName: {{ .Values.humio.kafka.keystore }}
 {{- end }}  
   esHostnameSource: {}
   extraKafkaConfigs: {{ .Values.humio.kafka.extraConfig | quote }}
@@ -164,7 +164,7 @@ spec:
             secret:
               # Provide the name of the ConfigMap containing the files you want
               # to add to the container
-              name: {{ .Values.humio.kafka.keystore }}
+              secretName: {{ .Values.humio.kafka.keystore }}
       {{- end }}        
         {{- if .Values.humio.nodepools.ingest.priorityClassName }}
         priorityClassName: {{ .Values.humio.nodepools.ingest.priorityClassName }}
@@ -256,7 +256,7 @@ spec:
             secret:
               # Provide the name of the ConfigMap containing the files you want
               # to add to the container
-              name: {{ .Values.humio.kafka.keystore }}
+              secretName: {{ .Values.humio.kafka.keystore }}
       {{- end }}        
         {{- if .Values.humio.nodepools.ui.priorityClassName }}
         priorityClassName: {{ .Values.humio.nodepools.ui.priorityClassName }}
