@@ -199,18 +199,8 @@
 {{- end }}
 - name: HUMIO_JVM_LOG_OPTS
   value: "-Xlog:jit*=debug:file=/data/java-logs/jit_humio.log:time,tags:filecount=5,filesize=1024000 -Xlog:gc+jni=debug -Xlog:gc*:file=/data/java-logs/gc_humio.log:time,tags:filecount=5,filesize=102400"
-{{- range .Values.humio.extraENV }}
-- name: {{ .name }}
-  value: {{ .value | quote }}
-{{- end }}
-
-{{- if ne .Values.humio.drMode "none" }}
-- name: ENABLE_ALERTS
-  value: "false"
-- name: ENABLE_EVENT_FORWARDING
-  value: "false"
-- name: ENABLE_SCHEDULED_SEARCHES
-  value: "false"
+{{- with .Values.humio.extraENV }}
+{{ toYaml . | indent 0 }}
 {{- end }}
 {{- if ne .Values.humio.drMode "none" }}
 - name: ENABLE_ALERTS
@@ -220,9 +210,13 @@
 - name: ENABLE_SCHEDULED_SEARCHES
   value: "false"
 {{- end }}
-{{- range .Values.humio.extraENV }}
-- name: {{ .name }}
-  value: {{ .value | quote }}
+{{- if ne .Values.humio.drMode "none" }}
+- name: ENABLE_ALERTS
+  value: "false"
+- name: ENABLE_EVENT_FORWARDING
+  value: "false"
+- name: ENABLE_SCHEDULED_SEARCHES
+  value: "false"
 {{- end }}
 {{- if .Values.humio.trustManagerConfigMap }}
 - name: TLS_TRUSTSTORE_LOCATION
