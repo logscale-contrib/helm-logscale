@@ -21,7 +21,7 @@ kind: FrontendConfig
 metadata:
   name: {{ $fullName }}-inputs
 spec:
-  sslPolicy: logscale-inputs
+  sslPolicy: {{ .Values.humio.ingress.inputs.gcpSSLPolicy | default "logscale-inputs" }}
   redirectToHttps:
     enabled: true
     responseCodeName: MOVED_PERMANENTLY_DEFAULT

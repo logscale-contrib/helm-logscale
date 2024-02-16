@@ -21,7 +21,7 @@ kind: FrontendConfig
 metadata:
   name: {{ $fullName }}-ui
 spec:
-  sslPolicy: logscale-ui
+  sslPolicy: {{ .Values.humio.ingress.ui.gcpSSLPolicy | default "logscale-ui"}}
   redirectToHttps:
     enabled: true
     responseCodeName: MOVED_PERMANENTLY_DEFAULT
