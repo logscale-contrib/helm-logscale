@@ -22,9 +22,6 @@ metadata:
   name: {{ $fullName }}-inputs
 spec:
   sslPolicy: {{ .Values.humio.ingress.inputs.gcpSSLPolicy | default "logscale-inputs" }}
-  redirectToHttps:
-    enabled: true
-    responseCodeName: MOVED_PERMANENTLY_DEFAULT
 ---
 {{- end }}
 {{- if and .Values.humio.ingress.inputs.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
@@ -47,6 +44,7 @@ metadata:
   annotations:
     "helm.sh/resource-policy": "keep"
   {{- if eq .Values.platform.provider "gcp" }}
+    cloud.google.com/backend-config: '{"default": "{{ $fullName }}-inputs"}'    
     networking.gke.io/v1beta1.FrontendConfig: {{ $fullName }}-inputs
   {{- end }}
   {{- with .Values.humio.ingress.inputs.annotations }}
