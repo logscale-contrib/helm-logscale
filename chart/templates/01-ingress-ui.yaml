@@ -16,7 +16,7 @@ spec:
     requestPath: /api/v1/is-node-up
     port: 8080
 ---
-{{- if eq .Values.humio.ingress.ui.classNameAnnotation "gcp" }}
+{{- if eq .Values.humio.ingress.ui.classNameAnnotation "gce" }}
 apiVersion: networking.gke.io/v1beta1
 kind: FrontendConfig
 metadata:
