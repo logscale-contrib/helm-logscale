@@ -50,7 +50,9 @@ metadata:
   {{- end }}
   {{- if eq .Values.platform.provider "gcp" }}
     cloud.google.com/backend-config: '{"default": "{{ $fullName }}-inputs"}'    
+  {{- if eq .Values.humio.ingress.inputs.classNameAnnotation "gce" }}
     networking.gke.io/v1beta1.FrontendConfig: {{ $fullName }}-inputs
+  {{- end }}
   {{- end }}
   {{- with .Values.humio.ingress.inputs.annotations }}
     {{- toYaml . | nindent 4 }}
