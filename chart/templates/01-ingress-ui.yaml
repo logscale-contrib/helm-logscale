@@ -16,6 +16,7 @@ spec:
     requestPath: /api/v1/is-node-up
     port: 8080
 ---
+{{- if eq .Values.humio.ingress.ui.classNameAnnotation "gcp" }}
 apiVersion: networking.gke.io/v1beta1
 kind: FrontendConfig
 metadata:
@@ -26,6 +27,7 @@ spec:
     enabled: true
     responseCodeName: MOVED_PERMANENTLY_DEFAULT
 ---
+{{- end }}
 {{- end }}
 {{- if and .Values.humio.ingress.ui.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
   {{- if not (hasKey .Values.humio.ingress.ui.annotations "kubernetes.io/humio.ingress.ui.class") }}
@@ -46,6 +48,9 @@ metadata:
     {{- include "humio-instance.labels" . | nindent 4 }}
   annotations:
     "helm.sh/resource-policy": "keep"
+  {{- if .Values.humio.ingress.ui.classNameAnnotation }}
+    kubernetes.io/ingress.class: {{ .Values.humio.ingress.inputs.classNameAnnotation }}
+  {{- end }}
   {{- if eq .Values.platform.provider "gcp" }}
     cloud.google.com/backend-config: '{"default": "{{ $fullName }}-ui"}'
     networking.gke.io/v1beta1.FrontendConfig: {{ $fullName }}-ui
