@@ -53,7 +53,7 @@ metadata:
   {{- end }}
   {{- if eq .Values.platform.provider "gcp" }}
     cloud.google.com/backend-config: '{"default": "{{ $fullName }}-ui"}'
-  {{- if eq .Values.humio.ingress.inputs.classNameAnnotation "gce" }}
+  {{- if eq .Values.humio.ingress.ui.classNameAnnotation "gce" }}
     networking.gke.io/v1beta1.FrontendConfig: {{ $fullName }}-ui
   {{- end }}  
   {{- end }}
