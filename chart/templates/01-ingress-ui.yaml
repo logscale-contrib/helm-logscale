@@ -49,7 +49,7 @@ metadata:
   annotations:
     "helm.sh/resource-policy": "keep"
   {{- if .Values.humio.ingress.ui.classNameAnnotation }}
-    kubernetes.io/ingress.class: {{ .Values.humio.ingress.inputs.classNameAnnotation }}
+    kubernetes.io/ingress.class: {{ .Values.humio.ingress.ui.classNameAnnotation }}
   {{- end }}
   {{- if eq .Values.platform.provider "gcp" }}
     cloud.google.com/backend-config: '{"default": "{{ $fullName }}-ui"}'
