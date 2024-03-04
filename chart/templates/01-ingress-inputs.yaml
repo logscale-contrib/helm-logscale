@@ -70,7 +70,10 @@ spec:
       {{- end }}
   {{- end }}
   rules:
-    - host: {{ .Values.humio.fqdnInputs }}
+    - 
+      {{- if .Values.humio.fqdnInputs }}
+      host: {{ .Values.humio.fqdnInputs }}
+      {{- end }}
       http:
         paths:
           - path: /_bulk
