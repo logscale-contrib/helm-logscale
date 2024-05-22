@@ -1,0 +1,110 @@
+{{- if .Values.humio.ingress.api.enabled -}}
+{{- $fullName := include "humio-instance.fullname" . -}}
+{{- $svcPort := 8080 -}}
+{{- if eq .Values.platform.provider "gcp" }}
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: {{ $fullName }}-api
+spec:
+  healthCheck:
+    checkIntervalSec: 5
+    timeoutSec: 5
+    healthyThreshold: 2
+    unhealthyThreshold: 1
+    type: HTTP
+    requestPath: /api/v1/is-node-up
+    port: 8080
+---
+{{- if eq .Values.humio.ingress.api.classNameAnnotation "gce" }}
+apiVersion: networking.gke.io/v1beta1
+kind: FrontendConfig
+metadata:
+  name: {{ $fullName }}-api
+spec:
+  sslPolicy: {{ .Values.humio.ingress.api.gcpSSLPolicy | default "logscale-api"}}
+  redirectToHttps:
+    enabled: true
+    responseCodeName: MOVED_PERMANENTLY_DEFAULT
+---
+{{- end }}
+{{- end }}
+{{- if and .Values.humio.ingress.api.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
+  {{- if not (hasKey .Values.humio.ingress.api.annotations "kubernetes.io/humio.ingress.api.class") }}
+  {{- $_ := set .Values.humio.ingress.api.annotations "kubernetes.io/humio.ingress.api.class" .Values.humio.ingress.api.className}}
+  {{- end }}
+{{- end }}
+{{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1
+{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-api
+  labels:
+    {{- include "humio-instance.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/resource-policy": "keep"
+  {{- if .Values.humio.ingress.api.classNameAnnotation }}
+    kubernetes.io/ingress.class: {{ .Values.humio.ingress.api.classNameAnnotation }}
+  {{- end }}
+  {{- if eq .Values.platform.provider "gcp" }}
+    cloud.google.com/backend-config: '{"default": "{{ $fullName }}-api"}'
+  {{- if eq .Values.humio.ingress.api.classNameAnnotation "gce" }}
+    networking.gke.io/v1beta1.FrontendConfig: {{ $fullName }}-api
+  {{- end }}  
+  {{- end }}
+
+  {{- with .Values.humio.ingress.api.annotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if and .Values.humio.ingress.api.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  ingressClassName: {{ .Values.humio.ingress.api.className }}
+  {{- end }}
+  {{- if .Values.humio.ingress.api.tls }}
+  tls:
+    - hosts:
+        - {{ .Values.humio.fqdnapi }}
+      {{- if .Values.humio.ingress.api.tlsSecretName }}
+      secretName: {{- .Values.humio.ingress.api.tlsSecretName }}
+      {{- end }}
+  {{- end }}
+  rules:
+    - {{- if .Values.humio.fqdnapi }}
+      host: {{ .Values.humio.fqdnapi }}
+      {{- end }}
+      http:
+        paths:
+          - path: /api
+            {{- if semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion }}
+            pathType: Prefix
+            {{- end }}
+            backend:
+              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
+              service:
+                name: {{ $fullName }}-http-only
+                port:
+                  number: {{ $svcPort }}
+              {{- else }}
+              serviceName: {{ $fullName }}-http-only
+              servicePort: {{ $svcPort }}
+              {{- end }}
+          - path: /graphql
+            {{- if semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion }}
+            pathType: Prefix
+            {{- end }}
+            backend:
+              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
+              service:
+                name: {{ $fullName }}-http-only
+                port:
+                  number: {{ $svcPort }}
+              {{- else }}
+              serviceName: {{ $fullName }}-http-only
+              servicePort: {{ $svcPort }}
+              {{- end }}
+{{- end }}

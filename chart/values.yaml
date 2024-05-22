@@ -90,6 +90,11 @@ humio:
       annotations: {}
 
   ingress:
+    api:
+      enabled: false      
+      # className: "ngnix"
+      annotations: {}
+      tls: false
     ui:
       enabled: false
       # className: "ngnix"
