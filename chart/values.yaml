@@ -91,7 +91,7 @@ humio:
 
   ingress:
     api:
-      enabled: false      
+      enabled: false
       # className: "ngnix"
       annotations: {}
       tls: false
@@ -105,6 +105,8 @@ humio:
       # className: "ngnix"
       annotations: {}
       tls: false
+    inputsES:
+      enabled: false
   nodeSelector: {}
 
   tolerations: []
