@@ -191,8 +191,10 @@
 - name: SMTP_USE_STARTTLS
   value: {{ .Values.humio.smtp.startTLS | quote }}
 {{- end }}
+{{- if .Values.humio.jvmARGS }}
 - name: HUMIO_JVM_ARGS
   value: {{ .Values.humio.jvmARGS | quote }}
+{{- end }}
 {{- range .Values.humio.enableFeatures }}
 - name: ENABLE_{{ . | upper}}
   value: "true"
