@@ -9,7 +9,10 @@ spec:
   initServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
   authServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
   humioServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
-
+  {{- if .Values.humio.containerSecurityContext }}
+  containerSecurityContext:
+    {{- toYaml .Values.humio.containerSecurityContext | nindent 4 }}        
+  {{- end }}
   {{- if or .Values.otel.components.inject .Values.humio.podAnnotations }}
   podAnnotations:
   {{- if .Values.otel.components.inject }}
@@ -122,7 +125,10 @@ spec:
         initServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
         authServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
         humioServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
-
+        {{- if .Values.humio.nodepools.ingest.containerSecurityContext }}
+        containerSecurityContext:
+          {{- toYaml .Values.humio.nodepools.ingest.containerSecurityContext | nindent 10 }}        
+        {{- end }}
         {{- if or .Values.otel.components.inject .Values.humio.podAnnotations }}  
         podAnnotations:
         {{- if .Values.otel.components.inject }}
@@ -214,7 +220,10 @@ spec:
         initServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
         authServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
         humioServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
-
+        {{- if .Values.humio.nodepools.ui.containerSecurityContext }}
+        containerSecurityContext:
+          {{- toYaml .Values.humio.nodepools.ui.containerSecurityContext | nindent 10 }}        
+        {{- end }}
         {{- if or .Values.otel.components.inject .Values.humio.podAnnotations }}  
         podAnnotations:
         {{- if .Values.otel.components.inject }}
