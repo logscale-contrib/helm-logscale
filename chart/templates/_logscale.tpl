@@ -36,10 +36,8 @@
 {{- if eq  .Values.humio.buckets.type "aws" }}
 - name: LOCAL_STORAGE_MIN_AGE_DAYS
   value: {{ .Values.humio.buckets.localStorageMinAgeDays | default "3" | quote }}
-- name: PRIMARY_STORAGE_MAX_FILL_PERCENTAGE
-  value: {{ .Values.humio.buckets.localStoragePercentage | default "95" | quote }}
 - name: LOCAL_STORAGE_PERCENTAGE
-  value: {{ .Values.humio.buckets.localStoragePercentage | default "10" | quote }}
+  value: {{ .Values.humio.buckets.localStoragePercentage | default "96" | quote }}
 - name: S3_STORAGE_PREFERRED_COPY_SOURCE
   value: "true"
 - name: S3_STORAGE_ENCRYPTION_KEY
@@ -55,10 +53,8 @@
 {{- else if eq  .Values.humio.buckets.type "s3proxy" }}
 - name: LOCAL_STORAGE_MIN_AGE_DAYS
   value: {{ .Values.humio.buckets.localStorageMinAgeDays | default "3" | quote }}
-- name: PRIMARY_STORAGE_MAX_FILL_PERCENTAGE
-  value: {{ .Values.humio.buckets.localStoragePercentage | default "95" | quote }}
 - name: LOCAL_STORAGE_PERCENTAGE
-  value: {{ .Values.humio.buckets.localStoragePercentage | default "10" | quote }}
+  value: {{ .Values.humio.buckets.localStoragePercentage | default "96" | quote }}
 - name: S3_STORAGE_PREFERRED_COPY_SOURCE
   value: "true"
 - name: S3_STORAGE_PATH_STYLE_ACCESS
@@ -96,10 +92,8 @@
 {{- else if eq  .Values.humio.buckets.type "gcp" }}
 - name: LOCAL_STORAGE_MIN_AGE_DAYS
   value: {{ .Values.humio.buckets.localStorageMinAgeDays | default "3" | quote }}
-- name: PRIMARY_STORAGE_MAX_FILL_PERCENTAGE
-  value: {{ .Values.humio.buckets.localStoragePercentage | default "95" | quote }}
 - name: LOCAL_STORAGE_PERCENTAGE
-  value: {{ .Values.humio.buckets.localStoragePercentage | default "10" | quote }}
+  value: {{ .Values.humio.buckets.localStoragePercentage | default "96" | quote }}
 - name: GCP_STORAGE_PREFERRED_COPY_SOURCE
   value: "true"
 - name: GCP_STORAGE_BUCKET
