@@ -47,6 +47,7 @@ spec:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 
+  dataVolumePersistentVolumeClaimPolicy: {{ .Values.humio.dataVolumePersistentVolumeClaimPolicy | default "OnNodeDelete" }}
   dataVolumePersistentVolumeClaimSpecTemplate:
   {{- with .Values.humio.dataVolumePersistentVolumeClaimSpecTemplate }}
     {{- toYaml . | nindent 4 }}
