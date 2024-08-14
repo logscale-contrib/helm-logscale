@@ -200,7 +200,7 @@ spec:
         {{- end }}
 
         dataVolumePersistentVolumeClaimPolicy: 
-          reclaimType: {{ .Values.humio.frontEnddataVolumePersistentVolumeClaimPolicy | default "Retain" }}
+          reclaimType: {{ .Values.humio.frontEnddataVolumePersistentVolumeClaimPolicy | default "None" }}
 
         humioServiceAnnotations:
           service.kubernetes.io/topology-aware-hints: auto
@@ -296,7 +296,7 @@ spec:
           {{- toYaml . | nindent 10 }}
         {{- end }}
         dataVolumePersistentVolumeClaimPolicy: 
-          reclaimType: {{ .Values.humio.frontEnddataVolumePersistentVolumeClaimPolicy | default "Retain" }}
+          reclaimType: {{ .Values.humio.frontEnddataVolumePersistentVolumeClaimPolicy | default "None" }}
 
         humioServiceAnnotations:
           service.kubernetes.io/topology-aware-hints: auto
