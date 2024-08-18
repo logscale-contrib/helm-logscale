@@ -42,7 +42,7 @@ data:
 
         <Loggers>
             <Logger name="org.apache.log4j.xml" level="info"/>
-            <Logger name="akka" level="debug" />
+            <Logger name="akka" level="info" />
 
             <Logger name="nonsensitive" level="info" additivity="false">
                 <AppenderRef ref="short-humio-internal"/>
