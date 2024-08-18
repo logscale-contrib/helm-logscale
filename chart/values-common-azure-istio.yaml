@@ -35,7 +35,7 @@ humio:
 
   podAnnotations:
     "config.linkerd.io/skip-outbound-ports": "443"
-    "instrumentation.opentelemetry.io/inject-java": "true"
+    "instrumentation.opentelemetry.io/inject-java": "logscale-java"
     "instrumentation.opentelemetry.io/container-names": "humio"
   serviceAccount:
     name: "logscale-ops"
