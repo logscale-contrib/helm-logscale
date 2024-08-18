@@ -28,7 +28,7 @@ spec:
   java:
     env:
       - name: OTEL_JAVAAGENT_DEBUG
-        value: "false"
+        value: {{ .Values.otel.components.debug | "false" | quote }}
       - name: OTEL_INSTRUMENTATION_JDBC_ENABLED
         value: "false"
       - name: OTEL_INSTRUMENTATION_RUNTIME_METRICS_ENABLED
