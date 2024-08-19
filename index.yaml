@@ -2,6 +2,16 @@ apiVersion: v1
 entries:
   logscale:
   - apiVersion: v2
+    appVersion: 7.0.0-next.156
+    created: "2024-08-19T18:14:05.692489174Z"
+    description: Deploy a Humio Cluster using Humio Operator
+    digest: 92797867812c67dd63873a5ea126c30c2f62f9c740d00033d3b69899313e2434
+    name: logscale
+    type: application
+    urls:
+    - https://github.com/logscale-contrib/helm-logscale/releases/download/v7.0.0-next.156/logscale-7.0.0-next.156.tgz
+    version: 7.0.0-next.156
+  - apiVersion: v2
     appVersion: 7.0.0-next.155
     created: "2024-08-18T17:19:48.821117617Z"
     description: Deploy a Humio Cluster using Humio Operator
@@ -2441,4 +2451,4 @@ entries:
     urls:
     - https://github.com/logscale-contrib/helm-logscale/releases/download/v3.0.0-next.3/logscale-3.0.0-next.3.tgz
     version: 3.0.0-next.3
-generated: "2024-08-18T17:19:48.819609391Z"
+generated: "2024-08-19T18:14:05.690999236Z"
