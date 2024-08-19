@@ -2,8 +2,8 @@
 # We always want out logs to std out in json format this is required
 # Reduce log volume to error only on STDOUT we will use otel injection for routine logs  
 - name: HUMIO_LOG4J_CONFIGURATION
-  value: "/var/lib/humio/config/logging/log4j2-json-k8s.xml"  
-  # value: log4j2-json-stdout.xml
+  value: {{ .Values.humio.config.log4jConfiguration | default "log4j2-json-stdout.xml"  | quote }}
+  # Reduce STDOUT /var/lib/humio/config/logging/log4j2-json-k8s.xml
 #  These can be turned back on
 - name: ENABLEINTERNALLOGGER
   value: {{ .Values.humio.config.enableInternalLogger | default "false" | quote }}
