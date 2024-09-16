@@ -118,6 +118,7 @@ spec:
   targetReplicationFactor: 1
   tls:
     enabled: false
+  humioServiceType: {{ .Values.humio.service.type }} 
   humioServiceAnnotations:
     service.kubernetes.io/topology-aware-hints: auto
     {{- with .Values.humio.service.annotations }}
@@ -213,7 +214,7 @@ spec:
 
         dataVolumePersistentVolumeClaimPolicy: 
           reclaimType: {{ .Values.humio.frontEnddataVolumePersistentVolumeClaimPolicy | default "None" }}
-
+        humioServiceType: {{ .Values.humio.service.inputs.type }}
         humioServiceAnnotations:
           service.kubernetes.io/topology-aware-hints: auto
           {{- with .Values.humio.service.inputs.annotations }}
@@ -315,7 +316,7 @@ spec:
         {{- end }}
         dataVolumePersistentVolumeClaimPolicy: 
           reclaimType: {{ .Values.humio.frontEnddataVolumePersistentVolumeClaimPolicy | default "None" }}
-
+        humioServiceType: {{ .Values.humio.service.ui.type }}
         humioServiceAnnotations:
           service.kubernetes.io/topology-aware-hints: auto
           {{- with .Values.humio.service.ui.annotations }}

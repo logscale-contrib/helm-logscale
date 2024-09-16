@@ -28,7 +28,7 @@ humio:
       # linger.ms with high partition counts and sharding this small delay allows for optimal batch sizing
       # under high loads it will have no effect
       linger.ms=5
-      
+
     topics:
       ingest:
         minisr: 2
@@ -98,8 +98,10 @@ humio:
     port: 80
     annotations: {}
     inputs:
+      type: ClusterIP
       annotations: {}
     ui:
+      type: ClusterIP
       annotations: {}
 
   ingress:
