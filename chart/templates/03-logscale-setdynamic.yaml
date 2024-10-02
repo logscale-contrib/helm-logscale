@@ -33,6 +33,10 @@ spec:
         {{- include "humio-instance.labels" . | nindent 8 }}    
         app.kubernetes.io/component: "setdynamic"
     spec:
+      {{- if .Values.setroot.image.pullSecrets }}
+      imagePullSecrets:
+      {{- toYaml .Values.setroot.image.pullSecrets | nindent 6 }}
+      {{- end }}
       containers:
         - name: humio-setdynamic
           image: "{{ .Values.setroot.image.repository }}:{{ .Values.setroot.image.tag }}"
