@@ -99,10 +99,14 @@ spec:
   extraKafkaConfigs: {{ .Values.humio.kafka.extraConfig | quote }}
 {{- if eq  .Values.humio.auth.method  "saml" }}
   idpCertificateSecretName: "{{ include "humio-instance.fullname" . }}-idp-certificate"
-  {{- end }}
+{{- end }}
   hostname: {{ .Values.humio.fqdn }}
   hostnameSource: {}
   image: "{{ .Values.humio.image.repository }}:{{ .Values.humio.image.tag }}"
+  {{- if .Values.humio.image.pullSecrets }}
+  imagePullSecrets:
+  {{- toYaml .Values.humio.image.pullSecrets | nindent 4 }}
+  {{- end }}
 {{- if .Values.humio.helperImage }}  
   helperImage: {{ .Values.humio.helperImage }}
 {{- end }}
