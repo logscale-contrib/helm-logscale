@@ -133,6 +133,7 @@ preload:
     repository: alpine
     tag: 3.18.0
 setroot:
+  enabled: true
   image:
     repository: curlimages/curl
     tag: 8.00.1

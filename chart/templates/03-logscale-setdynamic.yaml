@@ -1,3 +1,4 @@
+{{- if .Values.setroot.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -90,3 +91,4 @@ spec:
             - key: "config.json"
               path: "config.json"
   backoffLimit: 4
+  {{- end }}  

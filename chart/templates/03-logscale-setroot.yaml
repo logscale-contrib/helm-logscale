@@ -16,17 +16,17 @@ spec:
       {{- if .Values.setroot.image.pullSecrets }}
       imagePullSecrets:
       {{- toYaml .Values.setroot.image.pullSecrets | nindent 6 }}
-      {{- end }}
+      {{- end }}  
       containers:
         - name: humio-set-root
           image: "{{ .Values.setroot.image.repository }}:{{ .Values.setroot.image.tag }}"
           command:
             - sh
             - -c
-          args:
+          args: 
             - >
               curl --connect-timeout 5 --max-time 10 --retry 30 --retry-delay 0 --retry-max-time 600 --retry-connrefused -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN" -d "{\"email\": \"$EMAIL\", \"isRoot\": true}" http://$HUMIOSVC:8080/api/v1/users
-          env:
+          env:    
             - name: EMAIL
               value: {{ .Values.humio.auth.rootUser }}
             - name: HUMIOSVC
