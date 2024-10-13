@@ -18,7 +18,9 @@ data:
       "query": "mutation {  setDynamicConfig(    input: {config: FlushSegmentsAndGlobalOnShutdown, value: \"false\"}  )}"
     }
 {{- end }}  
+{{- end }}  
 ---
+{{- if .Values.setroot.enabled }}
 apiVersion: batch/v1
 kind: Job
 metadata:
