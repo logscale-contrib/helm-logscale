@@ -134,6 +134,10 @@ spec:
     - name: ingest-only
       spec:
         image: "{{ .Values.humio.image.repository }}:{{ .Values.humio.image.tag }}"
+        {{- if .Values.humio.image.pullSecrets }}
+        imagePullSecrets:
+        {{- toYaml .Values.humio.image.pullSecrets | nindent 10 }}
+        {{- end }}        
         nodeCount: {{ .Values.humio.nodepools.ingest.nodeCount }}
         initServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
         authServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
@@ -238,6 +242,10 @@ spec:
     - name: http-only
       spec:
         image: "{{ .Values.humio.image.repository }}:{{ .Values.humio.image.tag }}"
+        {{- if .Values.humio.image.pullSecrets }}
+        imagePullSecrets:
+        {{- toYaml .Values.humio.image.pullSecrets | nindent 10 }}
+        {{- end }}        
         nodeCount: {{ .Values.humio.nodepools.ui.nodeCount }}
         initServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
         authServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
