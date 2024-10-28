@@ -1,0 +1,29 @@
+{{- if .Values.scim.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "humio-instance.fullname" . }}-scim
+  labels:
+    {{- include "humio-instance.labels" . | nindent 4 }}
+    app.kubernetes.io/component: "scim"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      {{- include "humio-instance.labels" . | nindent 6 }}    
+      app.kubernetes.io/component: "scim"
+  template:
+    metadata:
+      {{- include "humio-instance.labels" . | nindent 6 }}    
+      app.kubernetes.io/component: "scim"
+    spec:
+      {{- if .Values.scim.image.pullSecrets }}
+      imagePullSecrets:
+      {{- toYaml .Values.scim.image.pullSecrets | nindent 6 }}
+      {{- end }}  
+      containers:
+      - name: nginx
+        image: "{{ .Values.scim.image.repository }}:{{ .Values.scim.image.tag }}"
+        ports:
+        - containerPort: 8000
+{{- end }}        

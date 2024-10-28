@@ -1,4 +1,4 @@
-{{- if .Values.setroot.enabled }}
+{{- if .Values.setdynamic.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -20,7 +20,7 @@ data:
 {{- end }}  
 {{- end }}  
 ---
-{{- if .Values.setroot.enabled }}
+{{- if .Values.setdynamic.enabled }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -36,13 +36,13 @@ spec:
         {{- include "humio-instance.labels" . | nindent 8 }}    
         app.kubernetes.io/component: "setdynamic"
     spec:
-      {{- if .Values.setroot.image.pullSecrets }}
+      {{- if .Values.setdynamic.image.pullSecrets }}
       imagePullSecrets:
-      {{- toYaml .Values.setroot.image.pullSecrets | nindent 6 }}
+      {{- toYaml .Values.setdynamic.image.pullSecrets | nindent 6 }}
       {{- end }}
       containers:
         - name: humio-setdynamic
-          image: "{{ .Values.setroot.image.repository }}:{{ .Values.setroot.image.tag }}"
+          image: "{{ .Values.setdynamic.image.repository }}:{{ .Values.setdynamic.image.tag }}"
           command:
             - sh
             - -c
