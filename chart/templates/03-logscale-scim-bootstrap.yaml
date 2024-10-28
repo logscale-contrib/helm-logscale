@@ -27,7 +27,7 @@ spec:
           args: 
             - >
               poetry run python logscaleinit.py
-          env:    
+          env:
           - name: SECRET_KEY
             valueFrom:
               secretKeyRef:

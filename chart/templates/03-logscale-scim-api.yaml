@@ -14,8 +14,9 @@ spec:
       app.kubernetes.io/component: "scim"
   template:
     metadata:
-      {{- include "humio-instance.labels" . | nindent 6 }}    
-      app.kubernetes.io/component: "scim"
+      labels:
+        {{- include "humio-instance.labels" . | nindent 8 }}    
+        app.kubernetes.io/component: "scim"
     spec:
       {{- if .Values.scim.image.pullSecrets }}
       imagePullSecrets:
@@ -49,6 +50,7 @@ spec:
     protocol: TCP
     targetPort: 8080
   selector:
+  
     {{- include "humio-instance.labels" . | nindent 4 }}    
     app.kubernetes.io/component: "scim"
   sessionAffinity: None
