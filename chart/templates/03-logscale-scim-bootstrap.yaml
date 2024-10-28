@@ -1,0 +1,55 @@
+{{- if .Values.scim.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "humio-instance.fullname" . }}-scim-bootstrap
+  labels:
+    {{- include "humio-instance.labels" . | nindent 4 }}
+    app.kubernetes.io/component: "scim-bootstrap"
+spec:
+  ttlSecondsAfterFinished: 300
+  template:
+    metadata:
+      labels:
+        {{- include "humio-instance.labels" . | nindent 8 }}    
+        app.kubernetes.io/component: "bootstrap-scim"
+    spec:
+      {{- if .Values.scim.image.pullSecrets }}
+      imagePullSecrets:
+      {{- toYaml .Values.scim.image.pullSecrets | nindent 6 }}
+      {{- end }}  
+      containers:
+        - name: humio-scim-bootstrap
+          image: "{{ .Values.scim.image.repository }}:{{ .Values.scim.image.tag }}"
+          command:
+            - sh
+            - -c
+          args: 
+            - >
+              poetry run python logscaleinit.py
+          env:    
+          - name: SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "humio-instance.fullname" . }}-bootstrap-token
+                key: secret_key
+          - name: LOGSCALE_URL
+            value: http://{{ include "humio-instance.fullname" . }}:8080/graphql                
+          resources:
+              requests:
+                  memory: 1Mi
+                  cpu: 10m
+              limits:
+                  memory: 10Mi
+                  cpu: 20m
+          securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                  drop: ["ALL"]
+              runAsNonRoot: true
+              readOnlyRootFilesystem: true
+              runAsUser: 10001
+              runAsGroup:  10001
+      restartPolicy: Never
+  backoffLimit: 4
+{{- end }}    

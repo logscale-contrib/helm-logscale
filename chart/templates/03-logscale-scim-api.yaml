@@ -7,7 +7,7 @@ metadata:
     {{- include "humio-instance.labels" . | nindent 4 }}
     app.kubernetes.io/component: "scim"
 spec:
-  replicas: 3
+  replicas: {{ .Values.scim.replicas }}
   selector:
     matchLabels:
       {{- include "humio-instance.labels" . | nindent 6 }}    
@@ -22,8 +22,35 @@ spec:
       {{- toYaml .Values.scim.image.pullSecrets | nindent 6 }}
       {{- end }}  
       containers:
-      - name: nginx
+      - name: scim
         image: "{{ .Values.scim.image.repository }}:{{ .Values.scim.image.tag }}"
         ports:
-        - containerPort: 8000
+        - containerPort: 8080
+        env:
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "humio-instance.fullname" . }}-bootstrap-token
+              key: secret_key
+        - name: LOGSCALE_URL
+          value: http://{{ include "humio-instance.fullname" . }}:8080/graphql
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    {{- include "humio-instance.labels" . | nindent 4 }}    
+    app.kubernetes.io/component: "scim"
+  name: {{ include "humio-instance.fullname" . }}-scim
+spec:
+  ports:
+  - name: http
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    {{- include "humio-instance.labels" . | nindent 4 }}    
+    app.kubernetes.io/component: "scim"
+  sessionAffinity: None
+  type: ClusterIP
 {{- end }}        

@@ -144,9 +144,10 @@ setroot:
     tag: 8.00.1
 scim:
   enabled: false
+  replicas: 2
   image:
     repository: ghcr.io/logscale-contrib/containers/logscale-scim
-    tag: 1.0.1
+    tag: 1.0.2
 
 kafka:
   replicas: 3
