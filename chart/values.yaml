@@ -144,10 +144,27 @@ setroot:
     tag: 8.00.1
 scim:
   enabled: false
-  replicas: 2
   image:
     repository: ghcr.io/logscale-contrib/containers/logscale-scim
     tag: 1.0.2
+  api:
+    replicas: 2
+    resources:
+      requests:
+          memory: 32Mi
+          cpu: 10m
+      limits:
+          memory: 128Mi
+          cpu: 1
+  bootstrap:
+    resources:
+      requests:
+          memory: 32Mi
+          cpu: 10m
+      limits:
+          memory: 128Mi
+          cpu: 1
+
 
 kafka:
   replicas: 3

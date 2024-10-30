@@ -7,7 +7,7 @@ metadata:
     {{- include "humio-instance.labels" . | nindent 4 }}
     app.kubernetes.io/component: "scim"
 spec:
-  replicas: {{ .Values.scim.replicas }}
+  replicas: {{ .Values.scim.api.replicas }}
   selector:
     matchLabels:
       {{- include "humio-instance.labels" . | nindent 6 }}    
@@ -25,6 +25,10 @@ spec:
       containers:
       - name: scim
         image: "{{ .Values.scim.image.repository }}:{{ .Values.scim.image.tag }}"
+        {{- with .Values.scim.api.resources}}
+        resources:
+        {{ . | toYaml | nindent 10 }}
+        {{- end }}
         ports:
         - containerPort: 8080
         env:

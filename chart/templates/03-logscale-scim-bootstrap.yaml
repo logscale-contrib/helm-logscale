@@ -34,14 +34,11 @@ spec:
                 name: {{ include "humio-instance.fullname" . }}-bootstrap-token
                 key: secret
           - name: LOGSCALE_URL
-            value: http://{{ include "humio-instance.fullname" . }}:8080/graphql                
+            value: http://{{ include "humio-instance.fullname" . }}:8080/graphql   
+          {{- with .Values.scim.api.resources}}
           resources:
-              requests:
-                  memory: 1Mi
-                  cpu: 10m
-              limits:
-                  memory: 10Mi
-                  cpu: 20m
+          {{ . | toYaml | nindent 12 }}
+          {{- end }}
           securityContext:
               allowPrivilegeEscalation: false
               capabilities:
