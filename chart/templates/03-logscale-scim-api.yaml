@@ -32,7 +32,7 @@ spec:
         ports:
         - containerPort: 8080
         env:
-        - name: SECRET_KEY
+        - name: LOGSCALE_API_TOKEN
           valueFrom:
             secretKeyRef:
               name: {{ include "humio-instance.fullname" . }}-admin-token

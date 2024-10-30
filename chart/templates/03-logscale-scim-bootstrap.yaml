@@ -28,7 +28,7 @@ spec:
             - >
               poetry run python logscalescim/initsroles.py
           env:
-          - name: SECRET_KEY
+          - name: LOGSCALE_API_TOKEN
             valueFrom:
               secretKeyRef:
                 name: {{ include "humio-instance.fullname" . }}-admin-token
