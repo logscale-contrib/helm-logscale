@@ -35,8 +35,8 @@ spec:
         - name: SECRET_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ include "humio-instance.fullname" . }}-bootstrap-token
-              key: secret
+              name: {{ include "humio-instance.fullname" . }}-admin-token
+              key: token
         - name: LOGSCALE_URL
           value: http://{{ include "humio-instance.fullname" . }}:8080/graphql
 ---
