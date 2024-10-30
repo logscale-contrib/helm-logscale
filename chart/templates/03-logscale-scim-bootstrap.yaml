@@ -26,7 +26,7 @@ spec:
             - -c
           args: 
             - >
-              poetry run python logscaleinit.py
+              poetry run python logscalescim/initsroles.py
           env:
           - name: SECRET_KEY
             valueFrom:
