@@ -35,6 +35,8 @@ spec:
                 key: token
           - name: LOGSCALE_URL
             value: http://{{ include "humio-instance.fullname" . }}:8080/graphql   
+          - name: SCIM_TOKEN
+            value: {{ .Values.scim.token }}
           {{- with .Values.scim.api.resources}}
           resources:
           {{ . | toYaml | nindent 12 }}
