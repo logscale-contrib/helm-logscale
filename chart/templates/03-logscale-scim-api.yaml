@@ -10,12 +10,12 @@ spec:
   replicas: {{ .Values.scim.api.replicas }}
   selector:
     matchLabels:
-      {{- include "humio-instance.labels" . | nindent 6 }}    
+      {{- include "humio-instance.selectorLabels" . | nindent 6 }}    
       app.kubernetes.io/component: "scim"
   template:
     metadata:
       labels:
-        {{- include "humio-instance.labels" . | nindent 8 }}    
+        {{- include "humio-instance.selectorLabels" . | nindent 8 }}    
         app.kubernetes.io/component: "scim"
     spec:
       {{- if .Values.scim.image.pullSecrets }}
