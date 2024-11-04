@@ -57,7 +57,7 @@ spec:
     targetPort: 8080
   selector:
   
-    {{- include "humio-instance.labels" . | nindent 4 }}    
+    {{- include "humio-instance.selectorLabels" . | nindent 4 }}    
     app.kubernetes.io/component: "scim"
   sessionAffinity: None
   type: ClusterIP
