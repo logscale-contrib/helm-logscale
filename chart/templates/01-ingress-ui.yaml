@@ -85,9 +85,9 @@ spec:
             backend:
               {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion }}
               service:
-                name: {{ $fullName }}-http-only
+                name: {{ include "humio-instance.fullname" . }}-scim
                 port:
-                  number: {{ $svcPort }}
+                  number: 8080
               {{- else }}
               serviceName: {{ include "humio-instance.fullname" . }}-scim
               servicePort: 8080
