@@ -145,8 +145,8 @@ setroot:
 scim:
   enabled: false
   groups:
-    management-organization: ${namespace}-logscale-management-organization
-    management-cluster: ${namespace}-logscale-management-cluster
+    managementOrganization: ${namespace}-logscale-management-organization
+    managementCluster: ${namespace}-logscale-management-cluster
   image:
     repository: ghcr.io/logscale-contrib/containers/logscale-scim
     tag: 1.1.2

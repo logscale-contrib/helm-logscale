@@ -36,9 +36,9 @@ spec:
           - name: LOGSCALE_URL
             value: http://{{ include "humio-instance.fullname" . }}:8080/graphql   
           - name: LOGSCALE_GROUP_ORGANIZATION
-            value: {{ .Values.scim.groups.management-organization }}
+            value: {{ .Values.scim.groups.managementOrganization }}
           - name: LOGSCALE_GROUP_CLUSTER
-            value: {{ .Values.scim.groups.management-cluster }}
+            value: {{ .Values.scim.groups.managementCluster }}
           {{- with .Values.scim.api.resources}}
           resources:
           {{ . | toYaml | nindent 12 }}
