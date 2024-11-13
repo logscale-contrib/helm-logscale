@@ -49,8 +49,8 @@ humio:
   smtp:
     enabled: false
     host: ""
-    username: ""
-    password: ""
+    # username: ""
+    # password: ""
     sender:
     port: 587
     startTLS: true

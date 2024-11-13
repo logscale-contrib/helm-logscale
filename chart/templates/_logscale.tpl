@@ -176,10 +176,14 @@
 {{- if .Values.humio.smtp.enabled }}
 - name: SMTP_HOST
   value: {{ .Values.humio.smtp.host }}
+{{- if .Values.humio.smtp.username }}  
 - name: SMTP_USERNAME
   value: {{ .Values.humio.smtp.username }}
+{{- end }}
+{{- if .Values.humio.smtp.password }}  
 - name: SMTP_PASSWORD
   value: {{ .Values.humio.smtp.password }}
+{{- end }}
 - name: SMTP_SENDER_ADDRESS
   value: {{ .Values.humio.smtp.sender }}
 - name: SMTP_PORT
