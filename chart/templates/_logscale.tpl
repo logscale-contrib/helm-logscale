@@ -224,4 +224,10 @@
 - name: TLS_TRUSTSTORE_LOCATION
   value: /data/truststore/bundle.jks
 {{- end }}
+{{- if .Values.pdfRenderService.enabled }}
+- name: DEFAULT_PDF_RENDER_SERVICE_URL
+  value: http://{{ include "humio-instance.fullname" . }}-pdfrenderservice:5123
+- name: ENABLE_SCHEDULED_REPORT
+  value: "true"
+{{- end }}
 {{- end }}
