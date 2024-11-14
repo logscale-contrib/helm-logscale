@@ -23,7 +23,7 @@ spec:
       {{- toYaml .Values.pdfRenderService.image.pullSecrets | nindent 6 }}
       {{- end }}  
       containers:
-      - name: pdfRenderService
+      - name: pdfrenderservice
         image: "{{ .Values.pdfRenderService.image.repository }}:{{ .Values.pdfRenderService.image.tag }}"
         {{- with .Values.pdfRenderService.resources}}
         resources:
