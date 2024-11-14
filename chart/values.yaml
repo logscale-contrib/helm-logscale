@@ -43,7 +43,7 @@ humio:
   replicaCount: 3
   image:
     repository: humio/humio-core
-    tag: "1.118.2"
+    tag: "1.159.1"
   digestPartitionsCount: 24
   storagePartitionsCount: 24
   smtp:
@@ -231,7 +231,7 @@ otel:
     repository: nginx
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: ""
+    tag: 1.159.1
 
   imagePullSecrets: []
   nameOverride: ""
