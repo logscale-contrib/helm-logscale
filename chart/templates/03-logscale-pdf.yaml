@@ -33,9 +33,9 @@ spec:
         - containerPort: 5123
         env:
         - name: CLEANUP_INTERVAL
-          value: {{ .Values.pdfRenderService.config.cleanupInterval }}
+          value: {{ .Values.pdfRenderService.config.cleanupInterval | quote}}
         - name: MAX_CONCURRENT_JOBS
-          value: {{ .Values.pdfRenderService.config.maxConcurrentJobs }}
+          value: {{ .Values.pdfRenderService.config.maxConcurrentJobs | quote }}
         - name: FORCE_LOGSCALE_BASE_URL
           value: http://{{ include "humio-instance.fullname" . }}:8080
 ---
