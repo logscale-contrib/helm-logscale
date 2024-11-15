@@ -141,9 +141,10 @@ setroot:
   enabled: true
   image:
     repository: curlimages/curl
-    tag: 8.00.1
+    tag: 8.00.1 
 pdfRenderService:
   enabled: true
+  replicas: 1
   config:
     cleanupInterval: "7d"
     maxConcurrentJobs: "10"
