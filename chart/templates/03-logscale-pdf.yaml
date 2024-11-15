@@ -56,6 +56,8 @@ spec:
         - name: SMTP_USE_STARTTLS
           value: {{ .Values.humio.smtp.startTLS | quote }}
         {{- end }}
+        - name: DEBUG
+          value: {{ .Values.pdfRenderService.config.debug | default "false" | quote }}
     
 ---
 apiVersion: v1
