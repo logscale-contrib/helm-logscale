@@ -1,25 +1,56 @@
 platform: azure
+
 humio:
-  # Object Storage Settings
-  s3mode: s3proxy
-  s3proxy:
-    secret: ops-s3proxy-secret
-    endpoint: http://ops-s3proxy
+  #values are "none",bootstrap,ui,inputs  
+  drMode: "none"
+  config:
+    enableInternalLogger: "false"
+    searchPipelineMonitorJob: "false"
+  #One of humio,strimzi,external
+  auth:
+    rootUser: user@example.com
+    method: saml
+    saml:
+      signOnUrl: https://test.qa.logsr.life
+      entityID: https://test.qa.logsr.life
+      idpCertificate: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUM4RENDQWRpZ0F3SUJBZ0lRTldqZE10UmZqYTlHdEFxVmVvcW1vakFOQmdrcWhraUc5dzBCQVFzRkFEQTBNVEl3TUFZRFZRUUQKRXlsTmFXTnliM052Wm5RZ1FYcDFjbVVnUm1Wa1pYSmhkR1ZrSUZOVFR5QkRaWEowYVdacFkyRjBaVEFlRncweU16QXhNVGt3TVRNegpNVFphRncweU5qQXhNVGt3TVRNek1UWmFNRFF4TWpBd0JnTlZCQU1US1UxcFkzSnZjMjltZENCQmVuVnlaU0JHWldSbGNtRjBaV1FnClUxTlBJRU5sY25ScFptbGpZWFJsTUlJQklqQU5CZ2txaGtpRzl3MEJBUUVGQUFPQ0FROEFNSUlCQ2dLQ0FRRUEzaENrcTdLMGM4dUQKbG1vYnEwS0JmcDZlUVNUajR0REgrRDhPbWxBUllzdG1aQWpnRDNxUnBEaHBwbC9PSWRFZzNPVHhzTEZqaG9yS3l0ek5Kc2pWcExWeQpCYnZ4Qm1KUnBETFd1TTNlMDlpcWltYTI2QkR4L3cybEJYd2kvMExXcVpVQitBNlhydmE0QVk0Qmp0Y1loZEg3Y09LdURPeFhROVQzCjl6QXQyQTgyRzRSWHRIY1JwaEZoMnN1RCt6anpLYU1ldVVGU0l0T0xLS0Q4eXo0TEI5YjExNys5bWdMQytmNTJzaktQUTVUVGlFcHAKWDhZWWpQR0RTSEhTbE8vdWt6aEVvR2xmUktmSlhsZE9HcjR3ZHlERVRlR3ZVWkhyS1l6eFN1djI4UUhEUnhjSkZWeEhFWTQxOGxhbgpEc3ZrbUlxM0FYU1d3TmNGTHpMUlUvVkRUUUlEQVFBQk1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQVAzTk8rT2h1dWY0VldpR3BvCmVwSE9yRDNKMG91ZVdhOWlyTDhtOW9XWXBhQnl4ZTlJZzYrTFVrcCtnYnUxZ2FReE55QllQZDVLRGVQMmRvRG5zVmhFMGg4VXNiNlUKMXlYQVl0WTFQTU1ucm45a2lSVG5NMU9zMWp3R0h4NHJBNzdXYXpQYU5SczBSaUg5aTBFcnRmSUdwNFpqU0N3MHNLR2xZRFArTXNBZgpIaklGTW0zSGtQMUVvYWwzbkdrT0VYaEhSYWJwOTNiOExOU291T0VhZCtJaElXaUdCalczU0puVyt5TVVQWFBWQlBhK2ZabWNiZzMxCkNNSTM5eGRvSUlVRVY2N3Zkb3cvdU5ad1IybWhkbUZkWHNpUDNSR3NkTDRZRi9XRFFxQWtsdUU5SmlseGJhSzA4aWNQc0tOV1pPblMKdWwybEdEZWpLMnZIT05saU5vNXQKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+  license: dGhpcyBpcyBub3QgYSBsaWNlbnNl
+
   buckets:
+    type: s3proxy
+    s3proxy:
+      secret: ops-s3proxy-secret
+      endpoint: http://ops-s3proxy
     region: us-east-1
     storage: data
-
-  #Kafka
   kafka:
-    manager: strimzi
+    manager: "strimzi"
+    extraConfig: security.protocol=PLAINTEXT
     prefixEnable: true
+    topicPrefix: demo
     strimziCluster: "ops-logscale-strimzi-kafka"
-    externalKafkaHostname: "ops-logscale-strimzi-kafka-kafka-bootstrap:9092"
-
-  #Image is shared by all node pools
+    externalKafkaHostname: "ops-logscale-strimzi-kafka-kafka-bootstrap:9092"    
+    topics:
+      ingest:
+        minisr: 2
+        retention:
+          ms: -1
+          bytes: -1
+  
+  replicaCount: 3
   image:
-    tag: 1.70.0
-
+    repository: humio/humio-core
+    tag: "1.70.0--SNAPSHOT--build-323434--SHA-dfa77220c22755bc0f8dee124ef548e8c0d740b1"
+  digestPartitionsCount: 24
+  storagePartitionsCount: 24
+  smtp:
+    enabled: false
+    host: ""
+    username: ""
+    password: ""
+    sender:
+    port: 587
+    startTLS: true
   # Primary Node pool used for digest/storage
   nodeCount: 3
   #In general for these node requests and limits should match
@@ -173,5 +204,262 @@ humio:
                     values: ["ops-logscale-http-only"]
               topologyKey: "kubernetes.io/hostname"
 
+
+preload:
+  image:
+    repository: alpine
+    tag: 3.18.0
+setroot:
+  image:
+    repository: curlimages/curl
+    tag: 8.00.1
+
+kafka:
+  replicas: 3
+  allowAutoCreate: true
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: kubernetes.io/arch
+                operator: In
+                values:
+                  - amd64
+              - key: kubernetes.io/os
+                operator: In
+                values:
+                  - linux
+  resources:
+    requests:
+      memory: 3Gi
+      cpu: 1
+    limits:
+      memory: 4Gi
+      cpu: 2
+  storage:
+    type: persistent-claim
+    size: 250Gi
+    deleteClaim: true
+    #class: managed-csi-premium
+
+zookeeper:
+  replicas: 5
+  resources:
+    requests:
+      memory: 3Gi
+      cpu: 1
+    limits:
+      memory: 4Gi
+      cpu: 2
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: kubernetes.io/arch
+                operator: In
+                values:
+                  - amd64
+              - key: kubernetes.io/os
+                operator: In
+                values:
+                  - linux
+  storage:
+    deleteClaim: true
+    type: persistent-claim
+    size: 32Gi
+#    class: managed-csi-premium
 otel:
-  resourcedetectors: [env, azure]
+  replicaCount: 1
+
+  image:
+    repository: nginx
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+
+  imagePullSecrets: []
+  nameOverride: ""
+  fullnameOverride: ""
+
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # Annotations to add to the service account
+    annotations: {}
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: ""
+
+  podAnnotations: {}
+
+  podSecurityContext:
+    {}
+    # fsGroup: 2000
+
+  securityContext:
+    {}
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+    # runAsUser: 1000
+
+  service:
+    type: ClusterIP
+    port: 80
+
+  ingress:
+    enabled: false
+    className: ""
+    annotations:
+      {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    hosts:
+      - host: chart-example.local
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+  resources:
+    {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+    # targetMemoryUtilizationPercentage: 80
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+  components:
+    inject: false
+    app: false
+    cluster: false
+    nodes: false
+    logScaleConfig: false
+    serviceaccount: false
+  resourcedetectors: [env]
+kafka:
+  allowAutoCreate: false
+  # affinity:
+  #   nodeAffinity:
+  #     requiredDuringSchedulingIgnoredDuringExecution:
+  #       nodeSelectorTerms:
+  #         - matchExpressions:
+  #             - key: kubernetes.azure.com/agentpool
+  #               operator: In
+  #               values:
+  #                 - compute1
+  #                 - compute2
+  #   podAntiAffinity:
+  #     requiredDuringSchedulingIgnoredDuringExecution:
+  #       - labelSelector:
+  #           matchExpressions:
+  #             - key: strimzi.io/name
+  #               operator: In
+  #               values:
+  #                 - "ops-kafka-kafkacluster-kafka"
+  #         topologyKey: kubernetes.io/hostname
+  topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: topology.kubernetes.io/zone
+      whenUnsatisfiable: DoNotSchedule
+      labelSelector:
+        matchExpressions:
+          - key: strimzi.io/name
+            operator: In
+            values:
+              - "ops-kafka-kafkacluster-kafka"
+
+  # At least 3 replicas are required the number of replicas must be at east 3 and evenly
+  # divisible by number of zones
+  # The Following Configuration is valid for approximatly 1TB/day
+  # ref: https://library.humio.com/humio-server/installation-prep.html#installation-prep-rec
+  replicas: 3
+  resources:
+    requests:
+      # Increase the memory as needed to support more than 5/TB day
+      memory: 2Gi
+      #Note the following resources are expected to support 1-3 TB/Day however
+      # storage is sized for 1TB/day increase the storage to match the expected load
+      cpu: 1
+    limits:
+      memory: 2Gi
+      cpu: 2
+  #(total ingest uncompressed per day / 5 ) * 3 / ReplicaCount
+  # ReplicaCount must be odd and greater than 3 should be divisible by AZ
+  # Example: 1 TB/Day '1/5*3/3=205' 3 Replcias may not survive a zone failure at peak
+  # Example: 1 TB/Day '1/5*3/6=103' 6 ensures at least one node per zone
+  # 100 GB should be the smallest disk used for Kafka this may result in some waste
+  storage:
+    type: persistent-claim
+    size: 150Gi
+    deleteClaim: true
+    #Must be SSD or NVME like storage IOPs is the primary node constraint
+    class: ebs-gp3-enc
+zookeeper:
+  replicas: 3
+  # affinity:
+  #   nodeAffinity:
+  #     requiredDuringSchedulingIgnoredDuringExecution:
+  #       nodeSelectorTerms:
+  #         - matchExpressions:
+  #             - key: kubernetes.azure.com/agentpool
+  #               operator: In
+  #               values:
+  #                 - compute1
+  #                 - compute2
+  #   podAntiAffinity:
+  #     requiredDuringSchedulingIgnoredDuringExecution:
+  #       - labelSelector:
+  #           matchExpressions:
+  #             - key: strimzi.io/name
+  #               operator: In
+  #               values:
+  #                 - "ops-kafka-kafkacluster-zookeeper"
+  #         topologyKey: kubernetes.io/hostname
+  topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: topology.kubernetes.io/zone
+      whenUnsatisfiable: DoNotSchedule
+      labelSelector:
+        matchExpressions:
+          - key: strimzi.io/name
+            operator: In
+            values:
+              - "ops-kafka-kafkacluster-zookeeper"
+  resources:
+    requests:
+      memory: 1Gi
+      cpu: "250m"
+    limits:
+      memory: 2Gi
+      cpu: "1"
+  storage:
+    deleteClaim: true
+    type: persistent-claim
+    size: 10Gi
+    class: ebs-gp3-enc

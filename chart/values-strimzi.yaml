@@ -48,7 +48,7 @@ kafka:
   #(total ingest uncompressed per day / 5 ) * 3 / ReplicaCount
   # ReplicaCount must be odd and greater than 3 should be divisible by AZ
   # Example: 1 TB/Day '1/5*3/3=205' 3 Replcias may not survive a zone failure at peak
-  # Example:  1 TB/Day '1/5*3/6=103' 6 ensures at least one node per zone
+  # Example: 1 TB/Day '1/5*3/6=103' 6 ensures at least one node per zone
   # 100 GB should be the smallest disk used for Kafka this may result in some waste
   storage:
     type: persistent-claim

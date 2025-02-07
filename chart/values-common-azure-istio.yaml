@@ -1,11 +1,12 @@
-platform: azure
+platform:
+  provider: azure
 humio:
   # Object Storage Settings
-  s3mode: s3proxy
-  s3proxy:
-    secret: ops-s3proxy-secret
-    endpoint: http://ops-s3proxy
   buckets:
+    type: s3proxy
+    s3proxy:
+      secret: ops-s3proxy-secret
+      endpoint: http://ops-s3proxy
     region: us-east-1
     storage: data
 
@@ -13,6 +14,7 @@ humio:
   kafka:
     manager: strimzi
     prefixEnable: true
+    topicPrefix: demo
     strimziCluster: "ops-logscale-strimzi-kafka"
     externalKafkaHostname: "ops-logscale-strimzi-kafka-kafka-bootstrap:9092"
 
@@ -33,7 +35,7 @@ humio:
 
   podAnnotations:
     "config.linkerd.io/skip-outbound-ports": "443"
-    "instrumentation.opentelemetry.io/inject-java": "true"
+    "instrumentation.opentelemetry.io/inject-java": "logscale-java"
     "instrumentation.opentelemetry.io/container-names": "humio"
   serviceAccount:
     name: "logscale-ops"

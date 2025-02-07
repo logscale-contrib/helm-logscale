@@ -4,7 +4,7 @@ kind: Instrumentation
 metadata:
   name: {{ include "humio-instance.fullname" . }}-java
   labels:
-    {{- include "humio-instance.labels" . | nindent 4 }}  
+    {{- include "humio-instance.labels" . | nindent 4 }}
 spec:
   env:
     - name: OTEL_TRACES_EXPORTER
@@ -28,7 +28,7 @@ spec:
   java:
     env:
       - name: OTEL_JAVAAGENT_DEBUG
-        value: "false"
+        value: {{ .Values.otel.components.debug | default "false" | quote }}
       - name: OTEL_INSTRUMENTATION_JDBC_ENABLED
         value: "false"
       - name: OTEL_INSTRUMENTATION_RUNTIME_METRICS_ENABLED
@@ -39,4 +39,4 @@ spec:
         value: "true"
       - name: OTEL_INSTRUMENTATION_OSHIENABLED
         value: "true"
-{{- end }}                      
+{{- end }}

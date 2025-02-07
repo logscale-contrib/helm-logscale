@@ -10,10 +10,11 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 ---
+{{- end }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ include "humio-instance.humio.serviceAccountName" . }}
+  name: {{ .Release.Namespace }}:{{ include "humio-instance.humio.serviceAccountName" . }}
   labels:
     {{- include "humio-instance.labels" . | nindent 4 }}
 rules:
@@ -24,16 +25,16 @@ rules:
   verbs:
   - get
   - list
-  - watch  
+  - watch
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ include "humio-instance.humio.serviceAccountName" . }}
+  name: {{ .Release.Namespace }}:{{ include "humio-instance.humio.serviceAccountName" . }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: {{ include "humio-instance.humio.serviceAccountName" . }}
+  name: {{ .Release.Namespace }}:{{ include "humio-instance.humio.serviceAccountName" . }}
 subjects:
 - kind: ServiceAccount
   name: {{ include "humio-instance.humio.serviceAccountName" . }}
@@ -56,7 +57,7 @@ rules:
   - watch
   - create
   - update
-  - delete  
+  - delete
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -72,4 +73,3 @@ subjects:
 - kind: ServiceAccount
   name: {{ include "humio-instance.humio.serviceAccountName" . }}
   namespace: {{ .Release.Namespace }}
-{{- end }}

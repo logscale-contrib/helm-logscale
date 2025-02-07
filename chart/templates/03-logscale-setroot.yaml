@@ -1,26 +1,35 @@
+{{- if .Values.setroot.enabled }}
 apiVersion: batch/v1
 kind: Job
 metadata:
   name: {{ include "humio-instance.fullname" . }}-setroot
   labels:
-    {{- include "humio-instance.labels" . | nindent 4 }}  
-
+    {{- include "humio-instance.labels" . | nindent 4 }}
+    app.kubernetes.io/component: "setroot-user"
 spec:
   ttlSecondsAfterFinished: 300
   template:
+    metadata:
+      labels:
+        {{- include "humio-instance.labels" . | nindent 8 }}    
+        app.kubernetes.io/component: "setroot-user"
     spec:
+      {{- if .Values.setroot.image.pullSecrets }}
+      imagePullSecrets:
+      {{- toYaml .Values.setroot.image.pullSecrets | nindent 6 }}
+      {{- end }}  
       containers:
         - name: humio-set-root
           image: "{{ .Values.setroot.image.repository }}:{{ .Values.setroot.image.tag }}"
           command:
             - sh
             - -c
-          args:
+          args: 
             - >
               curl --connect-timeout 5 --max-time 10 --retry 30 --retry-delay 0 --retry-max-time 600 --retry-connrefused -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN" -d "{\"email\": \"$EMAIL\", \"isRoot\": true}" http://$HUMIOSVC:8080/api/v1/users
-          env:
+          env:    
             - name: EMAIL
-              value: {{ .Values.humio.rootUser }}
+              value: {{ .Values.humio.auth.rootUser }}
             - name: HUMIOSVC
               value: {{ include "humio-instance.fullname" . }}
             - name: TOKEN
@@ -28,6 +37,21 @@ spec:
                 secretKeyRef:
                   name: {{ include "humio-instance.fullname" . }}-admin-token
                   key: token
-
+          resources:
+              requests:
+                  memory: 64Mi
+                  cpu: 10m
+              limits:
+                  memory: 128Mi
+                  cpu: 20m
+          securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                  drop: ["ALL"]
+              runAsNonRoot: true
+              readOnlyRootFilesystem: true
+              runAsUser: 10001
+              runAsGroup:  10001
       restartPolicy: Never
   backoffLimit: 4
+{{- end }}    

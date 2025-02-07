@@ -43,12 +43,15 @@ jobs:
         id: version
         uses: cycjimmy/semantic-release-action@v4.0.0
         with:
-          semantic_version: 19
+          semantic_version: 19.0.5
           extra_plugins: |
-            @semantic-release/exec
-            @semantic-release/git
-            @google/semantic-release-replace-plugin
-            conventional-changelog-conventionalcommits
+            @semantic-release/commit-analyzer@9.0.2
+            @semantic-release/release-notes-generator@10.0.3
+            @semantic-release/git@10.0.1
+            @semantic-release/github@8.1.0
+            @semantic-release/changelog@6.0.3
+            conventional-changelog-conventionalcommits@6.1.0
+            @semantic-release/exec@6.0.3     
           dry_run: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -83,8 +86,8 @@ jobs:
 
       # - name: Lint Azure
       #   run: |
-      #     helm lint chart -f tests/common/host.yaml -f tests/common/humio.yaml -f tests/common/sso.yaml -f tests/azure/basic.yaml 
-      
+      #     helm lint chart -f tests/common/host.yaml -f tests/common/humio.yaml -f tests/common/sso.yaml -f tests/azure/basic.yaml
+
 
   Containerize:
     runs-on: ubuntu-latest
@@ -110,11 +113,15 @@ jobs:
         id: version
         uses: cycjimmy/semantic-release-action@v4.0.0
         with:
-          semantic_version: 19
+          semantic_version: 19.0.5
           extra_plugins: |
-            @semantic-release/exec
-            @semantic-release/git
-            conventional-changelog-conventionalcommits
+            @semantic-release/commit-analyzer@9.0.2
+            @semantic-release/release-notes-generator@10.0.3
+            @semantic-release/git@10.0.1
+            @semantic-release/github@8.1.0
+            @semantic-release/changelog@6.0.3
+            conventional-changelog-conventionalcommits@6.1.0
+            @semantic-release/exec@6.0.3     
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REGISTRY_USERNAME: ${{ github.repository_owner }}

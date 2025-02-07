@@ -9,11 +9,12 @@ metadata:
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-    
+
 spec:
   serviceAccount: {{ include "humio-instance.humio.serviceAccountName" . }}-otel
   image: otel/opentelemetry-collector-contrib:0.56.0
-  maxReplicas: 3
+  maxReplicas: 6
+  minReplicas: 3
   mode: deployment
   env:
         - name: K8S_NODE_NAME
@@ -23,39 +24,39 @@ spec:
         - name: HUMIO_TOKEN_OTEL_LOGS
           valueFrom:
             secretKeyRef:
-                name: {{ include "humio-instance.fullname" . }}-all-humio-infra-otel-logs  
+                name: {{ include "humio-instance.fullname" . }}-all-humio-infra-otel-logs
                 key: token
         - name: HUMIO_TOKEN_OTEL_METRICS
           valueFrom:
             secretKeyRef:
-                name: {{ include "humio-instance.fullname" . }}-all-humio-infra-otel-metrics  
+                name: {{ include "humio-instance.fullname" . }}-all-humio-infra-otel-metrics
                 key: token
-        # - name: HUMIO_TOKEN_OTEL_TRACE
-        #   valueFrom:
-        #     secretKeyRef:
-        #         name: {{ include "humio-instance.fullname" . }}-all-humio-infra-otel-trace
-        #         key: token
+        - name: HUMIO_TOKEN_OTEL_TRACE
+          valueFrom:
+            secretKeyRef:
+                name: {{ include "humio-instance.fullname" . }}-all-humio-infra-otel-trace
+                key: token
   config: |
     exporters:
         otlphttp/otel_logs:
-            endpoint: "http://{{ include "humio-instance.fullname" . }}:8080/api/v1/ingest/otlp"
+            endpoint: "http://{{ include "humio-instance.fullname" . }}-ingest-only:8080/api/v1/ingest/otlp"
             headers:
               Authorization: Bearer $HUMIO_TOKEN_OTEL_LOGS
         otlphttp/otel_metrics:
-            endpoint: "http://{{ include "humio-instance.fullname" . }}:8080/api/v1/ingest/otlp"
+            endpoint: "http://{{ include "humio-instance.fullname" . }}-ingest-only:8080/api/v1/ingest/otlp"
             headers:
               Authorization: Bearer $HUMIO_TOKEN_OTEL_METRICS
-        # otlphttp/otel_trace:
-        #     endpoint: "http://{{ include "humio-instance.fullname" . }}:8080/api/v1/ingest/otlp"
-        #     headers:
-        #       Authorization: Bearer $HUMIO_TOKEN_OTEL_TRACE
+        otlphttp/otel_trace:
+            endpoint: "http://{{ include "humio-instance.fullname" . }}-ingest-only:8080/api/v1/ingest/otlp"
+            headers:
+              Authorization: Bearer $HUMIO_TOKEN_OTEL_TRACE
     receivers:
       otlp:
         protocols:
           grpc:
           http:
     processors:
-      batch:     
+      batch:
 
     extensions:
       health_check:
@@ -76,8 +77,8 @@ spec:
           receivers: [otlp]
           processors: [batch]
           exporters: [otlphttp/otel_logs]
-        # traces:
-        #   receivers: [otlp]
-        #   processors: [batch]
-        #   exporters: [otlphttp/otel_trace]
-  {{- end }}              
+        traces:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [otlphttp/otel_trace]
+  {{- end }}

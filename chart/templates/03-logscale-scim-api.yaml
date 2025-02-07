@@ -1,0 +1,68 @@
+{{- if .Values.scim.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "humio-instance.fullname" . }}-scim
+  labels:
+    {{- include "humio-instance.labels" . | nindent 4 }}
+    app.kubernetes.io/component: "scim"
+spec:
+  replicas: {{ .Values.scim.api.replicas }}
+  selector:
+    matchLabels:
+      {{- include "humio-instance.selectorLabels" . | nindent 6 }}    
+      app.kubernetes.io/component: "scim"
+  template:
+    metadata:
+      labels:
+        {{- include "humio-instance.selectorLabels" . | nindent 8 }}    
+        app.kubernetes.io/component: "scim"
+    spec:
+      {{- if .Values.scim.image.pullSecrets }}
+      imagePullSecrets:
+      {{- toYaml .Values.scim.image.pullSecrets | nindent 6 }}
+      {{- end }}  
+      containers:
+      - name: scim
+        image: "{{ .Values.scim.image.repository }}:{{ .Values.scim.image.tag }}"
+        {{- with .Values.scim.api.resources}}
+        resources:
+        {{ . | toYaml | nindent 10 }}
+        {{- end }}
+        ports:
+        - containerPort: 8080
+        env:
+        - name: LOGSCALE_API_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "humio-instance.fullname" . }}-admin-token
+              key: token
+        - name: LOGSCALE_URL
+          value: http://{{ include "humio-instance.fullname" . }}:8080/graphql
+        - name: SCIM_TOKEN
+          value: {{ .Values.scim.token }}
+        - name: ADDRESS
+          value: "[::]"
+        - name: PORT
+          value: "8080"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    {{- include "humio-instance.labels" . | nindent 4 }}    
+    app.kubernetes.io/component: "scim"
+  name: {{ include "humio-instance.fullname" . }}-scim
+spec:
+  ports:
+  - name: http
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+  
+    {{- include "humio-instance.selectorLabels" . | nindent 4 }}    
+    app.kubernetes.io/component: "scim"
+  sessionAffinity: None
+  type: ClusterIP
+{{- end }}        

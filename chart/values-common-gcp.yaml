@@ -1,12 +1,11 @@
 platform:
-  provider: aws
+  provider: gcp
 humio:
   # Object Storage Settings
   buckets:
-    type: aws
-    region: us-east-1
-    storage: data
-
+    type: gcp
+    name: current
+    # recoverFromBucket: old
   #Kafka
   kafka:
     manager: strimzi
@@ -87,30 +86,29 @@ humio:
         storage: "100Gi"
     storageClassName: "ebs-gp3-enc"
 
+  service:
+    ui:
+      annotations:
+        cloud.google.com/neg: '{"ingress": true}' # Creates a NEG after an Ingress is created
+    inputs:
+      annotations:
+        cloud.google.com/neg: '{"ingress": true}' # Creates a NEG after an Ingress is created
+
   ingress:
     ui:
       enabled: true
       tls: false
       annotations:
-        "alb.ingress.kubernetes.io/certificate-arn": "${dependency.acm_ui.outputs.acm_certificate_arn}"
-        "alb.ingress.kubernetes.io/listen-ports": '[{"HTTP": 80}, {"HTTPS": 443}]'
-        "alb.ingress.kubernetes.io/ssl-redirect": "443"
-        "alb.ingress.kubernetes.io/scheme": "internet-facing"
-        "alb.ingress.kubernetes.io/target-type": "ip"
-        "alb.ingress.kubernetes.io/group.name": "logscale-${local.env}"
         "external-dns.alpha.kubernetes.io/hostname": "logscale-ops.${local.domain_name}"
+        networking.gke.io/managed-certificates: cert-ui-google-gke-managed-cert
 
     inputs:
       enabled: true
       tls: false
       annotations:
-        "alb.ingress.kubernetes.io/certificate-arn": "${dependency.acm_ui.outputs.acm_certificate_arn}"
-        "alb.ingress.kubernetes.io/listen-ports": '[{"HTTP": 80}, {"HTTPS": 443}]'
-        "alb.ingress.kubernetes.io/ssl-redirect": "443"
-        "alb.ingress.kubernetes.io/scheme": "internet-facing"
-        "alb.ingress.kubernetes.io/target-type": "ip"
-        "alb.ingress.kubernetes.io/group.name": "logscale-${local.env}"
         "external-dns.alpha.kubernetes.io/hostname": "logscale-ops-inputs.${local.domain_name}"
+        networking.gke.io/managed-certificates: cert-inputs-google-gke-managed-cert
+
   nodepools:
     ingest:
       nodeCount: 2
@@ -211,4 +209,4 @@ humio:
                 values:
                   - "ops-logscale-ingest-only"
 otel:
-  resourcedetectors: [env, aws]
+  resourcedetectors: [env, gcp]

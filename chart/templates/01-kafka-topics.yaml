@@ -3,129 +3,84 @@ apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
 {{- if .Values.humio.kafka.prefixEnable }}
-  name: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-global-events
+  name: {{ .Values.humio.kafka.topicPrefix | default .Release.Name }}-global-events
 {{ else }}
   name: global-events
 {{- end }}
+  annotations:
+    "helm.sh/resource-policy": "keep"
   labels:
     strimzi.io/cluster: {{ include "humio-instance.fullname" . }}
     {{- include "humio-instance.labels" . | nindent 4 }}
 spec:
 {{- if .Values.humio.kafka.prefixEnable }}
-  topicName: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-global-events
+  topicName: {{ .Values.humio.kafka.topicPrefix | default .Release.Name }}-global-events
 {{ else }}
   topicName: global-events
 {{- end }}
-  partitions: 2
-  replicas: {{ .Values.humio.targetReplicationFactor }}
+  partitions: 1
+  replicas: 3
   config:
-    cleanup.policy: "compact,delete"
+    cleanup.policy: "delete"
     compression.type: producer
-    min.insync.replicas: 2    
+    min.insync.replicas: 2
     max.message.bytes: 2097152
     retention.bytes: 1073741824
-    retention.ms: 86400
+    retention.ms: -1
 ---
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
 {{- if .Values.humio.kafka.prefixEnable }}
-  name: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-transientchatter-events
+  name: {{ .Values.humio.kafka.topicPrefix | default .Release.Name }}-transientchatter-events
 {{ else }}
   name: transientchatter-events
 {{- end }}
+  annotations:
+    "helm.sh/resource-policy": "keep"
   labels:
     strimzi.io/cluster: {{ include "humio-instance.fullname" . }}
 spec:
 {{- if .Values.humio.kafka.prefixEnable }}
-  topicName: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-transientChatter-events
+  topicName: {{ .Values.humio.kafka.topicPrefix | default .Release.Name }}-transientChatter-events
 {{ else }}
   topicName: transientChatter-events
 {{- end }}
   partitions: 12
-  replicas: {{ .Values.humio.targetReplicationFactor }}
+  replicas: 3
   config:
-    cleanup.policy: "compact,delete"
+    cleanup.policy: "delete"
     compression.type: producer
-    min.insync.replicas: 2    
-    retention.ms: 86400
+    min.insync.replicas: 2
+    retention.ms: 3600000
+    retention.bytes: -1
 ---
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
 {{- if .Values.humio.kafka.prefixEnable }}
-  name: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-humio-ingest
+  name: {{ .Values.humio.kafka.topicPrefix | default .Release.Name }}-humio-ingest
 {{ else }}
   name: humio-ingest
 {{- end }}
+  annotations:
+    "helm.sh/resource-policy": "keep"
   labels:
     strimzi.io/cluster: {{ include "humio-instance.fullname" . }}
 spec:
 {{- if .Values.humio.kafka.prefixEnable }}
-  topicName: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-humio-ingest
+  topicName: {{ .Values.humio.kafka.topicPrefix | default .Release.Name }}-humio-ingest
 {{ else }}
   topicName: humio-ingest
 {{- end }}
   partitions: {{ .Values.humio.digestPartitionsCount }}
-  replicas: {{ .Values.humio.targetReplicationFactor }}
+  replicas: 3
   config:
-    cleanup.policy: "compact,delete"
+    cleanup.policy: "delete"
     compression.type: producer
-    min.insync.replicas: 2
-    retention.ms: 259200    
-    retention.bytes: 1073741824
+    min.insync.replicas: {{ .Values.humio.kafka.topics.ingest.minisr }}
+    retention.ms: {{ .Values.humio.kafka.topics.ingest.retention.ms }}
+    retention.bytes: {{ .Values.humio.kafka.topics.ingest.retention.bytes }}
     max.message.bytes: 10485760
-# ---
-# apiVersion: kafka.strimzi.io/v1beta2
-# kind: KafkaUser
-# metadata:
-#   name: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-kafka-user
-#   labels:
-#     strimzi.io/cluster: {{ include "humio-instance.fullname" . }}
-# spec:
-#   authentication:
-#     type: scram-sha-512
-#   authorization:
-#     type: simple
-#     acls:
-#       # Example consumer Acls for topic my-topic using consumer group my-group
-#       - resource:
-#           type: topic
-#         {{- if .Values.humio.kafka.prefixEnable }}
-#           name: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-global-events
-#         {{ else }}
-#           name: global-events
-#         {{- end }}
-#           patternType: literal
-#         operations:
-#           - Describe
-#           - Read
-#           - Write
-#         host: "*"      
-#       - resource:
-#           type: topic
-#         {{- if .Values.humio.kafka.prefixEnable }}
-#           name: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-transientChatter-events
-#         {{ else }}
-#           name: transientChatter-events
-#         {{- end }}
-#           patternType: literal
-#         operations:
-#           - Describe
-#           - Read
-#           - Write
-#         host: "*"     
-#       - resource:
-#           type: topic
-#         {{- if .Values.humio.kafka.prefixEnable }}
-#           name: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-humio-ingest
-#         {{ else }}
-#           name: humio-ingest
-#         {{- end }}
-#           patternType: literal
-#         operations:
-#           - Describe
-#           - Read
-#           - Write
-#         host: "*"                     
+
 {{- end }}

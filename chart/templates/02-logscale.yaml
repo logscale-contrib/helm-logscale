@@ -9,201 +9,144 @@ spec:
   initServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
   authServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
   humioServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
-
-  {{- if or .Values.otel.components.inject .Values.humio.podAnnotations }}                
+  {{- if .Values.humio.containerSecurityContext }}
+  containerSecurityContext:
+    {{- toYaml .Values.humio.containerSecurityContext | nindent 4 }}        
+  {{- end }}
+  {{- if or .Values.otel.components.inject .Values.humio.podAnnotations }}
   podAnnotations:
-  {{- if .Values.otel.components.inject }}                
+  {{- if .Values.otel.components.inject }}
     "instrumentation.opentelemetry.io/inject-java": {{ include "humio-instance.fullname" . }}-java
     "instrumentation.opentelemetry.io/container-names": "humio"
   {{- end }}
   {{- with .Values.humio.podAnnotations }}
-    {{- toYaml . | nindent 6 }}
+    {{- toYaml . | nindent 4 }}
   {{- end }}
   {{- end }}
 
+  {{- if .Values.humio.priorityClassName }}
+  priorityClassName: {{ .Values.humio.priorityClassName }}
+  {{- end }}
   resources:
     {{- toYaml .Values.humio.resources | nindent 4 }}
   {{- with .Values.humio.affinity }}
   affinity:
     {{- toYaml . | nindent 4 }}
-  {{- end }}  
+  {{- end }}
+  {{- if eq .Values.humio.drMode "bootstrap" }}
+  nodeCount: 1
+  {{- else }}
   nodeCount: {{ .Values.humio.nodeCount }}
-
+  {{- end }}
   {{- with .Values.humio.tolerations }}
   tolerations:
     {{- toYaml . | nindent 4 }}
-  {{- end }}  
+  {{- end }}
   {{- with .Values.humio.topologySpreadConstraints }}
   topologySpreadConstraints:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-  
+
+  dataVolumePersistentVolumeClaimPolicy: 
+    reclaimType: {{ .Values.humio.dataVolumePersistentVolumeClaimPolicy | default "OnNodeDelete" }}
   dataVolumePersistentVolumeClaimSpecTemplate:
-  {{- with .Values.humio.dataVolumePersistentVolumeClaimSpecTemplate }}  
+  {{- with .Values.humio.dataVolumePersistentVolumeClaimSpecTemplate }}
     {{- toYaml . | nindent 4 }}
-  {{- end }}  
+  {{- end }}
 
   environmentVariables:
-{{- if eq .Values.humio.kafka.manager "strimzi" }}
-  - name: KAFKA_SERVERS
-    value:  {{ include "humio-instance.fullname" . }}-kafka-bootstrap:9092
-{{- else }}
-  - name: KAFKA_SERVERS
-    value:  {{ include "humio-instance.externalService.kafka" . | quote }}
-{{- end }}    
-{{- if or (eq .Values.humio.kafka.manager "strimzi") (eq .Values.humio.kafka.manager "external") }}
-  - name: KAFKA_MANAGED_BY_HUMIO
-    value: "false"
-{{- else }}
-  - name: KAFKA_MANAGED_BY_HUMIO
-    value: "true"
-{{- end }}
-{{- if .Values.humio.kafka.prefixEnable }}
-  - name: HUMIO_KAFKA_TOPIC_PREFIX
-    value: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-
-{{- end }}
-  #Object Storage config
-  - name: USING_EPHEMERAL_DISKS
-    value: "true"
-  - name: S3_STORAGE_PREFERRED_COPY_SOURCE
-    value: "true"
+  {{- include "humio-instance.environment" . | nindent 2 }}
 
-{{- if eq  .Values.humio.s3mode "aws" }}
-  - name: S3_STORAGE_ENCRYPTION_KEY
-    value: {{ .Values.humio.buckets.storageKey | default "off" | quote }}
-  - name: BUCKET_STORAGE_SSE_COMPATIBLE
-    value: "true"
-  - name: S3_STORAGE_BUCKET
-    value: {{ .Values.humio.buckets.storage }}
-  - name: S3_STORAGE_REGION
-    value: {{ .Values.humio.buckets.region }}
-{{- else if eq  .Values.humio.s3mode "s3proxy" }}
-  - name: S3_STORAGE_PATH_STYLE_ACCESS
-    value: "true"
-  - name: S3_STORAGE_IBM_COMPAT
-    value: "true"
-  - name:  BUCKET_STORAGE_IGNORE_ETAG_UPLOAD 
-    value: "true"
-  - name:  BUCKET_STORAGE_IGNORE_ETAG_AFTER_UPLOAD 
-    value: "true"
-  - name: BUCKET_STORAGE_SSE_COMPATIBLE
-    value: "true"
-  - name: S3_STORAGE_ENDPOINT_BASE
-    value: {{ .Values.humio.s3proxy.endpoint }}
-  - name: S3_STORAGE_ENCRYPTION_KEY
-    value: "off"
-  - name: S3_STORAGE_ACCESSKEY
-    valueFrom:
-      secretKeyRef:
-        key: AWS_ACCESS_KEY_ID
-        name: {{ .Values.humio.s3proxy.secret }}
-  - name: S3_STORAGE_SECRETKEY
-    valueFrom:
-      secretKeyRef:
-        key: AWS_SECRET_ACCESS_KEY
-        name: {{ .Values.humio.s3proxy.secret }}
-  - name: S3_STORAGE_BUCKET
-    value: {{ .Values.humio.buckets.storage }}
-
-  - name: S3_ARCHIVING_PATH_STYLE_ACCESS
-    value: "true"
-
-  - name: S3_EXPORT_PATH_STYLE_ACCESS
-    value: "true"
-{{- else }}
-  - name: S3_STORAGE_ENCRYPTION_KEY
-    value: {{ .Values.humio.buckets.storageKey | default "off" | quote }}
-  - name: S3_STORAGE_BUCKET
-    value: {{ .Values.humio.buckets.storage }}
-{{- end }}
-
-  - name: AUTHENTICATION_METHOD
-    value: saml
-  - name: AUTO_CREATE_USER_ON_SUCCESSFUL_LOGIN
-    value: "true"
-  - name: AUTO_UPDATE_GROUP_MEMBERSHIPS_ON_SUCCESSFUL_LOGIN
-    value: "true"
-  - name: PUBLIC_URL
-    value: "https://{{ .Values.humio.fqdn }}"
-  - name: SAML_IDP_SIGN_ON_URL
-    value: {{ .Values.humio.sso.signOnUrl }}
-  - name: SAML_IDP_ENTITY_ID
-    value: {{ .Values.humio.sso.entityID }}
-  - name: SAML_GROUP_MEMBERSHIP_ATTRIBUTE
-    value: {{ .Values.humio.sso.groupMembershipAttribute | default "memberOf" }}
-  {{- if .Values.humio.smtp.enabled }}  
-  - name: SMTP_HOST
-    value: {{ .Values.humio.smtp.host }}
-  - name: SMTP_USERNAME
-    value: {{ .Values.humio.smtp.username }}
-  - name: SMTP_PASSWORD
-    value: {{ .Values.humio.smtp.password }}
-  - name: SMTP_SENDER_ADDRESS
-    value: {{ .Values.humio.smtp.sender }}
-  - name: SMTP_PORT
-    value: {{ .Values.humio.smtp.port | quote }}
-  - name: SMTP_USE_STARTTLS
-    value: {{ .Values.humio.smtp.startTLS | quote }}
-  {{- end }}
-  - name: HUMIO_JVM_ARGS
-    value: {{ .Values.humio.jvmARGS | quote }}
-  {{- range .Values.humio.enableFeatures }}
-  - name: ENABLE_{{ . | upper}}
-    value: "true"
-  {{- end }}
-  - name: HUMIO_LOG4J_CONFIGURATION
-    value: "/var/lib/humio/config/logging/log4j2-json-k8s.xml"
-  - name:  HUMIO_JVM_LOG_OPTS
-    value: "-Xlog:jit*=debug:file=/data/java-logs/jit_humio.log:time,tags:filecount=5,filesize=1024000 -Xlog:gc+jni=debug -Xlog:gc*:file=/data/java-logs/gc_humio.log:time,tags:filecount=5,filesize=102400"
-  {{- range .Values.humio.extraENV }}
-  - name: {{ .name }}
-    value: {{ .value | quote }}
-  {{- end }}  
   extraHumioVolumeMounts:
-    - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
-      mountPath: /var/lib/humio/config/logging
-      readOnly: true
     - name: java-logs
       mountPath: /data/java-logs
     - name: logs
       mountPath: /data/logs
+{{- if .Values.humio.trustManagerConfigMap }}
+    - name: truststore
+      mountPath: /data/truststore
+{{- end }}
+{{- if .Values.humio.kafka.keystore }}
+    - name: kafka-keystore
+      mountPath: /data/kafka-keystore
+{{- end }}
+    - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
+      mountPath: /var/lib/humio/config/logging
+      readOnly: true
   extraVolumes:
+    - name: java-logs
+      emptyDir: {}
+    - name: logs
+      emptyDir: {}
+{{- if .Values.humio.trustManagerConfigMap }}
+    - name: truststore
+      configMap:
+        # Provide the name of the ConfigMap containing the files you want
+        # to add to the container
+        name: {{ .Values.humio.trustManagerConfigMap }}
+{{- end }}
+{{- if .Values.humio.kafka.keystore }}
+    - name: kafka-keystore
+      secret:
+        # Provide the name of the ConfigMap containing the files you want
+        # to add to the container
+        secretName: {{ .Values.humio.kafka.keystore }}
+{{- end }}  
     - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
       configMap:
         name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
-    - name: java-logs
-      emptyDir: {}      
-    - name: logs
-      emptyDir: {}
   esHostnameSource: {}
   extraKafkaConfigs: {{ .Values.humio.kafka.extraConfig | quote }}
+{{- if eq  .Values.humio.auth.method  "saml" }}
   idpCertificateSecretName: "{{ include "humio-instance.fullname" . }}-idp-certificate"
-
+{{- end }}
   hostname: {{ .Values.humio.fqdn }}
   hostnameSource: {}
   image: "{{ .Values.humio.image.repository }}:{{ .Values.humio.image.tag }}"
+  {{- if .Values.humio.image.pullSecrets }}
+  imagePullSecrets:
+  {{- toYaml .Values.humio.image.pullSecrets | nindent 4 }}
+  {{- end }}
+{{- if .Values.humio.helperImage }}  
+  helperImage: {{ .Values.humio.helperImage }}
+{{- end }}
   #We use helm to produce ingress so we prevent operator from doing it
   ingress: {}
   license:
     secretKeyRef:
       key: license
       name: "{{ include "humio-instance.fullname" . }}-license"
-  autoRebalancePartitions: {{ .Values.humio.autoRebalancePartitions }}
+  autoRebalancePartitions: {{ .Values.humio.autoRebalancePartitions | default true }}
   digestPartitionsCount: {{ .Values.humio.digestPartitionsCount }}
   storagePartitionsCount: {{ .Values.humio.storagePartitionsCount }}
-  targetReplicationFactor: {{ .Values.humio.targetReplicationFactor }}
+  targetReplicationFactor: 1
   tls:
     enabled: false
+  humioServiceType: {{ .Values.humio.service.type }} 
+  humioServiceAnnotations:
+    service.kubernetes.io/topology-aware-hints: auto
+    {{- with .Values.humio.service.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+{{- if ne .Values.humio.drMode "bootstrap" }}
   nodePools:
+{{- if or (eq .Values.humio.drMode "none") (eq .Values.humio.drMode "inputs") }}
     - name: ingest-only
       spec:
         image: "{{ .Values.humio.image.repository }}:{{ .Values.humio.image.tag }}"
+        {{- if .Values.humio.image.pullSecrets }}
+        imagePullSecrets:
+        {{- toYaml .Values.humio.image.pullSecrets | nindent 10 }}
+        {{- end }}        
         nodeCount: {{ .Values.humio.nodepools.ingest.nodeCount }}
         initServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
         authServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
         humioServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
-
-        {{- if or .Values.otel.components.inject .Values.humio.podAnnotations }}                
+        {{- if .Values.humio.nodepools.ingest.containerSecurityContext }}
+        containerSecurityContext:
+          {{- toYaml .Values.humio.nodepools.ingest.containerSecurityContext | nindent 10 }}        
+        {{- end }}
+        {{- if or .Values.otel.components.inject .Values.humio.podAnnotations }}  
         podAnnotations:
         {{- if .Values.otel.components.inject }}                
           "instrumentation.opentelemetry.io/inject-java": {{ include "humio-instance.fullname" . }}-java
@@ -215,142 +158,105 @@ spec:
         {{- end }}
 
         extraHumioVolumeMounts:
-          - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
-            mountPath: /var/lib/humio/config/logging
-            readOnly: true
           - name: java-logs
             mountPath: /data/java-logs
           - name: logs
-            mountPath: /data/logs             
+            mountPath: /data/logs
+      {{- if .Values.humio.trustManagerConfigMap }}
+          - name: truststore
+            mountPath: /data/truststore
+      {{- end }}            
+      {{- if .Values.humio.kafka.keystore }}
+          - name: kafka-keystore
+            mountPath: /data/kafka-keystore
+      {{- end }}
+          - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
+            mountPath: /var/lib/humio/config/logging
+            readOnly: true      
         extraVolumes:
+          - name: java-logs
+            emptyDir: {}
+          - name: logs
+            emptyDir: {}
+      {{- if .Values.humio.trustManagerConfigMap }}
+          - name: truststore
+            configMap:
+              # Provide the name of the ConfigMap containing the files you want
+              # to add to the container
+              name: {{ .Values.humio.trustManagerConfigMap }}
+      {{- end }}            
+      {{- if .Values.humio.kafka.keystore }}
+          - name: kafka-keystore
+            secret:
+              # Provide the name of the ConfigMap containing the files you want
+              # to add to the container
+              secretName: {{ .Values.humio.kafka.keystore }}
+      {{- end }}        
           - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
             configMap:
-              name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
-          - name: java-logs
-            emptyDir: {}      
-          - name: logs
-            emptyDir: {}                      
+              name: "{{ include "humio-instance.fullname" . }}-loggingconfig"      
+        {{- if .Values.humio.nodepools.ingest.priorityClassName }}
+        priorityClassName: {{ .Values.humio.nodepools.ingest.priorityClassName }}
+        {{- end }}
         resources:
           {{- toYaml .Values.humio.nodepools.ingest.resources | nindent 14 }}
         {{- with .Values.humio.nodepools.ingest.affinity }}
         affinity:
           {{- toYaml . | nindent 10 }}
-        {{- end }}  
+        {{- end }}
         {{- with .Values.humio.nodepools.ingest.tolerations }}
         tolerations:
           {{- toYaml . | nindent 10 }}
-        {{- end }}  
+        {{- end }}
         {{- with .Values.humio.nodepools.ingest.topologySpreadConstraints }}
         topologySpreadConstraints:
           {{- toYaml . | nindent 10 }}
         {{- end }}
 
         extraKafkaConfigs: {{ .Values.humio.kafka.extraConfig | quote }}
-        environmentVariables:
 
-        {{- if eq .Values.humio.kafka.manager "strimzi" }}
-          - name: KAFKA_SERVERS
-            value:  {{ include "humio-instance.fullname" . }}-kafka-bootstrap:9092
-        {{- else }}
-          - name: KAFKA_SERVERS
-            value:  {{ include "humio-instance.externalService.kafka" . | quote }}
-        {{- end }}   
-        {{- if or (eq .Values.humio.kafka.manager "strimzi") (eq .Values.humio.kafka.manager "external") }}
-          - name: KAFKA_MANAGED_BY_HUMIO
-            value: "false"
-        {{- else }}
-          - name: KAFKA_MANAGED_BY_HUMIO
-            value: "true"
+        dataVolumePersistentVolumeClaimSpecTemplate:
+        {{- with .Values.humio.frontEndDataVolumePersistentVolumeClaimSpecTemplate }}
+          {{- toYaml . | nindent 10 }}
         {{- end }}
-        {{- if .Values.humio.kafka.prefixEnable }}
-          - name: HUMIO_KAFKA_TOPIC_PREFIX
-            value: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-
-        {{- end }}
-          - name: USING_EPHEMERAL_DISKS
-            value: "true"
-          - name: AUTHENTICATION_METHOD
-            value: "single-user"
-          - name: SINGLE_USER_PASSWORD
-            value: "password"
-          - name: HUMIO_JVM_ARGS
-            value: {{ .Values.humio.jvmARGS | quote }}
-          {{- range .Values.humio.enableFeatures }}
-          - name: ENABLE_{{ . | upper}}
-            value: "true"
+
+        dataVolumePersistentVolumeClaimPolicy: 
+          reclaimType: {{ .Values.humio.frontEnddataVolumePersistentVolumeClaimPolicy | default "None" }}
+        humioServiceType: {{ .Values.humio.service.inputs.type }}
+        humioServiceAnnotations:
+          service.kubernetes.io/topology-aware-hints: auto
+          {{- with .Values.humio.service.inputs.annotations }}
+          {{- toYaml . | nindent 10 }}
           {{- end }}
-          - name: HUMIO_LOG4J_CONFIGURATION
-            value: "/var/lib/humio/config/logging/log4j2-json-k8s.xml"
-          - name:  HUMIO_JVM_LOG_OPTS
-            value: "-Xlog:jit*=debug:file=/data/java-logs/jit_humio.log:time,tags:filecount=5,filesize=1024000 -Xlog:gc+jni=debug -Xlog:gc*:file=/data/java-logs/gc_humio.log:time,tags:filecount=5,filesize=102400"            
+          {{- if eq .Values.platform.provider "gcp" }}
+          cloud.google.com/backend-config: '{"default": "{{ include "humio-instance.fullname" . }}-inputs"}'
+          {{- end }}
+        environmentVariables:
+          {{- include "humio-instance.environment" . | nindent 10 }}
           - name: NODE_ROLES
             value: httponly
           - name: QUERY_COORDINATOR
             value: "false"
-          - name: S3_STORAGE_PREFERRED_COPY_SOURCE
-            value: "true"
-        {{- if eq .Values.humio.s3mode "aws" }}
-          - name: S3_STORAGE_ENCRYPTION_KEY
-            value: {{ .Values.humio.buckets.storageKey | default "off" | quote }}
-          - name: BUCKET_STORAGE_SSE_COMPATIBLE
-            value: "true"
-          - name: S3_STORAGE_BUCKET
-            value: {{ .Values.humio.buckets.storage }}
-          - name: S3_STORAGE_REGION
-            value: {{ .Values.humio.buckets.region }}
-        {{- else if eq  .Values.humio.s3mode "s3proxy" }}
-          - name: S3_STORAGE_PATH_STYLE_ACCESS
-            value: "true"
-          - name: S3_STORAGE_IBM_COMPAT
-            value: "true"
-          - name:  BUCKET_STORAGE_IGNORE_ETAG_UPLOAD 
-            value: "true"
-          - name:  BUCKET_STORAGE_IGNORE_ETAG_AFTER_UPLOAD 
-            value: "true"
-          - name: BUCKET_STORAGE_SSE_COMPATIBLE
-            value: "true"
-          - name: S3_STORAGE_ENDPOINT_BASE
-            value: {{ .Values.humio.s3proxy.endpoint }}
-          - name: S3_STORAGE_ENCRYPTION_KEY
-            value: "off"
-          - name: S3_STORAGE_ACCESSKEY
-            valueFrom:
-              secretKeyRef:
-                key: AWS_ACCESS_KEY_ID
-                name: {{ .Values.humio.s3proxy.secret }}
-          - name: S3_STORAGE_SECRETKEY
-            valueFrom:
-              secretKeyRef:
-                key: AWS_SECRET_ACCESS_KEY
-                name: {{ .Values.humio.s3proxy.secret }}
-          - name: S3_STORAGE_BUCKET
-            value: {{ .Values.humio.buckets.storage }}
-
-          - name: S3_ARCHIVING_PATH_STYLE_ACCESS
-            value: "true"
-
-          - name: S3_EXPORT_PATH_STYLE_ACCESS
-            value: "true"
-        {{- else }}
-          - name: S3_STORAGE_ENCRYPTION_KEY
-            value: {{ .Values.humio.buckets.storageKey | default "off" | quote }}
-          - name: S3_STORAGE_BUCKET
-            value: {{ .Values.humio.buckets.storage }}
-        {{- end }}
-        {{- range .Values.humio.extraENV }}
-          - name: {{ .name }}
-            value: {{ .value | quote }}
-        {{- end }}  
+{{- end }}
+{{- if or (eq .Values.humio.drMode "none") (or (eq .Values.humio.drMode "inputs") (eq .Values.humio.drMode "ui")) }}
     - name: http-only
       spec:
         image: "{{ .Values.humio.image.repository }}:{{ .Values.humio.image.tag }}"
+        {{- if .Values.humio.image.pullSecrets }}
+        imagePullSecrets:
+        {{- toYaml .Values.humio.image.pullSecrets | nindent 10 }}
+        {{- end }}        
         nodeCount: {{ .Values.humio.nodepools.ui.nodeCount }}
         initServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
         authServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
         humioServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
-
-        {{- if or .Values.otel.components.inject .Values.humio.podAnnotations }}                
+        {{- if .Values.humio.nodepools.ui.containerSecurityContext }}
+        containerSecurityContext:
+          {{- toYaml .Values.humio.nodepools.ui.containerSecurityContext | nindent 10 }}        
+        {{- end }}
+        {{- if or .Values.otel.components.inject .Values.humio.podAnnotations }}  
         podAnnotations:
-        {{- if .Values.otel.components.inject }}                
+        {{- if .Values.otel.components.inject }}
           "instrumentation.opentelemetry.io/inject-java": {{ include "humio-instance.fullname" . }}-java
           "instrumentation.opentelemetry.io/container-names": "humio"
         {{- end }}
@@ -360,27 +266,52 @@ spec:
         {{- end }}
 
         extraHumioVolumeMounts:
-          - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
-            mountPath: /var/lib/humio/config/logging
-            readOnly: true
           - name: java-logs
             mountPath: /data/java-logs
           - name: logs
-            mountPath: /data/logs              
+            mountPath: /data/logs
+      {{- if .Values.humio.trustManagerConfigMap }}
+          - name: truststore
+            mountPath: /data/truststore
+      {{- end }}            
+      {{- if .Values.humio.kafka.keystore }}
+          - name: kafka-keystore
+            mountPath: /data/kafka-keystore
+      {{- end }}     
+          - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
+            mountPath: /var/lib/humio/config/logging
+            readOnly: true             
         extraVolumes:
+          - name: java-logs
+            emptyDir: {}
+          - name: logs
+            emptyDir: {}
+      {{- if .Values.humio.trustManagerConfigMap }}
+          - name: truststore
+            configMap:
+              # Provide the name of the ConfigMap containing the files you want
+              # to add to the container
+              name: {{ .Values.humio.trustManagerConfigMap }}
+      {{- end }}            
+      {{- if .Values.humio.kafka.keystore }}
+          - name: kafka-keystore
+            secret:
+              # Provide the name of the ConfigMap containing the files you want
+              # to add to the container
+              secretName: {{ .Values.humio.kafka.keystore }}
+      {{- end }}
           - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
             configMap:
-              name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
-          - name: java-logs
-            emptyDir: {}      
-          - name: logs
-            emptyDir: {}              
+              name: "{{ include "humio-instance.fullname" . }}-loggingconfig"      
+        {{- if .Values.humio.nodepools.ui.priorityClassName }}
+        priorityClassName: {{ .Values.humio.nodepools.ui.priorityClassName }}
+        {{- end }}
         resources:
           {{- toYaml .Values.humio.nodepools.ui.resources | nindent 14 }}
         {{- with .Values.humio.nodepools.ui.affinity }}
         affinity:
           {{- toYaml . | nindent 10 }}
-        {{- end }}  
+        {{- end }}
         {{- with .Values.humio.nodepools.ui.tolerations }}
         tolerations:
           {{- toYaml . | nindent 10 }}
@@ -390,106 +321,27 @@ spec:
           {{- toYaml . | nindent 10 }}
         {{- end }}
         extraKafkaConfigs: {{ .Values.humio.kafka.extraConfig | quote }}
-        environmentVariables:
-        {{- if eq .Values.humio.kafka.manager "strimzi" }}
-          - name: KAFKA_SERVERS
-            value:  {{ include "humio-instance.fullname" . }}-kafka-bootstrap:9092
-        {{- else }}
-          - name: KAFKA_SERVERS
-            value:  {{ include "humio-instance.externalService.kafka" . | quote }}
-        {{- end }}   
-        {{- if or (eq .Values.humio.kafka.manager "strimzi") (eq .Values.humio.kafka.manager "external") }}
-          - name: KAFKA_MANAGED_BY_HUMIO
-            value: "false"
-        {{- else }}
-          - name: KAFKA_MANAGED_BY_HUMIO
-            value: "true"
+
+        dataVolumePersistentVolumeClaimSpecTemplate:
+        {{- with .Values.humio.frontEndDataVolumePersistentVolumeClaimSpecTemplate }}
+          {{- toYaml . | nindent 10 }}
         {{- end }}
-        {{- if .Values.humio.kafka.prefixEnable }}
-          - name: HUMIO_KAFKA_TOPIC_PREFIX
-            value: {{ .Values.humio.kafkaPrefix | default .Release.Name }}-
-        {{- end }}
-          - name: USING_EPHEMERAL_DISKS
-            value: "true"
-          - name: AUTHENTICATION_METHOD
-            value: saml
-          - name: AUTO_CREATE_USER_ON_SUCCESSFUL_LOGIN
-            value: "true"
-          - name: AUTO_UPDATE_GROUP_MEMBERSHIPS_ON_SUCCESSFUL_LOGIN
-            value: "true"
-          - name: PUBLIC_URL
-            value: "https://{{ .Values.humio.fqdn }}"
-          - name: SAML_IDP_SIGN_ON_URL
-            value: {{ .Values.humio.sso.signOnUrl }}
-          - name: SAML_IDP_ENTITY_ID
-            value: {{ .Values.humio.sso.entityID }}
-          - name: SAML_GROUP_MEMBERSHIP_ATTRIBUTE
-            value: {{ .Values.humio.sso.groupMembershipAttribute | default "memberOf" }}
-          - name: HUMIO_JVM_ARGS
-            value: {{ .Values.humio.jvmARGS | quote }}
-          {{- range .Values.humio.enableFeatures }}
-          - name: ENABLE_{{ . | upper}}
-            value: "true"
+        dataVolumePersistentVolumeClaimPolicy: 
+          reclaimType: {{ .Values.humio.frontEnddataVolumePersistentVolumeClaimPolicy | default "None" }}
+        humioServiceType: {{ .Values.humio.service.ui.type }}
+        humioServiceAnnotations:
+          service.kubernetes.io/topology-aware-hints: auto
+          {{- with .Values.humio.service.ui.annotations }}
+          {{- toYaml . | nindent 10 }}
           {{- end }}
-          - name: HUMIO_LOG4J_CONFIGURATION
-            value: "/var/lib/humio/config/logging/log4j2-json-k8s.xml"
-          - name:  HUMIO_JVM_LOG_OPTS
-            value: "-Xlog:jit*=debug:file=/data/java-logs/jit_humio.log:time,tags:filecount=5,filesize=1024000 -Xlog:gc+jni=debug -Xlog:gc*:file=/data/java-logs/gc_humio.log:time,tags:filecount=5,filesize=102400"            
+          {{- if eq .Values.platform.provider "gcp" }}
+          cloud.google.com/backend-config: '{"default": "{{ include "humio-instance.fullname" . }}-ui"}'
+          {{- end }}
+        environmentVariables:
+          {{- include "humio-instance.environment" . | nindent 10 }}
           - name: NODE_ROLES
             value: httponly
           - name: QUERY_COORDINATOR
             value: "true"
-          - name: S3_STORAGE_PREFERRED_COPY_SOURCE
-            value: "true"
-        {{- if eq  .Values.humio.s3mode "aws" }}
-          - name: S3_STORAGE_ENCRYPTION_KEY
-            value: {{ .Values.humio.buckets.storageKey | default "off" | quote }}
-          - name: BUCKET_STORAGE_SSE_COMPATIBLE
-            value: "true"
-          - name: S3_STORAGE_BUCKET
-            value: {{ .Values.humio.buckets.storage }}
-          - name: S3_STORAGE_REGION
-            value: {{ .Values.humio.buckets.region }}
-        {{- else if eq  .Values.humio.s3mode "s3proxy" }}
-          - name: S3_STORAGE_PATH_STYLE_ACCESS
-            value: "true"
-          - name: S3_STORAGE_IBM_COMPAT
-            value: "true"
-          - name:  BUCKET_STORAGE_IGNORE_ETAG_UPLOAD 
-            value: "true"
-          - name:  BUCKET_STORAGE_IGNORE_ETAG_AFTER_UPLOAD 
-            value: "true"
-          - name: BUCKET_STORAGE_SSE_COMPATIBLE
-            value: "true"
-          - name: S3_STORAGE_ENDPOINT_BASE
-            value: {{ .Values.humio.s3proxy.endpoint }}
-          - name: S3_STORAGE_ENCRYPTION_KEY
-            value: "off"
-          - name: S3_STORAGE_ACCESSKEY
-            valueFrom:
-              secretKeyRef:
-                key: AWS_ACCESS_KEY_ID
-                name: {{ .Values.humio.s3proxy.secret }}
-          - name: S3_STORAGE_SECRETKEY
-            valueFrom:
-              secretKeyRef:
-                key: AWS_SECRET_ACCESS_KEY
-                name: {{ .Values.humio.s3proxy.secret }}
-          - name: S3_STORAGE_BUCKET
-            value: {{ .Values.humio.buckets.storage }}
-
-          - name: S3_ARCHIVING_PATH_STYLE_ACCESS
-            value: "true"
-
-          - name: S3_EXPORT_PATH_STYLE_ACCESS
-            value: "true"
-        {{- else }}
-          - name: S3_STORAGE_ENCRYPTION_KEY
-            value: {{ .Values.humio.buckets.storageKey | default "off" | quote }}
-          - name: S3_STORAGE_BUCKET
-            value: {{ .Values.humio.buckets.storage }}
-        {{- end }}        
-        {{- range .Values.humio.extraENV }}
-          - name: {{ .name }}
-            value: {{ .value | quote }}
-        {{- end }}  
+{{- end }}
+{{- end }}

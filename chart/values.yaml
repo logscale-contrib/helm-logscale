@@ -1,32 +1,56 @@
-platform: Azure
+platform:
+  provider: unknown
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
 humio:
-  s3mode: default
+  #values are "none",bootstrap,ui,inputs
+  drMode: "none"
+  config:
+    enableInternalLogger: "false"
+    searchPipelineMonitorJob: "false"
   #One of humio,strimzi,external
   kafka:
-    manager: "humio"
+    manager: "inputs"
     prefixEnable: false
-    extraConfig: security.protocol=PLAINTEXT
+    extraConfig: |
+      security.protocol=PLAINTEXT
+      # receive.buffer.bytes=65536 is the default use -1 to set to OS max
+      receive.buffer.bytes=-1
+      # send.buffer.bytes=131072 is the default use -1 to set to OS max
+      send.buffer.bytes=-1
+
+      # Additional external kafka configuration
+      # max.partition.fetch.bytes=1048576 is the default value 3 MB should be optimal for logscale
+      max.partition.fetch.bytes=3145728
+      # linger.ms with high partition counts and sharding this small delay allows for optimal batch sizing
+      # under high loads it will have no effect
+      linger.ms=5
+
+    topics:
+      ingest:
+        minisr: 2
+        retention:
+          ms: -1
+          bytes: -1
   #kafkaPrefix
-  buckets: {}
+  buckets:
+    type: none
+    prefix: ""
 
   replicaCount: 3
   image:
     repository: humio/humio-core
-    tag: "1.70.0--SNAPSHOT--build-323434--SHA-dfa77220c22755bc0f8dee124ef548e8c0d740b1"
-  autoRebalancePartitions: true
+    tag: "1.159.1"
   digestPartitionsCount: 24
   storagePartitionsCount: 24
-  targetReplicationFactor: 2
   smtp:
     enabled: false
     host: ""
-    username: ""
-    password: ""
+    # username: ""
+    # password: ""
     sender:
     port: 587
     startTLS: true
@@ -48,8 +72,9 @@ humio:
     # -Xlog:gc*:stdout:time,tags
     # -Dakka.log-config-on-start=on -Dzookeeper.client.secure=false
   enableFeatures:
-    - FOWARDING
-    - FDR_POLLING_ON_NODE
+    {}
+    # - FOWARDING
+    # - FDR_POLLING_ON_NODE
   dataVolumePersistentVolumeClaimSpecTemplate:
     accessModes:
       - ReadWriteOnce
@@ -71,8 +96,20 @@ humio:
   service:
     type: ClusterIP
     port: 80
+    annotations: {}
+    inputs:
+      type: ClusterIP
+      annotations: {}
+    ui:
+      type: ClusterIP
+      annotations: {}
 
   ingress:
+    api:
+      enabled: false
+      # className: "ngnix"
+      annotations: {}
+      tls: false
     ui:
       enabled: false
       # className: "ngnix"
@@ -83,16 +120,63 @@ humio:
       # className: "ngnix"
       annotations: {}
       tls: false
+    inputsES:
+      enabled: false
   nodeSelector: {}
 
   tolerations: []
 
   affinity: {}
 
-setroot:
+preload:
+  image:
+    repository: alpine
+    tag: 3.18.0
+setdynamic:
+  enabled: true
   image:
     repository: curlimages/curl
     tag: 8.00.1
+setroot:
+  enabled: true
+  image:
+    repository: curlimages/curl
+    tag: 8.00.1
+pdfRenderService:
+  enabled: true
+  replicas: 1
+  config:
+    cleanupInterval: "7d"
+    maxConcurrentJobs: "10"
+    debug: "false"
+  image:
+    repository: humio/pdf-render-service
+    tag: 0.0.25--build-82--sha-237af42b386b7199407de19d6635c32c6c31ff42
+scim:
+  enabled: false
+  groups:
+    managementOrganization: ${namespace}-logscale-management-organization
+    managementCluster: ${namespace}-logscale-management-cluster
+  image:
+    repository: ghcr.io/logscale-contrib/containers/logscale-scim
+    tag: 1.1.2
+  api:
+    replicas: 2
+    resources:
+      requests:
+        memory: 32Mi
+        cpu: 10m
+      limits:
+        memory: 128Mi
+        cpu: 1
+  bootstrap:
+    resources:
+      requests:
+        memory: 32Mi
+        cpu: 10m
+      limits:
+        memory: 128Mi
+        cpu: 1
 
 kafka:
   replicas: 3
@@ -157,7 +241,7 @@ otel:
     repository: nginx
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: ""
+    tag: 1.159.1
 
   imagePullSecrets: []
   nameOverride: ""

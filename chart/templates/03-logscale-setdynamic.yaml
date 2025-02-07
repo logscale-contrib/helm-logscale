@@ -1,0 +1,96 @@
+{{- if .Values.scim.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "humio-instance.fullname" . }}-setdynamic
+  labels:
+    {{- include "humio-instance.labels" . | nindent 4 }}
+    app.kubernetes.io/component: "setdynamic"
+data:
+  # property-like keys; each key maps to a simple value
+  config.json: |
+{{- if eq .Values.humio.drMode "pre" }}            
+    {
+      "query": "mutation {  setDynamicConfig(    input: {config: FlushSegmentsAndGlobalOnShutdown, value: \"true\"}  )}"
+    }
+{{- else }}              
+    {
+      "query": "mutation {  setDynamicConfig(    input: {config: FlushSegmentsAndGlobalOnShutdown, value: \"false\"}  )}"
+    }
+{{- end }}  
+{{- end }}  
+---
+{{- if .Values.setdynamic.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "humio-instance.fullname" . }}-setdynamic
+  labels:
+    {{- include "humio-instance.labels" . | nindent 4 }}
+    app.kubernetes.io/component: "setdynamic"
+spec:
+  ttlSecondsAfterFinished: 300
+  template:
+    metadata:
+      labels:
+        {{- include "humio-instance.labels" . | nindent 8 }}    
+        app.kubernetes.io/component: "setdynamic"
+    spec:
+      {{- if .Values.setdynamic.image.pullSecrets }}
+      imagePullSecrets:
+      {{- toYaml .Values.setdynamic.image.pullSecrets | nindent 6 }}
+      {{- end }}
+      containers:
+        - name: humio-setdynamic
+          image: "{{ .Values.setdynamic.image.repository }}:{{ .Values.setdynamic.image.tag }}"
+          command:
+            - sh
+            - -c
+          args:
+            - >
+                curl -v --connect-timeout 5 --max-time 10 --retry 30 --retry-delay 0 --retry-max-time 600 --retry-connrefused
+                -H "Authorization: Bearer $TOKEN"
+                -H "accept: application/json, multipart/mixed" 
+                -H "content-type: application/json" 
+                -d @/config/config.json 
+                --compressed 
+                http://$HUMIOSVC:8080/graphql
+          env:
+            - name: HUMIOSVC
+              value: {{ include "humio-instance.fullname" . }}
+            - name: TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "humio-instance.fullname" . }}-admin-token
+                  key: token
+          volumeMounts:
+            - name: config
+              mountPath: "/config"
+              readOnly: true                  
+          resources:
+              requests:
+                  memory: 1Mi
+                  cpu: 10m
+              limits:
+                  memory: 10Mi
+                  cpu: 20m
+          securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                  drop: ["ALL"]
+              runAsNonRoot: true
+              readOnlyRootFilesystem: true
+              runAsUser: 10001
+              runAsGroup:  10001
+      restartPolicy: Never
+      volumes:
+        - name: config
+          configMap:
+            # Provide the name of the ConfigMap you want to mount.
+            name: {{ include "humio-instance.fullname" . }}-setdynamic
+            # An array of keys from the ConfigMap to create as files
+            items:
+            - key: "config.json"
+              path: "config.json"
+  backoffLimit: 4
+  {{- end }}  

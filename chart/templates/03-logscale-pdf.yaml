@@ -1,0 +1,82 @@
+{{- if .Values.pdfRenderService.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "humio-instance.fullname" . }}-pdfrenderservice
+  labels:
+    {{- include "humio-instance.labels" . | nindent 4 }}
+    app.kubernetes.io/component: "pdfRenderService"
+spec:
+  replicas: {{ .Values.pdfRenderService.replicas }}
+  selector:
+    matchLabels:
+      {{- include "humio-instance.selectorLabels" . | nindent 6 }}    
+      app.kubernetes.io/component: "pdfRenderService"
+  template:
+    metadata:
+      labels:
+        {{- include "humio-instance.selectorLabels" . | nindent 8 }}    
+        app.kubernetes.io/component: "pdfRenderService"
+    spec:
+      {{- if .Values.pdfRenderService.image.pullSecrets }}
+      imagePullSecrets:
+      {{- toYaml .Values.pdfRenderService.image.pullSecrets | nindent 6 }}
+      {{- end }}  
+      containers:
+      - name: pdfrenderservice
+        image: "{{ .Values.pdfRenderService.image.repository }}:{{ .Values.pdfRenderService.image.tag }}"
+        {{- with .Values.pdfRenderService.resources}}
+        resources:
+        {{ . | toYaml | nindent 10 }}
+        {{- end }}
+        ports:
+        - containerPort: 5123
+        env:
+        - name: CLEANUP_INTERVAL
+          value: {{ .Values.pdfRenderService.config.cleanupInterval | quote}}
+        - name: MAX_CONCURRENT_JOBS
+          value: {{ .Values.pdfRenderService.config.maxConcurrentJobs | quote }}
+        - name: FORCE_LOGSCALE_BASE_URL
+          value: http://{{ include "humio-instance.fullname" . }}:8080
+        {{- if .Values.humio.smtp.enabled }}
+        - name: SMTP_HOST
+          value: {{ .Values.humio.smtp.host }}
+        {{- if .Values.humio.smtp.username }}  
+        - name: SMTP_USERNAME
+          value: {{ .Values.humio.smtp.username }}
+        {{- end }}
+        {{- if .Values.humio.smtp.password }}  
+        - name: SMTP_PASSWORD
+          value: {{ .Values.humio.smtp.password }}
+        {{- end }}
+        - name: SMTP_SENDER_ADDRESS
+          value: {{ .Values.humio.smtp.sender }}
+        - name: SMTP_PORT
+          value: {{ .Values.humio.smtp.port | quote }}
+        - name: SMTP_USE_STARTTLS
+          value: {{ .Values.humio.smtp.startTLS | quote }}
+        {{- end }}
+        - name: DEBUG
+          value: {{ .Values.pdfRenderService.config.debug | default "false" | quote }}
+    
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    {{- include "humio-instance.labels" . | nindent 4 }}    
+    app.kubernetes.io/component: "pdfRenderService"
+  name: {{ include "humio-instance.fullname" . }}-pdfrenderservice
+spec:
+  ports:
+  - name: http
+    port: 5123
+    protocol: TCP
+    targetPort: 5123
+  selector:
+  
+    {{- include "humio-instance.selectorLabels" . | nindent 4 }}    
+    app.kubernetes.io/component: "pdfRenderService"
+  sessionAffinity: None
+  type: ClusterIP
+{{- end }}        

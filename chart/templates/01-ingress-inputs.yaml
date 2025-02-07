@@ -1,6 +1,31 @@
 {{- if .Values.humio.ingress.inputs.enabled -}}
 {{- $fullName := include "humio-instance.fullname" . -}}
 {{- $svcPort := 8080 -}}
+{{- if eq .Values.platform.provider "gcp" }}
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: {{ $fullName }}-inputs
+spec:
+  healthCheck:
+    checkIntervalSec: 5
+    timeoutSec: 5
+    healthyThreshold: 2
+    unhealthyThreshold: 1
+    type: HTTP
+    requestPath: /api/v1/status
+    port: 8080
+---
+{{- if eq .Values.humio.ingress.inputs.classNameAnnotation "gce" }}
+apiVersion: networking.gke.io/v1beta1
+kind: FrontendConfig
+metadata:
+  name: {{ $fullName }}-inputs
+spec:
+  sslPolicy: {{ .Values.humio.ingress.inputs.gcpSSLPolicy | default "logscale-inputs" }}
+---
+{{- end }}
+{{- end }}
 {{- if and .Values.humio.ingress.inputs.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
   {{- if not (hasKey .Values.humio.ingress.inputs.annotations "kubernetes.io/humio.ingress.inputs.class") }}
   {{- $_ := set .Values.humio.ingress.inputs.annotations "kubernetes.io/humio.ingress.inputs.class" .Values.humio.ingress.inputs.className}}
@@ -20,21 +45,35 @@ metadata:
     {{- include "humio-instance.labels" . | nindent 4 }}
   annotations:
     "helm.sh/resource-policy": "keep"
+  {{- if .Values.humio.ingress.inputs.classNameAnnotation }}
+    kubernetes.io/ingress.class: {{ .Values.humio.ingress.inputs.classNameAnnotation }}
+  {{- end }}
+  {{- if eq .Values.platform.provider "gcp" }}
+    cloud.google.com/backend-config: '{"default": "{{ $fullName }}-inputs"}'    
+  {{- if eq .Values.humio.ingress.inputs.classNameAnnotation "gce" }}
+    networking.gke.io/v1beta1.FrontendConfig: {{ $fullName }}-inputs
+  {{- end }}
+  {{- end }}
   {{- with .Values.humio.ingress.inputs.annotations }}
-    {{- toYaml . | nindent 4 }}    
+    {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
   {{- if and .Values.humio.ingress.inputs.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
-  ingress.inputsClassName: {{ .Values.humio.ingress.inputs.className }}
+  ingressClassName: {{ .Values.humio.ingress.inputs.className }}
   {{- end }}
   {{- if .Values.humio.ingress.inputs.tls }}
   tls:
     - hosts:
         - {{ .Values.humio.fqdnInputs }}
-      secretName: {{ $fullName }}-inputs-tls
+      {{- if .Values.humio.ingress.inputs.tlsSecretName }}
+      secretName: {{- .Values.humio.ingress.inputs.tlsSecretName }}
+      {{- end }}
   {{- end }}
-  rules:    
-    - host: {{ .Values.humio.fqdnInputs }}
+  rules:
+    - 
+      {{- if .Values.humio.fqdnInputs }}
+      host: {{ .Values.humio.fqdnInputs }}
+      {{- end }}
       http:
         paths:
           - path: /_bulk
@@ -50,7 +89,7 @@ spec:
               {{- else }}
               serviceName: {{ $fullName }}-ingest-only
               servicePort: {{ $svcPort }}
-              {{- end }}        
+              {{- end }}
           - path: /api/v1/ingest
             {{- if semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion }}
             pathType: Prefix
@@ -64,7 +103,7 @@ spec:
               {{- else }}
               serviceName: {{ $fullName }}-ingest-only
               servicePort: {{ $svcPort }}
-              {{- end }}            
+              {{- end }}
           - path: /services/collector
             {{- if semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion }}
             pathType: Prefix
@@ -78,5 +117,5 @@ spec:
               {{- else }}
               serviceName: {{ $fullName }}-ingest-only
               servicePort: {{ $svcPort }}
-              {{- end }}                               
+              {{- end }}
 {{- end }}
