@@ -241,7 +241,7 @@ otel:
     repository: nginx
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: 1.159.1
+    tag: 1.165.1
 
   imagePullSecrets: []
   nameOverride: ""
