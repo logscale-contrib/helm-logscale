@@ -1,4 +1,4 @@
-{{- define "humio-instance.environment" -}}
+{{- define "humio-instance.environmentKafka" -}}
 {{- if eq .Values.logscale.kafka.manager "strimzi" }}
 - name: KAFKA_SERVERS
   value: {{ include "humio-instance.fullname" . }}-kafka-bootstrap:9092
