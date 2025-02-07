@@ -2,7 +2,7 @@
 {{- if eq .Values.logscale.kafka.manager "strimzi" }}
 - name: KAFKA_SERVERS
   value: {{ include "humio-instance.fullname" . }}-kafka-bootstrap:9092
-{{- if eq .Values.logscale.kafka.manager "strimziAccessOperator" }}
+{{- else if eq .Values.logscale.kafka.manager "strimziAccessOperator" }}
 - name: KAFKA_SERVERS
   valueFrom:
     secretKeyRef:
