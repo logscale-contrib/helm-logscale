@@ -1,4 +1,5 @@
 {{- define "humio-instance.environmentKafka" -}}
+
 {{- if eq .Values.logscale.kafka.manager "strimzi" }}
 - name: KAFKA_SERVERS
   value: {{ include "humio-instance.fullname" . }}-kafka-bootstrap:9092
@@ -40,6 +41,6 @@
 {{ printf "KAFKA_COMMON_%s" (upper $k | replace "." "_") }}: {{ $v }}
     {{- end }}
 {{- end -}}
-{{- end -}}
+
 {{- end }}
 
