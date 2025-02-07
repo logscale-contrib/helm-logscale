@@ -74,6 +74,10 @@ spec:
     - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
       mountPath: /var/lib/humio/config/logging
       readOnly: true
+{{- with .Values.extraHumioVolumeMounts }}
+  {{- toYaml . | nindent 4 }}
+{{- end }}
+
   extraVolumes:
     - name: java-logs
       emptyDir: {}
@@ -96,6 +100,10 @@ spec:
     - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
       configMap:
         name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
+{{- with .Values.extraVolumes }}
+  {{- toYaml . | nindent 4 }}
+{{- end }}
+
   esHostnameSource: {}
 {{- if eq  .Values.logscale.auth.method  "saml" }}
   idpCertificateSecretName: "{{ include "humio-instance.fullname" . }}-idp-certificate"
