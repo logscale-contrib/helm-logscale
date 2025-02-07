@@ -96,7 +96,6 @@ spec:
       configMap:
         name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
   esHostnameSource: {}
-  extraKafkaConfigs: {{ .Values.humio.kafka.extraConfig | quote }}
 {{- if eq  .Values.humio.auth.method  "saml" }}
   idpCertificateSecretName: "{{ include "humio-instance.fullname" . }}-idp-certificate"
 {{- end }}
@@ -213,7 +212,6 @@ spec:
           {{- toYaml . | nindent 10 }}
         {{- end }}
 
-        extraKafkaConfigs: {{ .Values.humio.kafka.extraConfig | quote }}
 
         dataVolumePersistentVolumeClaimSpecTemplate:
         {{- with .Values.humio.frontEndDataVolumePersistentVolumeClaimSpecTemplate }}
@@ -319,7 +317,6 @@ spec:
         topologySpreadConstraints:
           {{- toYaml . | nindent 10 }}
         {{- end }}
-        extraKafkaConfigs: {{ .Values.humio.kafka.extraConfig | quote }}
 
         dataVolumePersistentVolumeClaimSpecTemplate:
         {{- with .Values.humio.frontEndDataVolumePersistentVolumeClaimSpecTemplate }}

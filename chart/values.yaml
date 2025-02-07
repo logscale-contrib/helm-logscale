@@ -13,9 +13,9 @@ humio:
     searchPipelineMonitorJob: "false"
   #One of humio,strimzi,external
   kafka:
-    manager: "inputs"
+    manager: "logscale"
     prefixEnable: false
-    extraConfig: |
+    extraConfigCommon: |
       security.protocol=PLAINTEXT
       # receive.buffer.bytes=65536 is the default use -1 to set to OS max
       receive.buffer.bytes=-1
@@ -43,7 +43,7 @@ humio:
   replicaCount: 3
   image:
     repository: humio/humio-core
-    tag: "1.159.1"
+    tag: "1.165.1"
   digestPartitionsCount: 24
   storagePartitionsCount: 24
   smtp:

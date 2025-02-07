@@ -9,24 +9,6 @@
   value: {{ .Values.humio.config.enableInternalLogger | default "false" | quote }}
 - name: SEARCH_PIPELINE_MONITOR_JOB_ENABLE
   value: {{ .Values.humio.config.searchPipelineMonitorJob | default "false" | quote }}
-{{- if eq .Values.humio.kafka.manager "strimzi" }}
-- name: KAFKA_SERVERS
-  value: {{ include "humio-instance.fullname" . }}-kafka-bootstrap:9092
-{{- else }}
-- name: KAFKA_SERVERS
-  value: {{ .Values.humio.kafka.bootstrap | quote }}
-{{- end }}
-{{- if or (eq .Values.humio.kafka.manager "strimzi") (eq .Values.humio.kafka.manager "external") }}
-- name: KAFKA_MANAGED_BY_HUMIO
-  value: "false"
-{{- else }}
-- name: KAFKA_MANAGED_BY_HUMIO
-  value: "true"
-{{- end }}
-{{- if .Values.humio.kafka.prefixEnable }}
-- name: HUMIO_KAFKA_TOPIC_PREFIX
-  value: {{ .Values.humio.kafka.topicPrefix | default .Release.Name }}-
-{{- end }}
   #Object Storage config
 {{- if eq  .Values.humio.buckets.type "none" }}  
 - name: USING_EPHEMERAL_DISKS
