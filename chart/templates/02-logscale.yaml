@@ -54,7 +54,7 @@ spec:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 
-  environmentVariables:
+  CommonEnvironmentVariables:
   {{- include "humio-instance.environment" . | nindent 2 }}
 
   extraHumioVolumeMounts:
@@ -232,7 +232,6 @@ spec:
           cloud.google.com/backend-config: '{"default": "{{ include "humio-instance.fullname" . }}-inputs"}'
           {{- end }}
         environmentVariables:
-          {{- include "humio-instance.environment" . | nindent 10 }}
           - name: NODE_ROLES
             value: httponly
           - name: QUERY_COORDINATOR
@@ -338,7 +337,6 @@ spec:
           cloud.google.com/backend-config: '{"default": "{{ include "humio-instance.fullname" . }}-ui"}'
           {{- end }}
         environmentVariables:
-          {{- include "humio-instance.environment" . | nindent 10 }}
           - name: NODE_ROLES
             value: httponly
           - name: QUERY_COORDINATOR
