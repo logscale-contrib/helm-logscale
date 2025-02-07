@@ -1,56 +1,56 @@
 ---
-apiVersion: core.humio.com/v1alpha1
+apiVersion: core.logscale.com/v1alpha1
 kind: HumioCluster
 metadata:
   name: {{ include "humio-instance.fullname" . }}
   labels:
     {{- include "humio-instance.labels" . | nindent 4 }}
 spec:
-  initServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
-  authServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
-  humioServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
-  {{- if .Values.humio.containerSecurityContext }}
+  initServiceAccountName: {{ include "humio-instance.logscale.serviceAccountName" . }}
+  authServiceAccountName: {{ include "humio-instance.logscale.serviceAccountName" . }}
+  humioServiceAccountName: {{ include "humio-instance.logscale.serviceAccountName" . }}
+  {{- if .Values.logscale.containerSecurityContext }}
   containerSecurityContext:
-    {{- toYaml .Values.humio.containerSecurityContext | nindent 4 }}        
+    {{- toYaml .Values.logscale.containerSecurityContext | nindent 4 }}        
   {{- end }}
-  {{- if or .Values.otel.components.inject .Values.humio.podAnnotations }}
+  {{- if or .Values.otel.components.inject .Values.logscale.podAnnotations }}
   podAnnotations:
   {{- if .Values.otel.components.inject }}
     "instrumentation.opentelemetry.io/inject-java": {{ include "humio-instance.fullname" . }}-java
     "instrumentation.opentelemetry.io/container-names": "humio"
   {{- end }}
-  {{- with .Values.humio.podAnnotations }}
+  {{- with .Values.logscale.podAnnotations }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
   {{- end }}
 
-  {{- if .Values.humio.priorityClassName }}
-  priorityClassName: {{ .Values.humio.priorityClassName }}
+  {{- if .Values.logscale.priorityClassName }}
+  priorityClassName: {{ .Values.logscale.priorityClassName }}
   {{- end }}
   resources:
-    {{- toYaml .Values.humio.resources | nindent 4 }}
-  {{- with .Values.humio.affinity }}
+    {{- toYaml .Values.logscale.resources | nindent 4 }}
+  {{- with .Values.logscale.affinity }}
   affinity:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- if eq .Values.humio.drMode "bootstrap" }}
+  {{- if eq .Values.logscale.drMode "bootstrap" }}
   nodeCount: 1
   {{- else }}
-  nodeCount: {{ .Values.humio.nodeCount }}
+  nodeCount: {{ .Values.logscale.nodeCount }}
   {{- end }}
-  {{- with .Values.humio.tolerations }}
+  {{- with .Values.logscale.tolerations }}
   tolerations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- with .Values.humio.topologySpreadConstraints }}
+  {{- with .Values.logscale.topologySpreadConstraints }}
   topologySpreadConstraints:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 
   dataVolumePersistentVolumeClaimPolicy: 
-    reclaimType: {{ .Values.humio.dataVolumePersistentVolumeClaimPolicy | default "OnNodeDelete" }}
+    reclaimType: {{ .Values.logscale.dataVolumePersistentVolumeClaimPolicy | default "OnNodeDelete" }}
   dataVolumePersistentVolumeClaimSpecTemplate:
-  {{- with .Values.humio.dataVolumePersistentVolumeClaimSpecTemplate }}
+  {{- with .Values.logscale.dataVolumePersistentVolumeClaimSpecTemplate }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
 
@@ -62,11 +62,11 @@ spec:
       mountPath: /data/java-logs
     - name: logs
       mountPath: /data/logs
-{{- if .Values.humio.trustManagerConfigMap }}
+{{- if .Values.logscale.trustManagerConfigMap }}
     - name: truststore
       mountPath: /data/truststore
 {{- end }}
-{{- if .Values.humio.kafka.keystore }}
+{{- if .Values.logscale.kafka.keystore }}
     - name: kafka-keystore
       mountPath: /data/kafka-keystore
 {{- end }}
@@ -78,36 +78,36 @@ spec:
       emptyDir: {}
     - name: logs
       emptyDir: {}
-{{- if .Values.humio.trustManagerConfigMap }}
+{{- if .Values.logscale.trustManagerConfigMap }}
     - name: truststore
       configMap:
         # Provide the name of the ConfigMap containing the files you want
         # to add to the container
-        name: {{ .Values.humio.trustManagerConfigMap }}
+        name: {{ .Values.logscale.trustManagerConfigMap }}
 {{- end }}
-{{- if .Values.humio.kafka.keystore }}
+{{- if .Values.logscale.kafka.keystore }}
     - name: kafka-keystore
       secret:
         # Provide the name of the ConfigMap containing the files you want
         # to add to the container
-        secretName: {{ .Values.humio.kafka.keystore }}
+        secretName: {{ .Values.logscale.kafka.keystore }}
 {{- end }}  
     - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
       configMap:
         name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
   esHostnameSource: {}
-{{- if eq  .Values.humio.auth.method  "saml" }}
+{{- if eq  .Values.logscale.auth.method  "saml" }}
   idpCertificateSecretName: "{{ include "humio-instance.fullname" . }}-idp-certificate"
 {{- end }}
-  hostname: {{ .Values.humio.fqdn }}
+  hostname: {{ .Values.logscale.fqdn }}
   hostnameSource: {}
-  image: "{{ .Values.humio.image.repository }}:{{ .Values.humio.image.tag }}"
-  {{- if .Values.humio.image.pullSecrets }}
+  image: "{{ .Values.logscale.image.repository }}:{{ .Values.logscale.image.tag }}"
+  {{- if .Values.logscale.image.pullSecrets }}
   imagePullSecrets:
-  {{- toYaml .Values.humio.image.pullSecrets | nindent 4 }}
+  {{- toYaml .Values.logscale.image.pullSecrets | nindent 4 }}
   {{- end }}
-{{- if .Values.humio.helperImage }}  
-  helperImage: {{ .Values.humio.helperImage }}
+{{- if .Values.logscale.helperImage }}  
+  helperImage: {{ .Values.logscale.helperImage }}
 {{- end }}
   #We use helm to produce ingress so we prevent operator from doing it
   ingress: {}
@@ -115,43 +115,43 @@ spec:
     secretKeyRef:
       key: license
       name: "{{ include "humio-instance.fullname" . }}-license"
-  autoRebalancePartitions: {{ .Values.humio.autoRebalancePartitions | default true }}
-  digestPartitionsCount: {{ .Values.humio.digestPartitionsCount }}
-  storagePartitionsCount: {{ .Values.humio.storagePartitionsCount }}
+  autoRebalancePartitions: {{ .Values.logscale.autoRebalancePartitions | default true }}
+  digestPartitionsCount: {{ .Values.logscale.digestPartitionsCount }}
+  storagePartitionsCount: {{ .Values.logscale.storagePartitionsCount }}
   targetReplicationFactor: 1
   tls:
     enabled: false
-  humioServiceType: {{ .Values.humio.service.type }} 
+  humioServiceType: {{ .Values.logscale.service.type }} 
   humioServiceAnnotations:
     service.kubernetes.io/topology-aware-hints: auto
-    {{- with .Values.humio.service.annotations }}
+    {{- with .Values.logscale.service.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
-{{- if ne .Values.humio.drMode "bootstrap" }}
+{{- if ne .Values.logscale.drMode "bootstrap" }}
   nodePools:
-{{- if or (eq .Values.humio.drMode "none") (eq .Values.humio.drMode "inputs") }}
+{{- if or (eq .Values.logscale.drMode "none") (eq .Values.logscale.drMode "inputs") }}
     - name: ingest-only
       spec:
-        image: "{{ .Values.humio.image.repository }}:{{ .Values.humio.image.tag }}"
-        {{- if .Values.humio.image.pullSecrets }}
+        image: "{{ .Values.logscale.image.repository }}:{{ .Values.logscale.image.tag }}"
+        {{- if .Values.logscale.image.pullSecrets }}
         imagePullSecrets:
-        {{- toYaml .Values.humio.image.pullSecrets | nindent 10 }}
+        {{- toYaml .Values.logscale.image.pullSecrets | nindent 10 }}
         {{- end }}        
-        nodeCount: {{ .Values.humio.nodepools.ingest.nodeCount }}
-        initServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
-        authServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
-        humioServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
-        {{- if .Values.humio.nodepools.ingest.containerSecurityContext }}
+        nodeCount: {{ .Values.logscale.nodepools.ingest.nodeCount }}
+        initServiceAccountName: {{ include "humio-instance.logscale.serviceAccountName" . }}
+        authServiceAccountName: {{ include "humio-instance.logscale.serviceAccountName" . }}
+        humioServiceAccountName: {{ include "humio-instance.logscale.serviceAccountName" . }}
+        {{- if .Values.logscale.nodepools.ingest.containerSecurityContext }}
         containerSecurityContext:
-          {{- toYaml .Values.humio.nodepools.ingest.containerSecurityContext | nindent 10 }}        
+          {{- toYaml .Values.logscale.nodepools.ingest.containerSecurityContext | nindent 10 }}        
         {{- end }}
-        {{- if or .Values.otel.components.inject .Values.humio.podAnnotations }}  
+        {{- if or .Values.otel.components.inject .Values.logscale.podAnnotations }}  
         podAnnotations:
         {{- if .Values.otel.components.inject }}                
           "instrumentation.opentelemetry.io/inject-java": {{ include "humio-instance.fullname" . }}-java
           "instrumentation.opentelemetry.io/container-names": "humio"
         {{- end }}
-        {{- with .Values.humio.podAnnotations }}
+        {{- with .Values.logscale.podAnnotations }}
           {{- toYaml . | nindent 10 }}
         {{- end }}
         {{- end }}
@@ -161,11 +161,11 @@ spec:
             mountPath: /data/java-logs
           - name: logs
             mountPath: /data/logs
-      {{- if .Values.humio.trustManagerConfigMap }}
+      {{- if .Values.logscale.trustManagerConfigMap }}
           - name: truststore
             mountPath: /data/truststore
       {{- end }}            
-      {{- if .Values.humio.kafka.keystore }}
+      {{- if .Values.logscale.kafka.keystore }}
           - name: kafka-keystore
             mountPath: /data/kafka-keystore
       {{- end }}
@@ -177,53 +177,53 @@ spec:
             emptyDir: {}
           - name: logs
             emptyDir: {}
-      {{- if .Values.humio.trustManagerConfigMap }}
+      {{- if .Values.logscale.trustManagerConfigMap }}
           - name: truststore
             configMap:
               # Provide the name of the ConfigMap containing the files you want
               # to add to the container
-              name: {{ .Values.humio.trustManagerConfigMap }}
+              name: {{ .Values.logscale.trustManagerConfigMap }}
       {{- end }}            
-      {{- if .Values.humio.kafka.keystore }}
+      {{- if .Values.logscale.kafka.keystore }}
           - name: kafka-keystore
             secret:
               # Provide the name of the ConfigMap containing the files you want
               # to add to the container
-              secretName: {{ .Values.humio.kafka.keystore }}
+              secretName: {{ .Values.logscale.kafka.keystore }}
       {{- end }}        
           - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
             configMap:
               name: "{{ include "humio-instance.fullname" . }}-loggingconfig"      
-        {{- if .Values.humio.nodepools.ingest.priorityClassName }}
-        priorityClassName: {{ .Values.humio.nodepools.ingest.priorityClassName }}
+        {{- if .Values.logscale.nodepools.ingest.priorityClassName }}
+        priorityClassName: {{ .Values.logscale.nodepools.ingest.priorityClassName }}
         {{- end }}
         resources:
-          {{- toYaml .Values.humio.nodepools.ingest.resources | nindent 14 }}
-        {{- with .Values.humio.nodepools.ingest.affinity }}
+          {{- toYaml .Values.logscale.nodepools.ingest.resources | nindent 14 }}
+        {{- with .Values.logscale.nodepools.ingest.affinity }}
         affinity:
           {{- toYaml . | nindent 10 }}
         {{- end }}
-        {{- with .Values.humio.nodepools.ingest.tolerations }}
+        {{- with .Values.logscale.nodepools.ingest.tolerations }}
         tolerations:
           {{- toYaml . | nindent 10 }}
         {{- end }}
-        {{- with .Values.humio.nodepools.ingest.topologySpreadConstraints }}
+        {{- with .Values.logscale.nodepools.ingest.topologySpreadConstraints }}
         topologySpreadConstraints:
           {{- toYaml . | nindent 10 }}
         {{- end }}
 
 
         dataVolumePersistentVolumeClaimSpecTemplate:
-        {{- with .Values.humio.frontEndDataVolumePersistentVolumeClaimSpecTemplate }}
+        {{- with .Values.logscale.frontEndDataVolumePersistentVolumeClaimSpecTemplate }}
           {{- toYaml . | nindent 10 }}
         {{- end }}
 
         dataVolumePersistentVolumeClaimPolicy: 
-          reclaimType: {{ .Values.humio.frontEnddataVolumePersistentVolumeClaimPolicy | default "None" }}
-        humioServiceType: {{ .Values.humio.service.inputs.type }}
+          reclaimType: {{ .Values.logscale.frontEnddataVolumePersistentVolumeClaimPolicy | default "None" }}
+        humioServiceType: {{ .Values.logscale.service.inputs.type }}
         humioServiceAnnotations:
           service.kubernetes.io/topology-aware-hints: auto
-          {{- with .Values.humio.service.inputs.annotations }}
+          {{- with .Values.logscale.service.inputs.annotations }}
           {{- toYaml . | nindent 10 }}
           {{- end }}
           {{- if eq .Values.platform.provider "gcp" }}
@@ -235,29 +235,29 @@ spec:
           - name: QUERY_COORDINATOR
             value: "false"
 {{- end }}
-{{- if or (eq .Values.humio.drMode "none") (or (eq .Values.humio.drMode "inputs") (eq .Values.humio.drMode "ui")) }}
+{{- if or (eq .Values.logscale.drMode "none") (or (eq .Values.logscale.drMode "inputs") (eq .Values.logscale.drMode "ui")) }}
     - name: http-only
       spec:
-        image: "{{ .Values.humio.image.repository }}:{{ .Values.humio.image.tag }}"
-        {{- if .Values.humio.image.pullSecrets }}
+        image: "{{ .Values.logscale.image.repository }}:{{ .Values.logscale.image.tag }}"
+        {{- if .Values.logscale.image.pullSecrets }}
         imagePullSecrets:
-        {{- toYaml .Values.humio.image.pullSecrets | nindent 10 }}
+        {{- toYaml .Values.logscale.image.pullSecrets | nindent 10 }}
         {{- end }}        
-        nodeCount: {{ .Values.humio.nodepools.ui.nodeCount }}
-        initServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
-        authServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
-        humioServiceAccountName: {{ include "humio-instance.humio.serviceAccountName" . }}
-        {{- if .Values.humio.nodepools.ui.containerSecurityContext }}
+        nodeCount: {{ .Values.logscale.nodepools.ui.nodeCount }}
+        initServiceAccountName: {{ include "humio-instance.logscale.serviceAccountName" . }}
+        authServiceAccountName: {{ include "humio-instance.logscale.serviceAccountName" . }}
+        humioServiceAccountName: {{ include "humio-instance.logscale.serviceAccountName" . }}
+        {{- if .Values.logscale.nodepools.ui.containerSecurityContext }}
         containerSecurityContext:
-          {{- toYaml .Values.humio.nodepools.ui.containerSecurityContext | nindent 10 }}        
+          {{- toYaml .Values.logscale.nodepools.ui.containerSecurityContext | nindent 10 }}        
         {{- end }}
-        {{- if or .Values.otel.components.inject .Values.humio.podAnnotations }}  
+        {{- if or .Values.otel.components.inject .Values.logscale.podAnnotations }}  
         podAnnotations:
         {{- if .Values.otel.components.inject }}
           "instrumentation.opentelemetry.io/inject-java": {{ include "humio-instance.fullname" . }}-java
           "instrumentation.opentelemetry.io/container-names": "humio"
         {{- end }}
-        {{- with .Values.humio.podAnnotations }}
+        {{- with .Values.logscale.podAnnotations }}
           {{- toYaml . | nindent 10 }}
         {{- end }}
         {{- end }}
@@ -267,11 +267,11 @@ spec:
             mountPath: /data/java-logs
           - name: logs
             mountPath: /data/logs
-      {{- if .Values.humio.trustManagerConfigMap }}
+      {{- if .Values.logscale.trustManagerConfigMap }}
           - name: truststore
             mountPath: /data/truststore
       {{- end }}            
-      {{- if .Values.humio.kafka.keystore }}
+      {{- if .Values.logscale.kafka.keystore }}
           - name: kafka-keystore
             mountPath: /data/kafka-keystore
       {{- end }}     
@@ -283,51 +283,51 @@ spec:
             emptyDir: {}
           - name: logs
             emptyDir: {}
-      {{- if .Values.humio.trustManagerConfigMap }}
+      {{- if .Values.logscale.trustManagerConfigMap }}
           - name: truststore
             configMap:
               # Provide the name of the ConfigMap containing the files you want
               # to add to the container
-              name: {{ .Values.humio.trustManagerConfigMap }}
+              name: {{ .Values.logscale.trustManagerConfigMap }}
       {{- end }}            
-      {{- if .Values.humio.kafka.keystore }}
+      {{- if .Values.logscale.kafka.keystore }}
           - name: kafka-keystore
             secret:
               # Provide the name of the ConfigMap containing the files you want
               # to add to the container
-              secretName: {{ .Values.humio.kafka.keystore }}
+              secretName: {{ .Values.logscale.kafka.keystore }}
       {{- end }}
           - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
             configMap:
               name: "{{ include "humio-instance.fullname" . }}-loggingconfig"      
-        {{- if .Values.humio.nodepools.ui.priorityClassName }}
-        priorityClassName: {{ .Values.humio.nodepools.ui.priorityClassName }}
+        {{- if .Values.logscale.nodepools.ui.priorityClassName }}
+        priorityClassName: {{ .Values.logscale.nodepools.ui.priorityClassName }}
         {{- end }}
         resources:
-          {{- toYaml .Values.humio.nodepools.ui.resources | nindent 14 }}
-        {{- with .Values.humio.nodepools.ui.affinity }}
+          {{- toYaml .Values.logscale.nodepools.ui.resources | nindent 14 }}
+        {{- with .Values.logscale.nodepools.ui.affinity }}
         affinity:
           {{- toYaml . | nindent 10 }}
         {{- end }}
-        {{- with .Values.humio.nodepools.ui.tolerations }}
+        {{- with .Values.logscale.nodepools.ui.tolerations }}
         tolerations:
           {{- toYaml . | nindent 10 }}
         {{- end }}
-        {{- with .Values.humio.nodepools.ui.topologySpreadConstraints }}
+        {{- with .Values.logscale.nodepools.ui.topologySpreadConstraints }}
         topologySpreadConstraints:
           {{- toYaml . | nindent 10 }}
         {{- end }}
 
         dataVolumePersistentVolumeClaimSpecTemplate:
-        {{- with .Values.humio.frontEndDataVolumePersistentVolumeClaimSpecTemplate }}
+        {{- with .Values.logscale.frontEndDataVolumePersistentVolumeClaimSpecTemplate }}
           {{- toYaml . | nindent 10 }}
         {{- end }}
         dataVolumePersistentVolumeClaimPolicy: 
-          reclaimType: {{ .Values.humio.frontEnddataVolumePersistentVolumeClaimPolicy | default "None" }}
-        humioServiceType: {{ .Values.humio.service.ui.type }}
+          reclaimType: {{ .Values.logscale.frontEnddataVolumePersistentVolumeClaimPolicy | default "None" }}
+        humioServiceType: {{ .Values.logscale.service.ui.type }}
         humioServiceAnnotations:
           service.kubernetes.io/topology-aware-hints: auto
-          {{- with .Values.humio.service.ui.annotations }}
+          {{- with .Values.logscale.service.ui.annotations }}
           {{- toYaml . | nindent 10 }}
           {{- end }}
           {{- if eq .Values.platform.provider "gcp" }}

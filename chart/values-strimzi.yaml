@@ -33,7 +33,7 @@ kafka:
   # At least 3 replicas are required the number of replicas must be at east 3 and evenly
   # divisible by number of zones
   # The Following Configuration is valid for approximatly 1TB/day
-  # ref: https://library.humio.com/humio-server/installation-prep.html#installation-prep-rec
+  # ref: https://library.logscale.com/humio-server/installation-prep.html#installation-prep-rec
   replicas: 3
   resources:
     requests:

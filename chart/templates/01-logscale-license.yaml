@@ -9,5 +9,5 @@ metadata:
 
 type: Opaque
 data:
-  license: {{  .Values.humio.license | b64enc | quote }}
+  license: {{  .Values.logscale.license | b64enc | quote }}
 {{- end }}

@@ -1,4 +1,4 @@
-{{- if .Values.humio.ingress.api.enabled -}}
+{{- if .Values.logscale.ingress.api.enabled -}}
 {{- $fullName := include "humio-instance.fullname" . -}}
 {{- $svcPort := 8080 -}}
 {{- if eq .Values.platform.provider "gcp" }}
@@ -16,22 +16,22 @@ spec:
     requestPath: /api/v1/is-node-up
     port: 8080
 ---
-{{- if eq .Values.humio.ingress.api.classNameAnnotation "gce" }}
+{{- if eq .Values.logscale.ingress.api.classNameAnnotation "gce" }}
 apiVersion: networking.gke.io/v1beta1
 kind: FrontendConfig
 metadata:
   name: {{ $fullName }}-api
 spec:
-  sslPolicy: {{ .Values.humio.ingress.api.gcpSSLPolicy | default "logscale-api"}}
+  sslPolicy: {{ .Values.logscale.ingress.api.gcpSSLPolicy | default "logscale-api"}}
   redirectToHttps:
     enabled: true
     responseCodeName: MOVED_PERMANENTLY_DEFAULT
 ---
 {{- end }}
 {{- end }}
-{{- if and .Values.humio.ingress.api.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
-  {{- if not (hasKey .Values.humio.ingress.api.annotations "kubernetes.io/humio.ingress.api.class") }}
-  {{- $_ := set .Values.humio.ingress.api.annotations "kubernetes.io/humio.ingress.api.class" .Values.humio.ingress.api.className}}
+{{- if and .Values.logscale.ingress.api.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
+  {{- if not (hasKey .Values.logscale.ingress.api.annotations "kubernetes.io/humio.ingress.api.class") }}
+  {{- $_ := set .Values.logscale.ingress.api.annotations "kubernetes.io/humio.ingress.api.class" .Values.logscale.ingress.api.className}}
   {{- end }}
 {{- end }}
 {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
@@ -48,34 +48,34 @@ metadata:
     {{- include "humio-instance.labels" . | nindent 4 }}
   annotations:
     "helm.sh/resource-policy": "keep"
-  {{- if .Values.humio.ingress.api.classNameAnnotation }}
-    kubernetes.io/ingress.class: {{ .Values.humio.ingress.api.classNameAnnotation }}
+  {{- if .Values.logscale.ingress.api.classNameAnnotation }}
+    kubernetes.io/ingress.class: {{ .Values.logscale.ingress.api.classNameAnnotation }}
   {{- end }}
   {{- if eq .Values.platform.provider "gcp" }}
     cloud.google.com/backend-config: '{"default": "{{ $fullName }}-api"}'
-  {{- if eq .Values.humio.ingress.api.classNameAnnotation "gce" }}
+  {{- if eq .Values.logscale.ingress.api.classNameAnnotation "gce" }}
     networking.gke.io/v1beta1.FrontendConfig: {{ $fullName }}-api
   {{- end }}  
   {{- end }}
 
-  {{- with .Values.humio.ingress.api.annotations }}
+  {{- with .Values.logscale.ingress.api.annotations }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  {{- if and .Values.humio.ingress.api.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
-  ingressClassName: {{ .Values.humio.ingress.api.className }}
+  {{- if and .Values.logscale.ingress.api.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  ingressClassName: {{ .Values.logscale.ingress.api.className }}
   {{- end }}
-  {{- if .Values.humio.ingress.api.tls }}
+  {{- if .Values.logscale.ingress.api.tls }}
   tls:
     - hosts:
-        - {{ .Values.humio.fqdnapi }}
-      {{- if .Values.humio.ingress.api.tlsSecretName }}
-      secretName: {{- .Values.humio.ingress.api.tlsSecretName }}
+        - {{ .Values.logscale.fqdnapi }}
+      {{- if .Values.logscale.ingress.api.tlsSecretName }}
+      secretName: {{- .Values.logscale.ingress.api.tlsSecretName }}
       {{- end }}
   {{- end }}
   rules:
-    - {{- if .Values.humio.fqdnapi }}
-      host: {{ .Values.humio.fqdnapi }}
+    - {{- if .Values.logscale.fqdnapi }}
+      host: {{ .Values.logscale.fqdnapi }}
       {{- end }}
       http:
         paths:

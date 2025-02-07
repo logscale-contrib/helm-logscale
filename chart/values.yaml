@@ -5,7 +5,7 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-humio:
+logscale:
   #values are "none",bootstrap,ui,inputs
   drMode: "none"
   config:

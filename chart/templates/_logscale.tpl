@@ -2,43 +2,43 @@
 # We always want out logs to std out in json format this is required
 # Reduce log volume to error only on STDOUT we will use otel injection for routine logs  
 - name: HUMIO_LOG4J_CONFIGURATION
-  value: {{ .Values.humio.config.log4jConfiguration | default "log4j2-json-stdout.xml"  | quote }}
+  value: {{ .Values.logscale.config.log4jConfiguration | default "log4j2-json-stdout.xml"  | quote }}
   # Reduce STDOUT /var/lib/humio/config/logging/log4j2-json-k8s.xml
 #  These can be turned back on
 - name: ENABLEINTERNALLOGGER
-  value: {{ .Values.humio.config.enableInternalLogger | default "false" | quote }}
+  value: {{ .Values.logscale.config.enableInternalLogger | default "false" | quote }}
 - name: SEARCH_PIPELINE_MONITOR_JOB_ENABLE
-  value: {{ .Values.humio.config.searchPipelineMonitorJob | default "false" | quote }}
+  value: {{ .Values.logscale.config.searchPipelineMonitorJob | default "false" | quote }}
   #Object Storage config
-{{- if eq  .Values.humio.buckets.type "none" }}  
+{{- if eq  .Values.logscale.buckets.type "none" }}  
 - name: USING_EPHEMERAL_DISKS
   value: "false"
 {{- else }}
 - name: USING_EPHEMERAL_DISKS
   value: "true"
 {{- end }}
-{{- if eq  .Values.humio.buckets.type "aws" }}
+{{- if eq  .Values.logscale.buckets.type "aws" }}
 - name: LOCAL_STORAGE_MIN_AGE_DAYS
-  value: {{ .Values.humio.buckets.localStorageMinAgeDays | default "3" | quote }}
+  value: {{ .Values.logscale.buckets.localStorageMinAgeDays | default "3" | quote }}
 - name: LOCAL_STORAGE_PERCENTAGE
-  value: {{ .Values.humio.buckets.localStoragePercentage | default "94" | quote }}
+  value: {{ .Values.logscale.buckets.localStoragePercentage | default "94" | quote }}
 - name: S3_STORAGE_PREFERRED_COPY_SOURCE
   value: "true"
 - name: S3_STORAGE_ENCRYPTION_KEY
-  value: {{ .Values.humio.buckets.storageKey | default "off" | quote }}
+  value: {{ .Values.logscale.buckets.storageKey | default "off" | quote }}
 - name: BUCKET_STORAGE_SSE_COMPATIBLE
   value: "true"
 - name: S3_STORAGE_BUCKET
-  value: {{ .Values.humio.buckets.storage }}
+  value: {{ .Values.logscale.buckets.storage }}
 - name: S3_STORAGE_REGION
-  value: {{ .Values.humio.buckets.region }}
+  value: {{ .Values.logscale.buckets.region }}
 - name: S3_STORAGE_OBJECT_KEY_PREFIX
-  value: {{ .Values.humio.buckets.prefix }}
-{{- else if eq  .Values.humio.buckets.type "s3proxy" }}
+  value: {{ .Values.logscale.buckets.prefix }}
+{{- else if eq  .Values.logscale.buckets.type "s3proxy" }}
 - name: LOCAL_STORAGE_MIN_AGE_DAYS
-  value: {{ .Values.humio.buckets.localStorageMinAgeDays | default "3" | quote }}
+  value: {{ .Values.logscale.buckets.localStorageMinAgeDays | default "3" | quote }}
 - name: LOCAL_STORAGE_PERCENTAGE
-  value: {{ .Values.humio.buckets.localStoragePercentage | default "94" | quote }}
+  value: {{ .Values.logscale.buckets.localStoragePercentage | default "94" | quote }}
 - name: S3_STORAGE_PREFERRED_COPY_SOURCE
   value: "true"
 - name: S3_STORAGE_PATH_STYLE_ACCESS
@@ -52,69 +52,69 @@
 - name: BUCKET_STORAGE_SSE_COMPATIBLE
   value: "true"
 - name: S3_STORAGE_ENDPOINT_BASE
-  value: {{ .Values.humio.buckets.s3proxy.endpoint }}
+  value: {{ .Values.logscale.buckets.s3proxy.endpoint }}
 - name: S3_STORAGE_ENCRYPTION_KEY
   value: "off"
 - name: S3_STORAGE_ACCESSKEY
   valueFrom:
     secretKeyRef:
         key: AWS_ACCESS_KEY_ID
-        name: {{ .Values.humio.buckets.s3proxy.secret }}
+        name: {{ .Values.logscale.buckets.s3proxy.secret }}
 - name: S3_STORAGE_SECRETKEY
   valueFrom:
     secretKeyRef:
         key: AWS_SECRET_ACCESS_KEY
-        name: {{ .Values.humio.buckets.s3proxy.secret }}
+        name: {{ .Values.logscale.buckets.s3proxy.secret }}
 - name: S3_STORAGE_BUCKET
-  value: {{ .Values.humio.buckets.storage }}
+  value: {{ .Values.logscale.buckets.storage }}
 - name: S3_ARCHIVING_PATH_STYLE_ACCESS
   value: "true"
 - name: S3_EXPORT_PATH_STYLE_ACCESS
   value: "true"
 - name: S3_STORAGE_OBJECT_KEY_PREFIX
-  value: {{ .Values.humio.buckets.prefix }}
-{{- else if eq  .Values.humio.buckets.type "gcp" }}
+  value: {{ .Values.logscale.buckets.prefix }}
+{{- else if eq  .Values.logscale.buckets.type "gcp" }}
 - name: LOCAL_STORAGE_MIN_AGE_DAYS
-  value: {{ .Values.humio.buckets.localStorageMinAgeDays | default "3" | quote }}
+  value: {{ .Values.logscale.buckets.localStorageMinAgeDays | default "3" | quote }}
 - name: LOCAL_STORAGE_PERCENTAGE
-  value: {{ .Values.humio.buckets.localStoragePercentage | default "94" | quote }}
+  value: {{ .Values.logscale.buckets.localStoragePercentage | default "94" | quote }}
 - name: GCP_STORAGE_PREFERRED_COPY_SOURCE
   value: "true"
 - name: GCP_STORAGE_BUCKET
-  value: {{ .Values.humio.buckets.name }}
+  value: {{ .Values.logscale.buckets.name }}
 - name: GCP_STORAGE_WORKLOAD_IDENTITY
   value: "true"
 - name: GCP_STORAGE_ENCRYPTION_KEY
   value: "off"
 - name: GCP_STORAGE_OBJECT_KEY_PREFIX
   value : "storage/"
-{{- if eq .Values.humio.drMode "bootstrap" }}
+{{- if eq .Values.logscale.drMode "bootstrap" }}
 - name: GCP_RECOVER_FROM_BUCKET
-  value: {{ .Values.humio.buckets.recoverFromBucketID }}
+  value: {{ .Values.logscale.buckets.recoverFromBucketID }}
 - name: GCP_RECOVER_FROM_WORKLOAD_IDENTITY
   value: "true"
 - name: GCP_RECOVER_FROM_ENCRYPTION_KEY
   value: "off"
 - name: GCP_RECOVER_FROM_OBJECT_KEY_PREFIX
   value : "storage/"
-{{- if .Values.humio.buckets.recoverFromReplace }}  
+{{- if .Values.logscale.buckets.recoverFromReplace }}  
 - name: GCP_RECOVER_FROM_REPLACE_BUCKET
-  value : {{ .Values.humio.buckets.recoverFromReplace | quote }}
+  value : {{ .Values.logscale.buckets.recoverFromReplace | quote }}
 {{- end }}  
 {{- end }}
 - name: GCP_EXPORT_WORKLOAD_IDENTITY
   value: "true"
 - name: GCP_EXPORT_BUCKET
-  value: {{ .Values.humio.buckets.name }}
+  value: {{ .Values.logscale.buckets.name }}
 - name: GCP_EXPORT_ENCRYPTION_KEY
   value: "off"
 - name: GCP_EXPORT_OBJECT_KEY_PREFIX
   value : "export/"
-{{- if .Values.humio.buckets.downloadConcurrency }}
+{{- if .Values.logscale.buckets.downloadConcurrency }}
 - name: GCP_STORAGE_DOWNLOAD_CONCURRENCY
-  value : {{ .Values.humio.buckets.downloadConcurrency | quote }}
+  value : {{ .Values.logscale.buckets.downloadConcurrency | quote }}
 {{- end }}
-{{- else if eq  .Values.humio.buckets.type "none" }}
+{{- else if eq  .Values.logscale.buckets.type "none" }}
 {{- else }}
 {{- end }}
 {{- if .Values.scim.enabled }}
@@ -129,71 +129,71 @@
   value: "true"
 {{- end }}
 - name: PUBLIC_URL
-  value: "https://{{ .Values.humio.fqdn }}"
+  value: "https://{{ .Values.logscale.fqdn }}"
 - name: AUTHENTICATION_METHOD
-  value: {{ .Values.humio.auth.method }}
-{{- if eq  .Values.humio.auth.method  "single-user" }}
-{{- else if eq  .Values.humio.auth.method  "saml" }}
+  value: {{ .Values.logscale.auth.method }}
+{{- if eq  .Values.logscale.auth.method  "single-user" }}
+{{- else if eq  .Values.logscale.auth.method  "saml" }}
 - name: SAML_IDP_SIGN_ON_URL
-  value: {{ .Values.humio.auth.saml.signOnUrl }}
+  value: {{ .Values.logscale.auth.saml.signOnUrl }}
 - name: SAML_IDP_ENTITY_ID
-  value: {{ .Values.humio.auth.saml.entityID }}
+  value: {{ .Values.logscale.auth.saml.entityID }}
 - name: SAML_GROUP_MEMBERSHIP_ATTRIBUTE
-  value: {{ .Values.humio.auth.saml.groupMembershipAttribute | default "memberOf" }}
-{{- else if eq  .Values.humio.auth.method  "oauth" }}
+  value: {{ .Values.logscale.auth.saml.groupMembershipAttribute | default "memberOf" }}
+{{- else if eq  .Values.logscale.auth.method  "oauth" }}
 - name: OIDC_PROVIDER
-  value: {{ .Values.humio.auth.oauth.provider }}
+  value: {{ .Values.logscale.auth.oauth.provider }}
 - name: OIDC_USERNAME_CLAIM
-  value: {{ .Values.humio.auth.oauth.username_claim | default "email" }}
-{{- if .Values.humio.auth.oauth.groups_claim }}
+  value: {{ .Values.logscale.auth.oauth.username_claim | default "email" }}
+{{- if .Values.logscale.auth.oauth.groups_claim }}
 - name: OIDC_GROUPS_CLAIM
-  value: {{ .Values.humio.auth.oauth.groups_claim }}
+  value: {{ .Values.logscale.auth.oauth.groups_claim }}
 {{- end }}
 - name: OIDC_OAUTH_CLIENT_ID
-  value: {{ .Values.humio.auth.oauth.client_id }}
+  value: {{ .Values.logscale.auth.oauth.client_id }}
 - name: OIDC_OAUTH_CLIENT_SECRET
   valueFrom:
     secretKeyRef:
-        key: {{ .Values.humio.auth.oauth.client_secret_key | default "secret" }}
-        name: {{ .Values.humio.auth.oauth.client_secret_name }}
+        key: {{ .Values.logscale.auth.oauth.client_secret_key | default "secret" }}
+        name: {{ .Values.logscale.auth.oauth.client_secret_name }}
 - name: OIDC_SERVICE_NAME
-  value: {{ .Values.humio.auth.oauth.serviceName | default "SSO" }}
+  value: {{ .Values.logscale.auth.oauth.serviceName | default "SSO" }}
 - name: OIDC_SCOPES
-  value: {{ .Values.humio.auth.oauth.scopes | default "openid,email,profile" }}
+  value: {{ .Values.logscale.auth.oauth.scopes | default "openid,email,profile" }}
 {{- else }}
 {{- end }}
-{{- if .Values.humio.smtp.enabled }}
+{{- if .Values.logscale.smtp.enabled }}
 - name: SMTP_HOST
-  value: {{ .Values.humio.smtp.host }}
-{{- if .Values.humio.smtp.username }}  
+  value: {{ .Values.logscale.smtp.host }}
+{{- if .Values.logscale.smtp.username }}  
 - name: SMTP_USERNAME
-  value: {{ .Values.humio.smtp.username }}
+  value: {{ .Values.logscale.smtp.username }}
 {{- end }}
-{{- if .Values.humio.smtp.password }}  
+{{- if .Values.logscale.smtp.password }}  
 - name: SMTP_PASSWORD
-  value: {{ .Values.humio.smtp.password }}
+  value: {{ .Values.logscale.smtp.password }}
 {{- end }}
 - name: SMTP_SENDER_ADDRESS
-  value: {{ .Values.humio.smtp.sender }}
+  value: {{ .Values.logscale.smtp.sender }}
 - name: SMTP_PORT
-  value: {{ .Values.humio.smtp.port | quote }}
+  value: {{ .Values.logscale.smtp.port | quote }}
 - name: SMTP_USE_STARTTLS
-  value: {{ .Values.humio.smtp.startTLS | quote }}
+  value: {{ .Values.logscale.smtp.startTLS | quote }}
 {{- end }}
-{{- if .Values.humio.jvmARGS }}
+{{- if .Values.logscale.jvmARGS }}
 - name: HUMIO_JVM_ARGS
-  value: {{ .Values.humio.jvmARGS | quote }}
+  value: {{ .Values.logscale.jvmARGS | quote }}
 {{- end }}
-{{- range .Values.humio.enableFeatures }}
+{{- range .Values.logscale.enableFeatures }}
 - name: ENABLE_{{ . | upper}}
   value: "true"
 {{- end }}
 - name: HUMIO_JVM_LOG_OPTS
   value: "-Xlog:jit*=debug:file=/data/java-logs/jit_humio.log:time,tags:filecount=5,filesize=1024000 -Xlog:gc+jni=debug -Xlog:gc*:file=/data/java-logs/gc_humio.log:time,tags:filecount=5,filesize=102400"
-{{- with .Values.humio.extraENV }}
+{{- with .Values.logscale.extraENV }}
 {{ toYaml . | indent 0 }}
 {{- end }}
-{{- if ne .Values.humio.drMode "none" }}
+{{- if ne .Values.logscale.drMode "none" }}
 - name: ENABLE_ALERTS
   value: "false"
 - name: ENABLE_EVENT_FORWARDING
@@ -201,7 +201,7 @@
 - name: ENABLE_SCHEDULED_SEARCHES
   value: "false"
 {{- end }}
-{{- if ne .Values.humio.drMode "none" }}
+{{- if ne .Values.logscale.drMode "none" }}
 - name: ENABLE_ALERTS
   value: "false"
 - name: ENABLE_EVENT_FORWARDING
@@ -209,7 +209,7 @@
 - name: ENABLE_SCHEDULED_SEARCHES
   value: "false"
 {{- end }}
-{{- if .Values.humio.trustManagerConfigMap }}
+{{- if .Values.logscale.trustManagerConfigMap }}
 - name: TLS_TRUSTSTORE_LOCATION
   value: /data/truststore/bundle.jks
 {{- end }}

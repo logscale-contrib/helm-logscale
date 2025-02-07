@@ -9,7 +9,7 @@ metadata:
 data:
   # property-like keys; each key maps to a simple value
   config.json: |
-{{- if eq .Values.humio.drMode "pre" }}            
+{{- if eq .Values.logscale.drMode "pre" }}            
     {
       "query": "mutation {  setDynamicConfig(    input: {config: FlushSegmentsAndGlobalOnShutdown, value: \"true\"}  )}"
     }

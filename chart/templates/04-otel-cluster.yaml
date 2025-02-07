@@ -12,7 +12,7 @@ metadata:
   {{- end }}
 
 spec:
-  serviceAccount: {{ include "humio-instance.humio.serviceAccountName" . }}-otel
+  serviceAccount: {{ include "humio-instance.logscale.serviceAccountName" . }}-otel
   image: otel/opentelemetry-collector-contrib:0.56.0
   mode: deployment
   env:

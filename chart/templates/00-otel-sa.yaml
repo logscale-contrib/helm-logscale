@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: {{ include "humio-instance.humio.serviceAccountName" . }}-otel
+  name: {{ include "humio-instance.logscale.serviceAccountName" . }}-otel
   labels:
     {{- include "humio-instance.labels" . | nindent 4 }}
   {{- with .Values.otel.serviceAccount.annotations }}
@@ -14,7 +14,7 @@ automountServiceAccountToken: true
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ include "humio-instance.humio.serviceAccountName" . }}-otel
+  name: {{ include "humio-instance.logscale.serviceAccountName" . }}-otel
   labels:
     {{- include "humio-instance.labels" . | nindent 4 }}
 rules:
@@ -108,15 +108,15 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ include "humio-instance.humio.serviceAccountName" . }}-otel
+  name: {{ include "humio-instance.logscale.serviceAccountName" . }}-otel
   labels:
     {{- include "humio-instance.labels" . | nindent 4 }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: {{ include "humio-instance.humio.serviceAccountName" . }}-otel
+  name: {{ include "humio-instance.logscale.serviceAccountName" . }}-otel
 subjects:
   - kind: ServiceAccount
-    name: {{ include "humio-instance.humio.serviceAccountName" . }}-otel
+    name: {{ include "humio-instance.logscale.serviceAccountName" . }}-otel
     namespace: {{ .Release.Namespace }}
 {{- end }}

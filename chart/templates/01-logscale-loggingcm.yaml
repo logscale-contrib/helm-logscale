@@ -7,7 +7,7 @@ metadata:
 data:
   log4j2-json-k8s.xml: |        
     <?xml version="1.0" encoding="UTF-8"?>
-    <Configuration packages="com.humio.logger.log4j2" shutdownHook="disable">
+    <Configuration packages="com.logscale.logger.log4j2" shutdownHook="disable">
 
         <Properties>
             <Property name="log-layout-humio-internal">%date{yyyy-MM-dd'T'HH:mm:ss.SSSZ} [%thread] %-5level %c{1.} ${sys:vhost} - %msg</Property>
