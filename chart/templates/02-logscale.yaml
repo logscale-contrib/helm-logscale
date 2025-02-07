@@ -122,8 +122,8 @@ spec:
   ingress: {}
   license:
     secretKeyRef:
-      key: license
-      name: "{{ include "humio-instance.fullname" . }}-license"
+      key: {{ .Values.logscale.existingLicenseSecretNameKey | default "license" }}
+      name: {{ .Values.logscale.existingLicenseSecretName }}
   autoRebalancePartitions: {{ .Values.logscale.autoRebalancePartitions | default true }}
   digestPartitionsCount: {{ .Values.logscale.digestPartitionsCount }}
   storagePartitionsCount: {{ .Values.logscale.storagePartitionsCount }}
