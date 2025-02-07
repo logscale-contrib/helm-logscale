@@ -15,19 +15,19 @@ logscale:
   kafka:
     manager: "logscale"
     prefixEnable: false
-    extraConfigCommon: |
-      security.protocol=PLAINTEXT
+    extraConfigCommon:
+      security.protocol: PLAINTEXT
       # receive.buffer.bytes=65536 is the default use -1 to set to OS max
-      receive.buffer.bytes=-1
+      receive.buffer.bytes: -1
       # send.buffer.bytes=131072 is the default use -1 to set to OS max
-      send.buffer.bytes=-1
+      send.buffer.bytes: -1
 
       # Additional external kafka configuration
       # max.partition.fetch.bytes=1048576 is the default value 3 MB should be optimal for logscale
-      max.partition.fetch.bytes=3145728
+      max.partition.fetch.bytes: 3145728
       # linger.ms with high partition counts and sharding this small delay allows for optimal batch sizing
       # under high loads it will have no effect
-      linger.ms=5
+      linger.ms: 5
 
     topics:
       ingest:
