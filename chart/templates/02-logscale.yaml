@@ -148,7 +148,7 @@ spec:
         {{- end }}
         {{- if or .Values.otel.components.inject .Values.humio.podAnnotations }}  
         podAnnotations:
-        {{- if .Values.otel.components.inject }}
+        {{- if .Values.otel.components.inject }}                
           "instrumentation.opentelemetry.io/inject-java": {{ include "humio-instance.fullname" . }}-java
           "instrumentation.opentelemetry.io/container-names": "humio"
         {{- end }}

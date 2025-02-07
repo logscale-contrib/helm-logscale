@@ -27,7 +27,7 @@ jobs:
       new_release_version: ${{ steps.version.outputs.new_release_version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: false
           persist-credentials: false
@@ -41,7 +41,7 @@ jobs:
           node-version: "18"
       - name: Semantic Release
         id: version
-        uses: cycjimmy/semantic-release-action@v3.4.2
+        uses: cycjimmy/semantic-release-action@v4.0.0
         with:
           semantic_version: 19.0.5
           extra_plugins: |
@@ -59,7 +59,7 @@ jobs:
           REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
       - name: Docker meta
         id: docker_action_meta
-        uses: docker/metadata-action@v4.4.0
+        uses: docker/metadata-action@v4.6.0
         with:
           images: ghcr.io/${{ github.repository }}/container
           flavor: |
@@ -79,7 +79,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [meta]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: "recursive"
       - uses: azure/setup-helm@v3
@@ -94,7 +94,7 @@ jobs:
     needs: [runTests, meta]
     steps:
       #Yes we need code
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: false
           persist-credentials: false
@@ -111,7 +111,7 @@ jobs:
       - name: Semantic Release
         if: github.event_name != 'pull_request'
         id: version
-        uses: cycjimmy/semantic-release-action@v3.4.2
+        uses: cycjimmy/semantic-release-action@v4.0.0
         with:
           semantic_version: 19.0.5
           extra_plugins: |
