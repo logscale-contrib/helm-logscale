@@ -1,5 +1,5 @@
 ---
-apiVersion: core.logscale.com/v1alpha1
+apiVersion: core.humio.com/v1alpha1
 kind: HumioCluster
 metadata:
   name: {{ include "humio-instance.fullname" . }}
