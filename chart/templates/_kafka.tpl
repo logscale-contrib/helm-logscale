@@ -9,11 +9,6 @@
     secretKeyRef:
       name: {{ .Values.logscale.kafka.serviceBindingSecret }}
       key: bootstrap.servers
-- name: KAFKA_JAAS
-    valueFrom:
-    secretKeyRef:
-        name: {{ .Values.logscale.kafka.serviceBindingSecret }}
-        key: sasl.jaas.config      
 {{- else }}
 - name: KAFKA_SERVERS
   value: {{ .Values.logscale.kafka.bootstrap | quote }}
