@@ -54,7 +54,7 @@ spec:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 
-  CommonEnvironmentVariables:
+  commonEnvironmentVariables:
   {{- include "humio-instance.environment" . | nindent 2 }}
   {{- include "humio-instance.environmentKafka" . | nindent 2 }}
 
