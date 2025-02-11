@@ -101,7 +101,7 @@ spec:
       configMap:
         name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
 {{- with .Values.extraVolumes }}
-  {{- toYaml . | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
 {{- end }}
 
   esHostnameSource: {}
