@@ -33,12 +33,13 @@
 {{- range $k, $v := .Values.logscale.kafka.extraConfigCommon -}}
     {{- $value := $v -}}
     {{- if or (kindIs "bool" $v) (kindIs "float64" $v) (kindIs "int" $v) (kindIs "int64" $v) -}}
-        {{- $v = $v | toString | b64enc | quote -}}
+        {{- $v = $v | toString | quote -}}
     {{- else -}}
-        {{- $v = tpl $v $.root | toString | b64enc | quote }}
+        {{- $v = tpl $v $.root | toString | quote }}
     {{- end -}}
     {{- if and ($v) (ne $v "\"\"") }}
-{{ printf "KAFKA_COMMON_%s" (upper $k | replace "." "_") }}: {{ $v }}
+{{ printf "- name: KAFKA_COMMON_%s" (upper $k | replace "." "_") }}
+  value: {{ $v }}
     {{- end }}
 {{- end -}}
 
