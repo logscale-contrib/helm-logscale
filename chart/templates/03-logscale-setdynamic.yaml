@@ -1,4 +1,4 @@
-{{- if .Values.scim.enabled }}
+{{- if .Values.setDynamic.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
