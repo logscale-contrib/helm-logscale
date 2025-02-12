@@ -27,8 +27,10 @@ spec:
   {{- if .Values.logscale.priorityClassName }}
   priorityClassName: {{ .Values.logscale.priorityClassName }}
   {{- end }}
+  {{- with .Values.logscale.resources }}
   resources:
-    {{- toYaml .Values.logscale.resources | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}  
   {{- with .Values.logscale.affinity }}
   affinity:
     {{- toYaml . | nindent 4 }}
@@ -206,8 +208,10 @@ spec:
         {{- if .Values.logscale.nodepools.ingest.priorityClassName }}
         priorityClassName: {{ .Values.logscale.nodepools.ingest.priorityClassName }}
         {{- end }}
+        {{- with .Values.logscale.nodepools.ingest.resources }}
         resources:
-          {{- toYaml .Values.logscale.nodepools.ingest.resources | nindent 14 }}
+          {{- toYaml . | nindent 14 }}
+        {{- end }}
         {{- with .Values.logscale.nodepools.ingest.affinity }}
         affinity:
           {{- toYaml . | nindent 10 }}
@@ -312,8 +316,10 @@ spec:
         {{- if .Values.logscale.nodepools.ui.priorityClassName }}
         priorityClassName: {{ .Values.logscale.nodepools.ui.priorityClassName }}
         {{- end }}
+        {{- with .Values.logscale.nodepools.ui.resources }}
         resources:
-          {{- toYaml .Values.logscale.nodepools.ui.resources | nindent 14 }}
+          {{- toYaml . | nindent 14 }}
+        {{- end }}        
         {{- with .Values.logscale.nodepools.ui.affinity }}
         affinity:
           {{- toYaml . | nindent 10 }}
