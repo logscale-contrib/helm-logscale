@@ -69,7 +69,6 @@
         items:
         - key: ssl.truststore.crt
           path: bundle.jks
-        key: 
 {{- end }}
 {{- define "humio-instance.extraHumioVolumeMountsKafka" -}}
 - name: kafka-trust-store
