@@ -1,4 +1,17 @@
 {{- define "humio-instance.environmentKafka" -}}
+# Generate env vars for kafka
+{{- range $k, $v := .Values.logscale.kafka.extraConfigCommon -}}
+    {{- $value := $v -}}
+    {{- if or (kindIs "bool" $v) (kindIs "float64" $v) (kindIs "int" $v) (kindIs "int64" $v) -}}
+        {{- $v = $v | toString | quote -}}
+    {{- else -}}
+        {{- $v = tpl $v $.root | toString | quote }}
+    {{- end -}}
+    {{- if and ($v) (ne $v "\"\"") }}
+{{ printf "- name: KAFKA_COMMON_%s" (upper $k | replace "." "_") }}
+  value: {{ $v }}
+    {{- end }}
+{{- end -}}
 
 {{- if eq .Values.logscale.kafka.manager "strimzi" }}
 - name: KAFKA_SERVERS
@@ -28,7 +41,9 @@
       key: security.protocol
       # optional: true
 - name: KAFKA_COMMON_SSL_TRUSTSTORE_LOCATION
-  value: /data/kafka/truststore/bundle.jks
+  value: /mnt/kafka/truststore/bundle.pem
+- name: KAFKA_COMMON_SSL_TRUSTSTORE_TYPE
+  value: PEM
 {{- else }}
 - name: KAFKA_SERVERS
   value: {{ .Values.logscale.kafka.bootstrap | quote }}
@@ -44,19 +59,7 @@
 - name: HUMIO_KAFKA_TOPIC_PREFIX
   value: {{ .Values.logscale.kafka.topicPrefix | default .Release.Name }}-
 {{- end }}
-# Generate env vars for kafka
-{{- range $k, $v := .Values.logscale.kafka.extraConfigCommon -}}
-    {{- $value := $v -}}
-    {{- if or (kindIs "bool" $v) (kindIs "float64" $v) (kindIs "int" $v) (kindIs "int64" $v) -}}
-        {{- $v = $v | toString | quote -}}
-    {{- else -}}
-        {{- $v = tpl $v $.root | toString | quote }}
-    {{- end -}}
-    {{- if and ($v) (ne $v "\"\"") }}
-{{ printf "- name: KAFKA_COMMON_%s" (upper $k | replace "." "_") }}
-  value: {{ $v }}
-    {{- end }}
-{{- end -}}
+
 
 {{- end }}
 
@@ -68,9 +71,9 @@
     secretName: {{ .Values.logscale.kafka.serviceBindingSecret }}
     items:
     - key: ssl.truststore.crt
-      path: bundle.jks
+      path: bundle.pem
 {{- end }}
 {{- define "humio-instance.extraHumioVolumeMountsKafka" -}}
 - name: kafka-trust-store
-  mountPath: /data/kafka/truststore
+  mountPath: /mnt/kafka/truststore
 {{- end }}
