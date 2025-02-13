@@ -211,7 +211,7 @@
 {{- end }}
 {{- if .Values.logscale.trustManagerConfigMap }}
 - name: TLS_TRUSTSTORE_LOCATION
-  value: /data/truststore/bundle.jks
+  value: /mnt/truststore/bundle.jks
 {{- end }}
 {{- if .Values.pdfRenderService.enabled }}
 - name: DEFAULT_PDF_RENDER_SERVICE_URL

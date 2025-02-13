@@ -67,7 +67,7 @@ spec:
       mountPath: /data/logs
 {{- if .Values.logscale.trustManagerConfigMap }}
     - name: truststore
-      mountPath: /data/truststore
+      mountPath: /mnt/truststore
 {{- end }}
 {{- if .Values.logscale.kafka.keystore }}
     - name: kafka-keystore
@@ -177,7 +177,7 @@ spec:
             mountPath: /data/logs
       {{- if .Values.logscale.trustManagerConfigMap }}
           - name: truststore
-            mountPath: /data/truststore
+            mountPath: /mnt/truststore
       {{- end }}            
       {{- if .Values.logscale.kafka.keystore }}
           - name: kafka-keystore
@@ -293,7 +293,7 @@ spec:
             mountPath: /data/logs
       {{- if .Values.logscale.trustManagerConfigMap }}
           - name: truststore
-            mountPath: /data/truststore
+            mountPath: /mnt/truststore
       {{- end }}            
       {{- if .Values.logscale.kafka.keystore }}
           - name: kafka-keystore

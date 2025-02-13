@@ -41,9 +41,9 @@
       key: security.protocol
       # optional: true
 - name: KAFKA_COMMON_SSL_TRUSTSTORE_LOCATION
-  value: /mnt/kafka/truststore/bundle.pem
-- name: KAFKA_COMMON_SSL_TRUSTSTORE_TYPE
-  value: PEM
+  value: /mnt/truststore/bundle.jks
+# - name: KAFKA_COMMON_SSL_TRUSTSTORE_TYPE
+#   value: PEM
 {{- else }}
 - name: KAFKA_SERVERS
   value: {{ .Values.logscale.kafka.bootstrap | quote }}
