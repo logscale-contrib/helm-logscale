@@ -40,8 +40,8 @@
       name: {{ .Values.logscale.kafka.serviceBindingSecret }}
       key: security.protocol
       # optional: true
-# - name: KAFKA_COMMON_SSL_TRUSTSTORE_LOCATION
-#   value: /mnt/truststore/bundle.jks
+- name: KAFKA_COMMON_SSL_TRUSTSTORE_LOCATION
+  value: /mnt/truststore/bundle.jks
 # - name: KAFKA_COMMON_SSL_TRUSTSTORE_TYPE
 #   value: PEM
 {{- else }}
