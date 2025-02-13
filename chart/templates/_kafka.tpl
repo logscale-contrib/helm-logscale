@@ -13,7 +13,7 @@
     {{- end }}
 {{- end -}}
 
-{{- if eq .Values.logscale.kafka.manager "strimziAccessOperator" }}
+{{- if .Values.logscale.kafka.serviceBindingSecret }}
 - name: KAFKA_SERVERS
   valueFrom:
     secretKeyRef:
@@ -37,10 +37,15 @@
       name: {{ .Values.logscale.kafka.serviceBindingSecret }}
       key: security.protocol
       # optional: true
+{{- if .Values.logscale.trustManagerConfigMap }}
 - name: KAFKA_COMMON_SSL_TRUSTSTORE_LOCATION
   value: /mnt/truststore/bundle.jks
-# - name: KAFKA_COMMON_SSL_TRUSTSTORE_TYPE
-#   value: PEM
+{{- else }}
+- name: KAFKA_COMMON_SSL_TRUSTSTORE_LOCATION
+  value: /mnt/kafka/truststore/bundle.jks
+- name: KAFKA_COMMON_SSL_TRUSTSTORE_TYPE
+  value: PEM
+{{- end }}
 {{- else }}
 - name: KAFKA_SERVERS
   value: {{ .Values.logscale.kafka.bootstrap | quote }}
@@ -56,11 +61,10 @@
 - name: HUMIO_KAFKA_TOPIC_PREFIX
   value: {{ .Values.logscale.kafka.topicPrefix | default .Release.Name }}-
 {{- end }}
-
-
 {{- end }}
 
 {{- define "humio-instance.extraVolumesKafka" -}}
+{{- if .Values.logscale.kafka.serviceBindingSecret }}
 - name: kafka-trust-store
   secret:
     # Provide the name of the ConfigMap containing the files you want
@@ -70,7 +74,10 @@
     - key: ssl.truststore.crt
       path: bundle.pem
 {{- end }}
+{{- end }}
 {{- define "humio-instance.extraHumioVolumeMountsKafka" -}}
+{{- if .Values.logscale.kafka.serviceBindingSecret }}
 - name: kafka-trust-store
   mountPath: /mnt/kafka/truststore
+{{- end }}
 {{- end }}
