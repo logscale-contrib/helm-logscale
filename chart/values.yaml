@@ -16,7 +16,6 @@ logscale:
     manager: "logscale"
     prefixEnable: false
     extraConfigCommon:
-      security.protocol: PLAINTEXT
       # receive.buffer.bytes=65536 is the default use -1 to set to OS max
       receive.buffer.bytes: -1
       # send.buffer.bytes=131072 is the default use -1 to set to OS max
