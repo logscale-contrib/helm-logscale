@@ -9,6 +9,26 @@
     secretKeyRef:
       name: {{ .Values.logscale.kafka.serviceBindingSecret }}
       key: bootstrap.servers
+- name: KAFKA_COMMON_SASL_JAAS_CONFIG
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.logscale.kafka.serviceBindingSecret }}
+      key: sasl.jaas.config
+      optional: true
+- name: KAFKA_COMMON_SASL_MECHANISM
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.logscale.kafka.serviceBindingSecret }}
+      key: sasl.mechanism
+      optional: true
+- name: KAFKA_COMMON_SECURITY_PROTOCOL
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.logscale.kafka.serviceBindingSecret }}
+      key: security.protocol
+      optional: true
+- name: KAFKA_COMMON_SSL_TRUSTSTORE_LOCATION
+  value: /data/kafka/truststore/bundle.jks
 {{- else }}
 - name: KAFKA_SERVERS
   value: {{ .Values.logscale.kafka.bootstrap | quote }}
@@ -40,3 +60,18 @@
 
 {{- end }}
 
+{{- define "humio-instance.extraVolumesKafka" -}}
+    - name: kafka-trust-store
+      secret:
+        # Provide the name of the ConfigMap containing the files you want
+        # to add to the container
+        secretName: {{ .Values.logscale.kafka.serviceBindingSecret }}
+        items:
+        - key: ssl.truststore.crt
+          path: bundle.jks
+        key: 
+{{- end }}
+{{- define "humio-instance.extraHumioVolumeMountsKafka" -}}
+- name: kafka-trust-store
+  mountPath: /data/kafka/truststore
+{{- end }}

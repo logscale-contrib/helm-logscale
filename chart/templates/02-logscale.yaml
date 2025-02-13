@@ -76,6 +76,8 @@ spec:
     - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
       mountPath: /var/lib/humio/config/logging
       readOnly: true
+
+{{- include "humio-instance.extraHumioVolumeMountsKafka" . | nindent 4 }}      
 {{- with .Values.logscale.extraHumioVolumeMounts }}
   {{- toYaml . | nindent 4 }}
 {{- end }}
@@ -102,6 +104,7 @@ spec:
     - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
       configMap:
         name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
+{{- include "humio-instance.extraVolumesKafka" . | nindent 4 }}
 {{- with .Values.logscale.extraVolumes }}
     {{- toYaml . | nindent 4 }}
 {{- end }}
@@ -183,6 +186,7 @@ spec:
           - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
             mountPath: /var/lib/humio/config/logging
             readOnly: true     
+      {{- include "humio-instance.extraHumioVolumeMountsKafka" . | nindent 10 }}      
       {{- with .Values.logscale.extraHumioVolumeMounts }}
         {{- toYaml . | nindent 10 }}
       {{- end }}            
@@ -208,6 +212,7 @@ spec:
           - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
             configMap:
               name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
+        {{- include "humio-instance.extraVolumesKafka" . | nindent 10 }}
         {{- with .Values.logscale.extraVolumes }}
             {{- toYaml . | nindent 10 }}
         {{- end }}              
@@ -297,6 +302,7 @@ spec:
           - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
             mountPath: /var/lib/humio/config/logging
             readOnly: true             
+      {{- include "humio-instance.extraHumioVolumeMountsKafka" . | nindent 10 }}      
       {{- with .Values.logscale.extraHumioVolumeMounts }}
         {{- toYaml . | nindent 10 }}
       {{- end }}            
@@ -322,6 +328,7 @@ spec:
           - name: "{{ include "humio-instance.fullname" . }}-loggingconfig"
             configMap:
               name: "{{ include "humio-instance.fullname" . }}-loggingconfig"      
+        {{- include "humio-instance.extraVolumesKafka" . | nindent 10 }}
         {{- with .Values.logscale.extraVolumes }}
             {{- toYaml . | nindent 10 }}
         {{- end }}              
