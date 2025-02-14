@@ -131,7 +131,7 @@ humio:
 preload:
   image:
     repository: alpine
-    tag: 3.18.0
+    tag: 3.21.3
 setdynamic:
   enabled: true
   image:
