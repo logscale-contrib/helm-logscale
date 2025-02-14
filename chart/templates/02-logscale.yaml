@@ -7,7 +7,6 @@ metadata:
     {{- include "humio-instance.labels" . | nindent 4 }}
 spec:
   initServiceAccountName: {{ include "humio-instance.logscale.serviceAccountName" . }}
-  authServiceAccountName: {{ include "humio-instance.logscale.serviceAccountName" . }}
   humioServiceAccountName: {{ include "humio-instance.logscale.serviceAccountName" . }}
   {{- if .Values.logscale.containerSecurityContext }}
   containerSecurityContext:
@@ -129,9 +128,8 @@ spec:
     secretKeyRef:
       key: {{ .Values.logscale.existingLicenseSecretNameKey | default "license" }}
       name: {{ .Values.logscale.existingLicenseSecretName }}
-  autoRebalancePartitions: {{ .Values.logscale.autoRebalancePartitions | default true }}
   digestPartitionsCount: {{ .Values.logscale.digestPartitionsCount }}
-  storagePartitionsCount: {{ .Values.logscale.storagePartitionsCount }}
+  storagePartitionsCount: 1 # Still required but not used
   targetReplicationFactor: 1
   tls:
     enabled: false

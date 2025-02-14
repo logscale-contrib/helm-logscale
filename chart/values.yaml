@@ -44,7 +44,6 @@ logscale:
     repository: humio/humio-core
     tag: "1.165.1"
   digestPartitionsCount: 24
-  storagePartitionsCount: 24
   smtp:
     enabled: false
     host: ""
