@@ -6,8 +6,12 @@ metadata:
   labels:
     {{- include "humio-instance.labels" . | nindent 4 }}
 spec:
-  initServiceAccountName: {{ include "humio-instance.logscale.serviceAccountName" . }}
   humioServiceAccountName: {{ include "humio-instance.logscale.serviceAccountName" . }}
+  {{- with .Values.logscale.serviceAccount.annotations }}
+  humioServiceAccountAnnotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}  
+  
   {{- if .Values.logscale.containerSecurityContext }}
   containerSecurityContext:
     {{- toYaml .Values.logscale.containerSecurityContext | nindent 4 }}        
