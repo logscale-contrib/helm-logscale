@@ -14,7 +14,7 @@
     nodeCount: {{ .replicas }}
 
     humioServiceAccountName: {{ include "humio-instance.logscale.serviceAccountName" $ }}
-
+    initServiceAccountName: {{ include "humio-instance.logscale.serviceAccountName" $ }}
     podSecurityContext:
     {{- toYaml $.Values.logscale.commonPod.podSecurityContext | nindent 6 }}
     containerSecurityContext:
