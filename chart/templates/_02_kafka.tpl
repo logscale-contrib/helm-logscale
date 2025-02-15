@@ -64,6 +64,13 @@
 {{- end }}
 
 {{- define "humio-instance.extraVolumesKafka" -}}
+{{- if .Values.logscale.kafka.keystore }}
+- name: kafka-keystore
+  secret:
+    # Provide the name of the ConfigMap containing the files you want
+    # to add to the container
+    secretName: {{ .Values.logscale.kafka.keystore }}
+{{- end }}
 {{- if .Values.logscale.kafka.serviceBindingSecret }}
 - name: kafka-trust-store
   secret:
@@ -75,7 +82,12 @@
       path: bundle.pem
 {{- end }}
 {{- end }}
+
 {{- define "humio-instance.extraHumioVolumeMountsKafka" -}}
+{{- if .Values.logscale.kafka.keystore }}
+- name: kafka-keystore
+  mountPath: /mnt/kafka/keystore
+{{- end }}
 {{- if .Values.logscale.kafka.serviceBindingSecret }}
 - name: kafka-trust-store
   mountPath: /mnt/kafka/truststore

@@ -1,3 +1,0 @@
-humio:
-  fqdn: test.qa.logsr.life
-  fqdnInputs: test-inputs.qa.logsr.life
