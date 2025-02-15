@@ -7,6 +7,16 @@ metadata:
     {{- include "humio-instance.labels" . | nindent 4 }}
 spec:
 
+  humioServiceAccountName: {{ include "humio-instance.logscale.serviceAccountName" . }}
+  {{- with .Values.logscale.serviceAccount.annotations }}
+  humioServiceAccountAnnotations: 
+  {{ toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.logscale.serviceAccount.labels }}
+  humioServiceAccountLabels: 
+  {{ toYaml . | nindent 4 }}
+  {{- end }}
+
   commonEnvironmentVariables:
   {{- include "humio-instance.environment" . | nindent 2 }}
   {{- include "humio-instance.environmentKafka" . | nindent 2 }}
