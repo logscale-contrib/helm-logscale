@@ -101,15 +101,6 @@
         {{- toYaml . | nindent 6 }}
     {{- end }}
 
-
-    {{- with $.Values.logscale.frontEndDataVolumePersistentVolumeClaimSpecTemplate }}
-    dataVolumePersistentVolumeClaimSpecTemplate:
-      {{- toYaml . | nindent 6 }}
-    {{- end }}
-
-    dataVolumePersistentVolumeClaimPolicy: 
-      reclaimType: {{ $.Values.logscale.frontEnddataVolumePersistentVolumeClaimPolicy | default "None" }}
-
     humioServiceType: {{ .service.type | default "ClusterIP" }}
     {{- with .service.annotations }}
     humioServiceAnnotations:
