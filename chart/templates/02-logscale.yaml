@@ -7,13 +7,6 @@ metadata:
     {{- include "humio-instance.labels" . | nindent 4 }}
 spec:
 
-  dataVolumePersistentVolumeClaimPolicy: 
-    reclaimType: {{ .Values.logscale.dataVolumePersistentVolumeClaimPolicy | default "OnNodeDelete" }}
-  dataVolumePersistentVolumeClaimSpecTemplate:
-  {{- with .Values.logscale.dataVolumePersistentVolumeClaimSpecTemplate }}
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
-
   commonEnvironmentVariables:
   {{- include "humio-instance.environment" . | nindent 2 }}
   {{- include "humio-instance.environmentKafka" . | nindent 2 }}

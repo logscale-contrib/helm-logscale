@@ -39,6 +39,13 @@
     {{- end }}
     {{- end }}
 
+    dataVolumePersistentVolumeClaimPolicy: 
+      reclaimType: {{ .dataVolumePersistentVolumeClaimPolicy | default "OnNodeDelete" }}
+    dataVolumePersistentVolumeClaimSpecTemplate:
+    {{- with .dataVolumePersistentVolumeClaimSpecTemplate }}
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+
     extraHumioVolumeMounts:
     - name: java-logs
       mountPath: /data/java-logs

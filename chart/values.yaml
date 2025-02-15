@@ -60,6 +60,13 @@ logscale:
   nodePools:
     - name: api
       replicas: 1
+      dataVolumePersistentVolumeClaimSpecTemplate:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 468Gi
+        storageClassName: gp2
       resources:
         requests:
           memory: 1Gi
