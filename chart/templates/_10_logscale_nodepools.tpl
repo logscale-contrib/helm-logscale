@@ -110,10 +110,9 @@
     humioServiceLabels:
     {{- toYaml . | nindent 4 }}
     {{- end }}    
-    environmentVariables:
-    - name: NODE_ROLES
-      value: httponly
-    - name: QUERY_COORDINATOR
-      value: "false"
+    {{- with .environmentVariables }}
+    humioServiceLabels:
+    {{- toYaml . | nindent 4 }}
+    {{- end }}    
 {{- end }}    
 {{- end -}}
