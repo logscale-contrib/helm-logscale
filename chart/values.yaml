@@ -43,7 +43,7 @@ humio:
   replicaCount: 3
   image:
     repository: humio/humio-core
-    tag: "1.159.1"
+    tag: "1.176.0"
   digestPartitionsCount: 24
   storagePartitionsCount: 24
   smtp:
