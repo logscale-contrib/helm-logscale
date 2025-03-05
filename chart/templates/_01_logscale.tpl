@@ -29,11 +29,11 @@
 - name: BUCKET_STORAGE_SSE_COMPATIBLE
   value: "true"
 - name: S3_STORAGE_BUCKET
-  value: {{ .Values.logscale.buckets.storage }}
+  value: {{ .Values.logscale.buckets.id }}
 - name: S3_STORAGE_REGION
   value: {{ .Values.logscale.buckets.region }}
 - name: S3_STORAGE_OBJECT_KEY_PREFIX
-  value: {{ .Values.logscale.buckets.prefix }}
+  value: {{ .Values.logscale.buckets.prefixes.storage }}
 {{- else if eq  .Values.logscale.buckets.type "s3proxy" }}
 - name: LOCAL_STORAGE_MIN_AGE_DAYS
   value: {{ .Values.logscale.buckets.localStorageMinAgeDays | default "3" | quote }}
