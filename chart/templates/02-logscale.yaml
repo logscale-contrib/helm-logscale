@@ -35,8 +35,6 @@ spec:
   {{- end }}
   {{- if eq .Values.humio.drMode "bootstrap" }}
   nodeCount: 1
-  {{- else }}
-  nodeCount: {{ .Values.humio.nodeCount }}
   {{- end }}
   {{- with .Values.humio.tolerations }}
   tolerations:
