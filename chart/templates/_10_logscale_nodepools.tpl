@@ -88,6 +88,10 @@
     resources:
       {{- toYaml . | nindent 6 }}
     {{- end }}
+    {{- with .nodeSelector }}
+    nodeSelector:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
     {{- with .affinity }}
     affinity:
       {{- toYaml . | nindent 6 }}

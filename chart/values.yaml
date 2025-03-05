@@ -74,6 +74,8 @@ logscale:
         limits:
           memory: 2Gi
           cpu: 1
+      nodeSelector:
+        - kubernetes.io/arch: amd64
       service:
         type: ClusterIP
 
