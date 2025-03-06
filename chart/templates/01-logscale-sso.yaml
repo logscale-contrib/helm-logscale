@@ -7,5 +7,5 @@ metadata:
     {{- include "humio-instance.labels" . | nindent 4 }}
 type: Opaque
 data:
-  idp-certificate.pem: {{- .Values.logscale.auth.saml.idpCertificate | toYaml | indent 1 }}
+  idp-certificate.pem: {{ .Values.logscale.auth.saml.idpCertificate | b64enc | quote }}
 {{- end }}
