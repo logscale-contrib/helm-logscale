@@ -86,12 +86,16 @@
     {{- with .priorityClassName }}
     priorityClassName: {{ . }}
     {{- end }}
+    {{- with .podDisruptionBudget }}
+    podDisruptionBudget: 
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
     updateStrategy:
       enableZoneAwareness: {{ .updateStrategy.enableZoneAwareness | default true }}
       maxUnavailable: {{ .updateStrategy.maxUnavailable | default 1 }}
       minReadySeconds: {{ .updateStrategy.minReadySeconds | default 45 }}
       type: {{ .updateStrategy.type | default "ReplaceAllOnUpdate" }}
-    {{- with .affinity }}
+    {{- with .nodePoolFeatures }}
     nodePoolFeatures: 
       {{- toYaml . | nindent 6 }}
     {{- end }}
