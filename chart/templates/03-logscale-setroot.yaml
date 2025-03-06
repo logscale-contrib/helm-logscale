@@ -39,10 +39,10 @@ spec:
                   key: token
           resources:
               requests:
-                  memory: 64Mi
+                  memory: 16Mi
                   cpu: 10m
               limits:
-                  memory: 128Mi
+                  memory: 32Mi
                   cpu: 20m
           securityContext:
               allowPrivilegeEscalation: false
