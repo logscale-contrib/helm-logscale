@@ -86,8 +86,7 @@
     {{- end }}
     enableZoneAwareness: {{ .enableZoneAwareness | default true }}
     maxUnavailable: {{ .maxUnavailable | default 1 }}
-    nodePoolFeatures: 
-      {{- toYaml .nodePoolFeatures | nindent 6 }}
+    nodePoolFeatures: {{ .nodePoolFeatures }}
     {{- with .resources }}
     resources:
       {{- toYaml . | nindent 6 }}
