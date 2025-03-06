@@ -84,10 +84,8 @@
     {{- with .priorityClassName }}
     priorityClassName: {{ . }}
     {{- end }}
-    {{- with .nodePoolFeatures | default [OperatorInternal]}}
     nodePoolFeatures: 
-      {{- toYaml . | nindent 6 }}
-    {{- end }}
+      {{- toYaml .nodePoolFeatures | nindent 6 }}
     {{- with .resources }}
     resources:
       {{- toYaml . | nindent 6 }}
