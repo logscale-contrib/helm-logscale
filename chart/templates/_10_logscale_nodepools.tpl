@@ -91,7 +91,10 @@
       maxUnavailable: {{ .updateStrategy.maxUnavailable | default 1 }}
       minReadySeconds: {{ .updateStrategy.minReadySeconds | default 45 }}
       type: {{ .updateStrategy.type | default "ReplaceAllOnUpdate" }}
-    nodePoolFeatures: {{ .nodePoolFeatures }}
+    {{- with .affinity }}
+    nodePoolFeatures: 
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
     {{- with .resources }}
     resources:
       {{- toYaml . | nindent 6 }}
