@@ -31,7 +31,7 @@ spec:
             - name: EMAIL
               value: {{ .Values.setRoot.userEmail }}
             - name: HUMIOSVC
-              value: {{ include "humio-instance.fullname" . }}
+              value: {{ include "humio-instance.fullname" . }}-internal
             - name: TOKEN
               valueFrom:
                 secretKeyRef:
