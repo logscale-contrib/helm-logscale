@@ -187,7 +187,7 @@ pdfRenderService:
     debug: "false"
   image:
     repository: humio/pdf-render-service
-    tag: 0.0.25--build-82--sha-237af42b386b7199407de19d6635c32c6c31ff42
+    tag: 0.0.59--build-98--sha-b2bfadbc14733ce3ae1153d555148ee4f3a64013
 scim:
   enabled: false
   groups:
