@@ -84,6 +84,8 @@
     {{- with .priorityClassName }}
     priorityClassName: {{ . }}
     {{- end }}
+    enableZoneAwareness: {{ .enableZoneAwareness | default true }}
+    maxUnavailable: {{ .maxUnavailable | default 1 }}
     nodePoolFeatures: 
       {{- toYaml .nodePoolFeatures | nindent 6 }}
     {{- with .resources }}
