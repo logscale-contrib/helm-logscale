@@ -129,7 +129,7 @@
   value: "true"
 {{- end }}
 - name: PUBLIC_URL
-  value: "https://{{ .Values.logscale.fqdn }}"
+  value: "https://{{ .Values.logscale.host }}"
 - name: AUTHENTICATION_METHOD
   value: {{ .Values.logscale.auth.method }}
 {{- if eq  .Values.logscale.auth.method  "single-user" }}

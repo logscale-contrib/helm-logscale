@@ -14,7 +14,7 @@ spec:
 {{- if eq  .Values.logscale.auth.method  "saml" }}
   idpCertificateSecretName: "{{ include "humio-instance.fullname" . }}-idp-certificate"
 {{- end }}
-  hostname: {{ .Values.logscale.fqdn }}
+  hostname: {{ .Values.logscale.host }}
 
 {{- if .Values.logscale.helperImage }}  
   helperImage: {{ .Values.logscale.helperImage }}
