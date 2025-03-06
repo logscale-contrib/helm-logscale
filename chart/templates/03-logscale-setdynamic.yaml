@@ -20,7 +20,7 @@ data:
 {{- end }}  
 {{- end }}  
 ---
-{{- if .Values.setdynamic.enabled }}
+{{- if .Values.setDynamic.enabled }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -36,13 +36,13 @@ spec:
         {{- include "humio-instance.labels" . | nindent 8 }}    
         app.kubernetes.io/component: "setdynamic"
     spec:
-      {{- if .Values.setdynamic.image.pullSecrets }}
+      {{- if .Values.setDynamic.image.pullSecrets }}
       imagePullSecrets:
-      {{- toYaml .Values.setdynamic.image.pullSecrets | nindent 6 }}
+      {{- toYaml .Values.setDynamic.image.pullSecrets | nindent 6 }}
       {{- end }}
       containers:
         - name: humio-setdynamic
-          image: "{{ .Values.setdynamic.image.repository }}:{{ .Values.setdynamic.image.tag }}"
+          image: "{{ .Values.setDynamic.image.repository }}:{{ .Values.setDynamic.image.tag }}"
           command:
             - sh
             - -c

@@ -1,4 +1,4 @@
-{{- if .Values.setroot.enabled }}
+{{- if .Values.setRoot.enabled }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -14,13 +14,13 @@ spec:
         {{- include "humio-instance.labels" . | nindent 8 }}    
         app.kubernetes.io/component: "setroot-user"
     spec:
-      {{- if .Values.setroot.image.pullSecrets }}
+      {{- if .Values.setRoot.image.pullSecrets }}
       imagePullSecrets:
-      {{- toYaml .Values.setroot.image.pullSecrets | nindent 6 }}
+      {{- toYaml .Values.setRoot.image.pullSecrets | nindent 6 }}
       {{- end }}  
       containers:
         - name: humio-set-root
-          image: "{{ .Values.setroot.image.repository }}:{{ .Values.setroot.image.tag }}"
+          image: "{{ .Values.setRoot.image.repository }}:{{ .Values.setRoot.image.tag }}"
           command:
             - sh
             - -c

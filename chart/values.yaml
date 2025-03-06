@@ -168,12 +168,12 @@ preload:
   image:
     repository: alpine
     tag: 3.18.0
-setdynamic:
+setDynamic:
   enabled: true
   image:
     repository: curlimages/curl
     tag: 8.00.1
-setroot:
+setRoot:
   enabled: true
   image:
     repository: curlimages/curl
