@@ -19,13 +19,13 @@ spec:
   {{- if .tls }}
   tls:
     - hosts:
-        - {{ $.Values.logscale.host }}
+        - {{ .host }}
       {{- with .SecretName }}
       secretName: {{ . }}
       {{- end }}
   {{- end }}
   rules:
-    - host: {{ $.Values.logscale.host }}
+    - host: {{ $.host }}
       http:
         paths:
         {{- range .endpoints }}        
