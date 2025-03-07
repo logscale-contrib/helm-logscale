@@ -9,8 +9,8 @@ logscale:
   #values are "none",bootstrap,ui,inputs
   drMode: "none"
   config:
-    enableInternalLogger: "false"
-    searchPipelineMonitorJob: "false"
+    enableInternalLogger: "true"
+    searchPipelineMonitorJob: "true"
   #One of humio,strimzi,external
   kafka:
     manager: "logscale"
