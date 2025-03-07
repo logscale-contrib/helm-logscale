@@ -25,7 +25,7 @@ spec:
       {{- end }}
   {{- end }}
   rules:
-    - host: {{ $.host }}
+    - host: {{ .host }}
       http:
         paths:
         {{- range .endpoints }}        
