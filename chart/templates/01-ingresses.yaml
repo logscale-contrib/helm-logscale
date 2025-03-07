@@ -37,4 +37,5 @@ spec:
                 port:
                   number: {{ .port | default "8080" }}              
         {{- end }}
+---        
 {{- end }}
