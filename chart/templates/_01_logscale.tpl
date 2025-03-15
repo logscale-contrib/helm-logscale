@@ -117,17 +117,10 @@
 {{- else if eq  .Values.logscale.buckets.type "none" }}
 {{- else }}
 {{- end }}
-{{- if .Values.scim.enabled }}
-- name: AUTO_CREATE_USER_ON_SUCCESSFUL_LOGIN
-  value: "false"
-- name: AUTO_UPDATE_GROUP_MEMBERSHIPS_ON_SUCCESSFUL_LOGIN
-  value: "false"
-{{- else }}
 - name: AUTO_CREATE_USER_ON_SUCCESSFUL_LOGIN
   value: "true"
 - name: AUTO_UPDATE_GROUP_MEMBERSHIPS_ON_SUCCESSFUL_LOGIN
   value: "true"
-{{- end }}
 - name: PUBLIC_URL
   value: "https://{{ .Values.logscale.host }}"
 - name: AUTHENTICATION_METHOD
