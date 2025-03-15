@@ -53,11 +53,11 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "humio-instance.humio.serviceAccountName" -}}
-{{- if .Values.humio.serviceAccount.create }}
-{{- default (include "humio-instance.fullname" .) .Values.humio.serviceAccount.name }}
+{{- define "humio-instance.logscale.serviceAccountName" -}}
+{{- if .Values.logscale.serviceAccount.create }}
+{{- default (include "humio-instance.fullname" .) .Values.logscale.serviceAccount.name }}
 {{- else }}
-{{- default "default" .Values.humio.serviceAccount.name }}
+{{- default "default" .Values.logscale.serviceAccount.name }}
 {{- end }}
 {{- end }}
 
@@ -67,14 +67,14 @@ Create the name of the service account to use
 Create the zookeeper service
 */}}
 {{- define "humio-instance.externalService.zookeeper" -}}
-{{- default (printf "%s-%s" .Release.Name "zookeeper-headless:2181") .Values.humio.externalzookeeperHostname }}
+{{- default (printf "%s-%s" .Release.Name "zookeeper-headless:2181") .Values.logscale.externalzookeeperHostname }}
 {{- end }}
 
 {{/*
 Create the kafka service
 */}}
 {{- define "humio-instance.externalService.kafka" -}}
-{{- default (printf "%s-%s" .Release.Name "kafka-kafkacluster-kafka-bootstrap:9092") .Values.humio.kafka.externalKafkaHostname }}
+{{- default (printf "%s-%s" .Release.Name "kafka-kafkacluster-kafka-bootstrap:9092") .Values.logscale.kafka.externalKafkaHostname }}
 {{- end }}
 
 {{- define "humio-instance.persistance.storageclass" -}}

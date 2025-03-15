@@ -11,5 +11,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "humio-instance.fullname" . }}:{{ .Values.humio.service.port }}']
+      args: ['{{ include "humio-instance.fullname" . }}:{{ .Values.logscale.service.port }}']
   restartPolicy: Never

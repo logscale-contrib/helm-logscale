@@ -1,3 +1,4 @@
 chart/charts/*.tgz
 *.tgz
 .values.yaml
+.out.yaml

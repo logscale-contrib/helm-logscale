@@ -1,4 +1,4 @@
-{{- if eq  .Values.humio.auth.method  "saml" }}
+{{- if eq  .Values.logscale.auth.method  "saml" }}
 apiVersion: v1
 kind: Secret
 metadata:
@@ -7,5 +7,5 @@ metadata:
     {{- include "humio-instance.labels" . | nindent 4 }}
 type: Opaque
 data:
-  idp-certificate.pem: {{ .Values.humio.auth.saml.idpCertificate }}
+  idp-certificate.pem: {{ .Values.logscale.auth.saml.idpCertificate | b64enc | quote }}
 {{- end }}

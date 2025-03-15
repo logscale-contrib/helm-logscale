@@ -1,4 +1,4 @@
-{{- if .Values.setroot.enabled }}
+{{- if .Values.setRoot.enabled }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -14,13 +14,13 @@ spec:
         {{- include "humio-instance.labels" . | nindent 8 }}    
         app.kubernetes.io/component: "setroot-user"
     spec:
-      {{- if .Values.setroot.image.pullSecrets }}
+      {{- if .Values.setRoot.image.pullSecrets }}
       imagePullSecrets:
-      {{- toYaml .Values.setroot.image.pullSecrets | nindent 6 }}
+      {{- toYaml .Values.setRoot.image.pullSecrets | nindent 6 }}
       {{- end }}  
       containers:
         - name: humio-set-root
-          image: "{{ .Values.setroot.image.repository }}:{{ .Values.setroot.image.tag }}"
+          image: "{{ .Values.setRoot.image.repository }}:{{ .Values.setRoot.image.tag }}"
           command:
             - sh
             - -c
@@ -29,9 +29,9 @@ spec:
               curl --connect-timeout 5 --max-time 10 --retry 30 --retry-delay 0 --retry-max-time 600 --retry-connrefused -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN" -d "{\"email\": \"$EMAIL\", \"isRoot\": true}" http://$HUMIOSVC:8080/api/v1/users
           env:    
             - name: EMAIL
-              value: {{ .Values.humio.auth.rootUser }}
+              value: {{ .Values.setRoot.user }}
             - name: HUMIOSVC
-              value: {{ include "humio-instance.fullname" . }}
+              value: {{ include "humio-instance.fullname" . }}-internal
             - name: TOKEN
               valueFrom:
                 secretKeyRef:
@@ -39,10 +39,10 @@ spec:
                   key: token
           resources:
               requests:
-                  memory: 64Mi
+                  memory: 16Mi
                   cpu: 10m
               limits:
-                  memory: 128Mi
+                  memory: 32Mi
                   cpu: 20m
           securityContext:
               allowPrivilegeEscalation: false
