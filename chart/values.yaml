@@ -181,6 +181,12 @@ setRoot:
 pdfRenderService:
   enabled: true
   replicas: 1
+  resources: {}
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
   config:
     cleanupInterval: "7d"
     maxConcurrentJobs: "10"
