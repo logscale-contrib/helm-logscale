@@ -182,11 +182,39 @@ pdfRenderService:
   enabled: true
   replicas: 1
   resources: {}
-  nodeSelector: {}
-
-  tolerations: []
-
-  affinity: {}
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: kubernetes.io/arch
+                operator: In
+                values:
+                  - amd64
+              - key: kubernetes.io/os
+                operator: In
+                values:
+                  - linux
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/component
+                operator: In
+                values:
+                  - pdfRenderService
+          topologyKey: kubernetes.io/hostname
+  topologySpreadConstraints:
+    - maxSkew: 2
+      minDomains: 2
+      whenUnsatisfiable: DoNotSchedule
+      topologyKey: topology.kubernetes.io/zone
+      labelSelector:
+        matchExpressions:
+          - key: app.kubernetes.io/component
+            operator: In
+            values:
+              - pdfRenderService
   config:
     cleanupInterval: "7d"
     maxConcurrentJobs: "10"
