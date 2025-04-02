@@ -155,23 +155,23 @@
   value: {{ .Values.logscale.auth.oauth.scopes | default "openid,email,profile" }}
 {{- else }}
 {{- end }}
-{{- if .Values.logscale.smtp.enabled }}
+{{- if eq .Values.logscale.email.mode "smtp" }}
 - name: SMTP_HOST
-  value: {{ .Values.logscale.smtp.host }}
-{{- if .Values.logscale.smtp.username }}  
+  value: {{ .Values.logscale.email.smtp.host }}
+{{- if .Values.logscale.email.smtp.username }}  
 - name: SMTP_USERNAME
-  value: {{ .Values.logscale.smtp.username }}
+  value: {{ .Values.logscale.email.smtp.username }}
 {{- end }}
-{{- if .Values.logscale.smtp.password }}  
+{{- if .Values.logscale.email.smtp.password }}  
 - name: SMTP_PASSWORD
-  value: {{ .Values.logscale.smtp.password }}
+  value: {{ .Values.logscale.email.smtp.password }}
 {{- end }}
 - name: SMTP_SENDER_ADDRESS
-  value: {{ .Values.logscale.smtp.sender }}
+  value: {{ .Values.logscale.email.smtp.sender }}
 - name: SMTP_PORT
-  value: {{ .Values.logscale.smtp.port | quote }}
+  value: {{ .Values.logscale.email.smtp.port | quote }}
 - name: SMTP_USE_STARTTLS
-  value: {{ .Values.logscale.smtp.startTLS | quote }}
+  value: {{ .Values.logscale.email.smtp.startTLS | quote }}
 {{- end }}
 {{- if .Values.logscale.jvmARGS }}
 - name: HUMIO_JVM_ARGS
