@@ -60,23 +60,23 @@ spec:
           value: {{ .Values.pdfRenderService.config.debug | default "false" | quote }}
        {{- with .Values.pdfRenderService.resources }}
       resources:
-        {{- toYaml . | nindent 6 }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
-       {{- with .Values.pdfRenderService.nodeSelector }}
+      {{- with .Values.pdfRenderService.nodeSelector }}
       nodeSelector:
-        {{- toYaml . | nindent 6 }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.pdfRenderService.affinity }}
       affinity:
-        {{- toYaml . | nindent 6 }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.pdfRenderService.tolerations }}
       tolerations:
-        {{- toYaml . | nindent 6 }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.pdfRenderService.topologySpreadConstraints }}
       topologySpreadConstraints:
-          {{- toYaml . | nindent 6 }}
+          {{- toYaml . | nindent 8 }}
       {{- end }}
  
 ---

@@ -204,6 +204,7 @@ pdfRenderService:
                 values:
                   - pdfRenderService
           topologyKey: kubernetes.io/hostname
+  nodeSelector: {}
   topologySpreadConstraints:
     - maxSkew: 2
       minDomains: 2
@@ -215,6 +216,7 @@ pdfRenderService:
             operator: In
             values:
               - pdfRenderService
+  tolerations: []
   config:
     cleanupInterval: "7d"
     maxConcurrentJobs: "10"
