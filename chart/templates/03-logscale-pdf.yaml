@@ -18,6 +18,7 @@ spec:
         {{- include "humio-instance.selectorLabels" . | nindent 8 }}    
         app.kubernetes.io/component: "pdfRenderService"
     spec:
+      hostUsers: {{ .Values.pdfRenderService.hostUsers | default true }}
       {{- if .Values.pdfRenderService.image.pullSecrets }}
       imagePullSecrets:
       {{- toYaml .Values.pdfRenderService.image.pullSecrets | nindent 6 }}
