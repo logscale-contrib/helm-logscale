@@ -218,6 +218,20 @@ pdfRenderService:
             values:
               - pdfRenderService
   tolerations: []
+  podSecurityContext:
+    runAsUser: 10000
+    runAsGroup: 20000
+    fsGroup: 20000
+    fsGroupChangePolicy: "OnRootMismatch"
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 10000
+    runAsGroup: 20000
+    capabilities:
+      drop:
+        - ALL
   config:
     cleanupInterval: "7d"
     maxConcurrentJobs: "10"
