@@ -182,6 +182,7 @@ pdfRenderService:
   enabled: true
   replicas: 1
   resources: {}
+  extraENV: []
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:

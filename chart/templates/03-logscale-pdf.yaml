@@ -36,28 +36,11 @@ spec:
           value: {{ .Values.pdfRenderService.config.cleanupInterval | quote}}
         - name: MAX_CONCURRENT_JOBS
           value: {{ .Values.pdfRenderService.config.maxConcurrentJobs | quote }}
-        - name: FORCE_LOGSCALE_BASE_URL
-          value: http://{{ include "humio-instance.fullname" . }}-internal:8080
-        {{- if .Values.logscale.smtp.enabled }}
-        - name: SMTP_HOST
-          value: {{ .Values.logscale.smtp.host }}
-        {{- if .Values.logscale.smtp.username }}  
-        - name: SMTP_USERNAME
-          value: {{ .Values.logscale.smtp.username }}
-        {{- end }}
-        {{- if .Values.logscale.smtp.password }}  
-        - name: SMTP_PASSWORD
-          value: {{ .Values.logscale.smtp.password }}
-        {{- end }}
-        - name: SMTP_SENDER_ADDRESS
-          value: {{ .Values.logscale.smtp.sender }}
-        - name: SMTP_PORT
-          value: {{ .Values.logscale.smtp.port | quote }}
-        - name: SMTP_USE_STARTTLS
-          value: {{ .Values.logscale.smtp.startTLS | quote }}
-        {{- end }}
         - name: DEBUG
           value: {{ .Values.pdfRenderService.config.debug | default "false" | quote }}
+        {{- with .Values.pdfRenderService.extraENV }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}       
        {{- with .Values.pdfRenderService.resources }}
       resources:
         {{- toYaml . | nindent 8 }}
