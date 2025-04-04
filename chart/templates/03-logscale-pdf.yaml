@@ -41,10 +41,32 @@ spec:
         {{- with .Values.pdfRenderService.extraENV }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp
+        - mountPath: /home/pptruser
+          name: home
+        {{- with .Values.pdfRenderService.extraVolumeMounts }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.pdfRenderService.containerSecurityContext }}
+        securityContext:
+          {{- toYaml . | nindent 10 }}
+        {{- end           
         {{- with .Values.pdfRenderService.containerSecurityContext }}
         securityContext:
           {{- toYaml . | nindent 10 }}
         {{- end }}
+      volumes:
+      - name: tmp
+        emptyDir:
+          sizeLimit: {{ .Values.pdfRenderService.config.tmpDirSize | quote }}
+      - name: home
+        emptyDir:
+          sizeLimit: {{ .Values.pdfRenderService.config.homeDirSize | quote }}
+      {{- with .Values.pdfRenderService.extraVolumes }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
       {{- with .Values.pdfRenderService.podSecurityContext }}
       securityContext:
         {{- toYaml . | nindent 8 }}

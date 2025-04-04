@@ -219,23 +219,29 @@ pdfRenderService:
               - pdfRenderService
   tolerations: []
   podSecurityContext:
-    runAsUser: 10000
-    runAsGroup: 20000
-    fsGroup: 20000
-    fsGroupChangePolicy: "OnRootMismatch"
+    {}
+    # runAsUser: 10000
+    # runAsGroup: 20000
+    # fsGroup: 20000
+    # fsGroupChangePolicy: "OnRootMismatch"
   containerSecurityContext:
-    allowPrivilegeEscalation: false
-    readOnlyRootFilesystem: true
-    runAsNonRoot: true
-    runAsUser: 10000
-    runAsGroup: 20000
-    capabilities:
-      drop:
-        - ALL
+    {}
+    # allowPrivilegeEscalation: false
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+    # runAsUser: 10000
+    # runAsGroup: 20000
+    # capabilities:
+    #   drop:
+    #     - ALL
+  extraVolumeMounts: []
+  extraVolumes: []
   config:
     cleanupInterval: "7d"
     maxConcurrentJobs: "10"
     debug: "false"
+    tmpDirSize: "500Mi"
+    homeDirSize: "500Mi"
   image:
     repository: humio/pdf-render-service
     tag: 0.0.59--build-98--sha-b2bfadbc14733ce3ae1153d555148ee4f3a64013
