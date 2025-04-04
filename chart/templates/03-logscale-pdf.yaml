@@ -41,11 +41,15 @@ spec:
         {{- with .Values.pdfRenderService.extraENV }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
+        {{- with .Values.pdfRenderService.containerSecurityContext }}
         securityContext:
-        {{- toYaml .Values.pdfRenderService.containerSecurityContext | nindent 10 }}
-       {{- with .Values.pdfRenderService.resources }}
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+      {{- with .Values.pdfRenderService.podSecurityContext }}
       securityContext:
-        {{- toYaml .Values.pdfRenderService.podSecurityContext | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.pdfRenderService.resources }}
       resources:
         {{- toYaml . | nindent 8 }}
       {{- end }}
