@@ -52,11 +52,7 @@ spec:
         {{- with .Values.pdfRenderService.containerSecurityContext }}
         securityContext:
           {{- toYaml . | nindent 10 }}
-        {{- end           
-        {{- with .Values.pdfRenderService.containerSecurityContext }}
-        securityContext:
-          {{- toYaml . | nindent 10 }}
-        {{- end }}
+        {{- end }}           
       volumes:
       - name: tmp
         emptyDir:
