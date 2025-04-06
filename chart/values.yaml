@@ -172,12 +172,12 @@ setDynamic:
   enabled: true
   image:
     repository: curlimages/curl
-    tag: 8.12.1
+    tag: 8.13.0
 setRoot:
   enabled: true
   image:
     repository: curlimages/curl
-    tag: 8.12.1
+    tag: 8.13.0
 pdfRenderService:
   enabled: true
   replicas: 1
