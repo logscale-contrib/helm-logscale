@@ -18,10 +18,11 @@ spec:
         {{- include "humio-instance.selectorLabels" . | nindent 8 }}    
         app.kubernetes.io/component: "pdfRenderService"
     spec:
-      {{- if .Values.pdfRenderService.image.pullSecrets }}
+      hostUsers: {{ .Values.pdfRenderService.hostUsers | default true }}      
+      {{- with .Values.pdfRenderService.image.pullSecrets }}
       imagePullSecrets:
-      {{- toYaml .Values.pdfRenderService.image.pullSecrets | nindent 6 }}
-      {{- end }}  
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
       containers:
       - name: pdfrenderservice
         image: "{{ .Values.pdfRenderService.image.repository }}:{{ .Values.pdfRenderService.image.tag }}"
@@ -36,29 +37,38 @@ spec:
           value: {{ .Values.pdfRenderService.config.cleanupInterval | quote}}
         - name: MAX_CONCURRENT_JOBS
           value: {{ .Values.pdfRenderService.config.maxConcurrentJobs | quote }}
-        - name: FORCE_LOGSCALE_BASE_URL
-          value: http://{{ include "humio-instance.fullname" . }}-internal:8080
-        {{- if .Values.logscale.smtp.enabled }}
-        - name: SMTP_HOST
-          value: {{ .Values.logscale.smtp.host }}
-        {{- if .Values.logscale.smtp.username }}  
-        - name: SMTP_USERNAME
-          value: {{ .Values.logscale.smtp.username }}
-        {{- end }}
-        {{- if .Values.logscale.smtp.password }}  
-        - name: SMTP_PASSWORD
-          value: {{ .Values.logscale.smtp.password }}
-        {{- end }}
-        - name: SMTP_SENDER_ADDRESS
-          value: {{ .Values.logscale.smtp.sender }}
-        - name: SMTP_PORT
-          value: {{ .Values.logscale.smtp.port | quote }}
-        - name: SMTP_USE_STARTTLS
-          value: {{ .Values.logscale.smtp.startTLS | quote }}
-        {{- end }}
         - name: DEBUG
           value: {{ .Values.pdfRenderService.config.debug | default "false" | quote }}
-       {{- with .Values.pdfRenderService.resources }}
+        {{- with .Values.pdfRenderService.extraENV }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp
+        - mountPath: /home/pptruser
+          name: home
+        {{- with .Values.pdfRenderService.extraVolumeMounts }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.pdfRenderService.containerSecurityContext }}
+        securityContext:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}           
+      volumes:
+      - name: tmp
+        emptyDir:
+          sizeLimit: {{ .Values.pdfRenderService.config.tmpDirSize | quote }}
+      - name: home
+        emptyDir:
+          sizeLimit: {{ .Values.pdfRenderService.config.homeDirSize | quote }}
+      {{- with .Values.pdfRenderService.extraVolumes }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+      {{- with .Values.pdfRenderService.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.pdfRenderService.resources }}
       resources:
         {{- toYaml . | nindent 8 }}
       {{- end }}

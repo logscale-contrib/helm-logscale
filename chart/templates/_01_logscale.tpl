@@ -209,6 +209,8 @@
 {{- if .Values.pdfRenderService.enabled }}
 - name: DEFAULT_PDF_RENDER_SERVICE_URL
   value: http://{{ include "humio-instance.fullname" . }}-pdfrenderservice:5123
+- name: PDF_RENDER_SERVICE_CALLBACK_BASE_URL
+  value: http://{{ include "humio-instance.fullname" . }}-internal:8080
 - name: ENABLE_SCHEDULED_REPORT
   value: "true"
 {{- end }}
