@@ -166,6 +166,13 @@
 - name: SMTP_PASSWORD
   value: {{ .Values.logscale.email.smtp.password }}
 {{- end }}
+{{- if .Values.logscale.email.smtp.existingPasswordSecret }}  
+- name: SMTP_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.logscale.email.smtp.existingPasswordSecret.secretName }}
+      key: {{ .Values.logscale.email.smtp.existingPasswordSecret.key }}
+{{- end }}
 - name: SMTP_SENDER_ADDRESS
   value: {{ .Values.logscale.email.smtp.sender }}
 - name: SMTP_PORT
