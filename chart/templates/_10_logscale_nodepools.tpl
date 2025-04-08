@@ -132,6 +132,7 @@
     {{- with .sidecarContainer }}
     sidecarContainer:
     {{- toYaml . | nindent 6 }}
+    {{- end }}    
     
 {{- end }}    
 {{- end -}}
