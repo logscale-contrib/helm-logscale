@@ -88,7 +88,7 @@ logscale:
 
   digestPartitionsCount: 24
 
-  smtp: {}
+  email: {}
   extraENV:
     - name: MAX_SERIES_LIMIT
       value: "1000"

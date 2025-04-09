@@ -128,6 +128,11 @@
     {{- with .service.labels }}
     humioServiceLabels:
     {{- toYaml . | nindent 6 }}
+    {{- end }} 
+    {{- with .sidecarContainer }}
+    sidecarContainer:
+    {{- toYaml . | nindent 6 }}
     {{- end }}    
+    
 {{- end }}    
 {{- end -}}
