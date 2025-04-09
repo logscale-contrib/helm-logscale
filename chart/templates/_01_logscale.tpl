@@ -118,9 +118,9 @@
 {{- else }}
 {{- end }}
 - name: AUTO_CREATE_USER_ON_SUCCESSFUL_LOGIN
-  value: "true"
+  value: {{ .Values.logscale.auth.autoCreateUser | default "true" | quote }}
 - name: AUTO_UPDATE_GROUP_MEMBERSHIPS_ON_SUCCESSFUL_LOGIN
-  value: "true"
+  value: {{ .Values.logscale.auth.autoUpdateGroupMembership | default "true" | quote }}
 - name: PUBLIC_URL
   value: "https://{{ .Values.logscale.host }}"
 - name: AUTHENTICATION_METHOD
