@@ -40,13 +40,15 @@
 {{- if .Values.logscale.trustManagerConfigMap }}
 - name: KAFKA_COMMON_SSL_TRUSTSTORE_LOCATION
   value: /mnt/truststore/bundle.jks
+{{- else }}
+- name: KAFKA_COMMON_SSL_TRUSTSTORE_LOCATION
+  value: /mnt/kafka/truststore/bundle.jks
+- name: KAFKA_COMMON_SSL_TRUSTSTORE_TYPE
+  value: PEM
 {{- end }}
 {{- else }}
 - name: KAFKA_SERVERS
   value: {{ .Values.logscale.kafka.bootstrap | quote }}
-{{- if .Values.logscale.trustManagerConfigMap }}
-- name: KAFKA_COMMON_SSL_TRUSTSTORE_LOCATION
-  value: /mnt/truststore/bundle.jks
 {{- end }}
 {{- if eq .Values.logscale.kafka.manager "logscale" }}
 - name: KAFKA_MANAGED_BY_HUMIO
