@@ -37,15 +37,6 @@
       name: {{ .Values.logscale.kafka.serviceBindingSecret }}
       key: security.protocol
       # optional: true
-{{- if .Values.logscale.trustManagerConfigMap }}
-- name: KAFKA_COMMON_SSL_TRUSTSTORE_LOCATION
-  value: /mnt/truststore/bundle.jks
-{{- else }}
-- name: KAFKA_COMMON_SSL_TRUSTSTORE_LOCATION
-  value: /mnt/kafka/truststore/bundle.jks
-- name: KAFKA_COMMON_SSL_TRUSTSTORE_TYPE
-  value: PEM
-{{- end }}
 {{- else }}
 - name: KAFKA_SERVERS
   value: {{ .Values.logscale.kafka.bootstrap | quote }}
@@ -56,6 +47,10 @@
 {{- else }}
 - name: KAFKA_MANAGED_BY_HUMIO
   value: "false"
+{{- end }}
+{{- if .Values.logscale.trustManagerConfigMap }}
+- name: KAFKA_COMMON_SSL_TRUSTSTORE_LOCATION
+  value: /mnt/truststore/bundle.jks
 {{- end }}
 {{- if .Values.logscale.kafka.prefixEnable }}
 - name: HUMIO_KAFKA_TOPIC_PREFIX
